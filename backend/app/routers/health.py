@@ -1,10 +1,27 @@
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status
+from sqlalchemy.orm import Session
 from typing import List
 
-from ..schemas import ArticleOut, MythFactOut
-from ..utils import get_health_articles, get_myth_cards
+from ..database import get_db
+from ..models import User, CycleLog, MoodLog
+from ..schemas import ArticleOut, MythFactOut, AIHealthSummary
+from ..auth import get_current_user
+from ..utils import get_health_articles, get_myth_cards, generate_ai_health_summary
 
-router = APIRouter(prefix="/api/health", tags=["Health Library"])
+router = APIRouter(prefix="/api/health", tags=["Health Library & Summary"])
+
+
+@router.get("/summary", response_model=AIHealthSummary)
+def get_ai_health_summary(
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """Retrieve AI-generated daily health summary & metrics for dashboard header."""
+    cycle_logs = db.query(CycleLog).filter(CycleLog.user_id == current_user.id).all()
+    mood_logs = db.query(MoodLog).filter(MoodLog.user_id == current_user.id).all()
+
+    summary = generate_ai_health_summary(current_user.email, cycle_logs, mood_logs)
+    return summary
 
 
 @router.get("/articles", response_model=List[ArticleOut])

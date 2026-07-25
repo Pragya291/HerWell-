@@ -9,7 +9,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/style.css?v=2">
 </head>
 <body>
 
@@ -107,13 +107,71 @@
 
         <!-- ================= VIEW 2: DASHBOARD ================= -->
         <section id="view-dashboard" class="app-view hidden">
-            <div class="dashboard-header-banner">
-                <div>
-                    <h1 class="welcome-heading">Hi, <span id="dash-user-email">wellness advocate</span> 👋</h1>
-                    <p class="welcome-subtext">Here is your daily health synthesis and cycle harmony status.</p>
+            <!-- AI Daily Health Summary Header -->
+            <div class="ai-summary-banner">
+                <div class="ai-summary-header-row">
+                    <div class="ai-greeting-wrap">
+                        <h1 class="ai-greeting" id="ai-summary-greeting">🌸 Good Morning, Shreya!</h1>
+                        <span class="ai-badge-tag">✨ AI Daily Synthesis</span>
+                    </div>
+                    <div class="ai-header-right">
+                        <div class="wellness-score-pill">
+                            <span class="score-label">Wellness Score:</span>
+                            <span class="score-val" id="ai-wellness-score">87</span><span class="score-denom">/100</span>
+                        </div>
+                        <div class="date-badge" id="current-date-badge">Today</div>
+                    </div>
                 </div>
-                <div class="date-badge" id="current-date-badge">Today</div>
+
+                <div class="ai-recommendation-box">
+                    <span class="rec-sparkle">✨ AI Rec:</span>
+                    <p id="ai-recommendation-text">"Take a 20-minute walk after lunch to improve energy."</p>
+                    <ul class="ai-bullets-list hidden" id="ai-summary-bullets">
+                        <li>• Day 4 Cycle</li>
+                        <li>• Mood +12%</li>
+                    </ul>
+                </div>
+
+                <!-- 5 Metrics Bar -->
+                <div class="ai-metrics-row">
+                    <div class="metric-pill">
+                        <span class="pill-icon">🌸</span>
+                        <div>
+                            <span class="pill-label">Wellness</span>
+                            <strong id="metric-wellness-score">87/100</strong>
+                        </div>
+                    </div>
+                    <div class="metric-pill">
+                        <span class="pill-icon">🧠</span>
+                        <div>
+                            <span class="pill-label">AI Health</span>
+                            <strong id="metric-ai-score">89/100</strong>
+                        </div>
+                    </div>
+                    <div class="metric-pill">
+                        <span class="pill-icon">🌙</span>
+                        <div>
+                            <span class="pill-label">Sleep Quality</span>
+                            <strong id="metric-sleep-quality">8.2 hrs • Restorative</strong>
+                        </div>
+                    </div>
+                    <div class="metric-pill">
+                        <span class="pill-icon">⚡</span>
+                        <div>
+                            <span class="pill-label">Stress Level</span>
+                            <strong id="metric-stress-level">Low (22%)</strong>
+                        </div>
+                    </div>
+                    <div class="metric-pill">
+                        <span class="pill-icon">💧</span>
+                        <div>
+                            <span class="pill-label">Hydration</span>
+                            <strong id="metric-hydration">2.4L Goal</strong>
+                        </div>
+                    </div>
+                </div>
             </div>
+
 
             <!-- Dashboard Grid -->
             <div class="dashboard-grid">
@@ -195,7 +253,7 @@
                 </div>
 
                 <!-- Card 5: Article of the Day -->
-                <div class="dash-card article-snippet-card span-full">
+                <div class="dash-card article-snippet-card span-insight">
                     <div class="card-header">
                         <h3><span class="card-icon">💡</span> Health Insight of the Day</h3>
                         <span class="category-pill" id="dash-art-category">Wellness</span>

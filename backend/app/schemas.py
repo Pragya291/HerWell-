@@ -159,3 +159,15 @@ class MythFactOut(BaseModel):
     category: str
     myth: str
     fact: str
+
+
+class AIHealthSummary(BaseModel):
+    wellness_score: int
+    ai_health_score: int
+    sleep_quality: str
+    stress_level: str
+    hydration: str
+    greeting: str
+    bullets: List[str]
+    ai_recommendation: str
+

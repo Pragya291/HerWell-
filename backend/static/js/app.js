@@ -237,6 +237,9 @@ function showAuthAlert(msg, type) {
 
 async function loadDashboardData() {
     try {
+        // Fetch AI Health Summary Header
+        await loadAIHealthSummary();
+
         // Fetch cycle predictions
         const predictions = await apiCall('/cycle/predictions');
         state.cyclePredictions = predictions;
@@ -259,6 +262,52 @@ async function loadDashboardData() {
         console.error('Error loading dashboard data:', err);
     }
 }
+
+async function loadAIHealthSummary() {
+    try {
+        const summary = await apiCall('/health/summary');
+        renderAIHealthSummary(summary);
+    } catch (err) {
+        console.warn('Error fetching AI health summary:', err);
+    }
+}
+
+function renderAIHealthSummary(data) {
+    if (!data) return;
+
+    const greetingEl = document.getElementById('ai-summary-greeting');
+    if (greetingEl && data.greeting) greetingEl.textContent = data.greeting;
+
+    const scoreEl = document.getElementById('ai-wellness-score');
+    if (scoreEl) scoreEl.textContent = data.wellness_score || 87;
+
+    const bulletsList = document.getElementById('ai-summary-bullets');
+    if (bulletsList && data.bullets) {
+        bulletsList.innerHTML = data.bullets.map(b => `<li>${b.startsWith('•') ? b : '• ' + b}</li>`).join('');
+    }
+
+    const recEl = document.getElementById('ai-recommendation-text');
+    if (recEl && data.ai_recommendation) {
+        recEl.textContent = `"${data.ai_recommendation}"`;
+    }
+
+    // 5 Health metrics
+    const mWellness = document.getElementById('metric-wellness-score');
+    if (mWellness) mWellness.textContent = `${data.wellness_score || 87}/100`;
+
+    const mAi = document.getElementById('metric-ai-score');
+    if (mAi) mAi.textContent = `${data.ai_health_score || 89}/100`;
+
+    const mSleep = document.getElementById('metric-sleep-quality');
+    if (mSleep) mSleep.textContent = data.sleep_quality || '8.2 hrs • Restorative';
+
+    const mStress = document.getElementById('metric-stress-level');
+    if (mStress) mStress.textContent = data.stress_level || 'Low (22%)';
+
+    const mHydration = document.getElementById('metric-hydration');
+    if (mHydration) mHydration.textContent = data.hydration || '2.4L Goal';
+}
+
 
 function renderDashboardCycle(pred) {
     document.getElementById('dash-phase-badge').textContent = pred.current_phase;
