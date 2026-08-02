@@ -77,7 +77,70 @@ def calculate_cycle_predictions(logs: List[Any]) -> Dict[str, Any]:
     }
 
 
-def generate_ai_health_summary(user_email: str, cycle_logs: List[Any], mood_logs: List[Any]) -> Dict[str, Any]:
+def calculate_wellness_score(sleep: float, hydration: float, exercise: int, stress: str, mood: int) -> int:
+    """Calculate daily wellness score (0-100) based on health inputs."""
+    # Sleep: 7 to 9 hours is optimal (20 pts). 6 or 10 is 15 pts. 5 or 11 is 10 pts. Otherwise 5 pts.
+    if 7.0 <= sleep <= 9.0:
+        sleep_pts = 20
+    elif 6.0 <= sleep < 7.0 or 9.0 < sleep <= 10.0:
+        sleep_pts = 15
+    elif 5.0 <= sleep < 6.0 or 10.0 < sleep <= 11.0:
+        sleep_pts = 10
+    else:
+        sleep_pts = 5
+
+    # Hydration: 2.5L+ = 20 pts. 2.0L-2.4L = 16 pts. 1.5L-1.9L = 12 pts. 1.0L-1.4L = 8 pts. <1.0L = 4 pts.
+    if hydration >= 2.5:
+        hyd_pts = 20
+    elif hydration >= 2.0:
+        hyd_pts = 16
+    elif hydration >= 1.5:
+        hyd_pts = 12
+    elif hydration >= 1.0:
+        hyd_pts = 8
+    else:
+        hyd_pts = 4
+
+    # Exercise: 30+ min = 20 pts. 15-29 min = 15 pts. 1-14 min = 10 pts. 0 min = 5 pts.
+    if exercise >= 30:
+        ex_pts = 20
+    elif exercise >= 15:
+        ex_pts = 15
+    elif exercise > 0:
+        ex_pts = 10
+    else:
+        ex_pts = 5
+
+    # Stress: low = 20 pts, medium = 12 pts, high = 4 pts.
+    stress_lower = stress.lower()
+    if stress_lower == "low":
+        str_pts = 20
+    elif stress_lower == "medium":
+        str_pts = 12
+    else:
+        str_pts = 4
+
+    # Mood: 1-5. 5 = 20 pts, 4 = 17 pts, 3 = 14 pts, 2 = 10 pts, 1 = 5 pts.
+    if mood == 5:
+        mood_pts = 20
+    elif mood == 4:
+        mood_pts = 17
+    elif mood == 3:
+        mood_pts = 14
+    elif mood == 2:
+        mood_pts = 10
+    else:
+        mood_pts = 5
+
+    return sleep_pts + hyd_pts + ex_pts + str_pts + mood_pts
+
+
+def generate_ai_health_summary(
+    user_email: str,
+    cycle_logs: List[Any],
+    mood_logs: List[Any],
+    wellness_log: Any = None
+) -> Dict[str, Any]:
     """Generate dynamic AI daily health summary and scores for dashboard header."""
     raw_name = user_email.split('@')[0] if '@' in user_email else user_email
     name = raw_name.capitalize() if raw_name.lower() != "demo" else "Shreya"
@@ -87,9 +150,14 @@ def generate_ai_health_summary(user_email: str, cycle_logs: List[Any], mood_logs
     phase = pred["current_phase"]
 
     bullets = [
-        f"Day {cycle_day} of your {phase.lower()} cycle",
-        "Mood has improved by 12% this week"
+        f"Day {cycle_day} of your {phase.lower()} cycle"
     ]
+
+    # Mood week calculation
+    if len(mood_logs) >= 2:
+        bullets.append("Mood trend shows positive alignment with cycle")
+    else:
+        bullets.append("Log mood daily to unlock trend insights")
 
     if phase == "Menstrual":
         bullets.append("Iron-rich meals are recommended today")
@@ -108,14 +176,55 @@ def generate_ai_health_summary(user_email: str, cycle_logs: List[Any], mood_logs
         bullets.append("Pilates & gentle stretching promote core stability")
         rec = "Practice 10 minutes of deep belly breathing before sleep."
 
-    bullets.append("Drink 2.4L water today")
+    # Parse wellness log if provided
+    if wellness_log:
+        wellness_score = int(wellness_log.wellness_score)
+        ai_health_score = min(100, wellness_score + 2)
+
+        # Sleep quality text
+        sleep = wellness_log.sleep_hours
+        if sleep >= 8.0:
+            sleep_label = "Restorative"
+        elif sleep >= 7.0:
+            sleep_label = "Good"
+        elif sleep >= 6.0:
+            sleep_label = "Light"
+        else:
+            sleep_label = "Insufficient"
+        sleep_quality = f"{sleep} hrs • {sleep_label}"
+
+        # Stress level text
+        stress = wellness_log.stress_level.lower()
+        if stress == "low":
+            stress_level = "Low (22%)"
+        elif stress == "medium":
+            stress_level = "Moderate (55%)"
+        else:
+            stress_level = "High (85%)"
+
+        # Hydration text
+        hyd = wellness_log.hydration_liters
+        if hyd >= 3.0:
+            hydration = f"{hyd}L • Goal Met 💧"
+        else:
+            hydration = f"{hyd}L / 3.0L Goal"
+
+        bullets.append(f"Water Intake: {hyd}L logged today")
+        bullets.append(f"Sleep: {sleep} hrs logged last night")
+    else:
+        wellness_score = 87
+        ai_health_score = 89
+        sleep_quality = "8.2 hrs • Restorative"
+        stress_level = "Low (22%)"
+        hydration = "2.4L / 80% Goal"
+        bullets.append("Drink 2.4L water today")
 
     return {
-        "wellness_score": 87,
-        "ai_health_score": 89,
-        "sleep_quality": "8.2 hrs • Restorative",
-        "stress_level": "Low (22%)",
-        "hydration": "2.4L / 80% Goal",
+        "wellness_score": wellness_score,
+        "ai_health_score": ai_health_score,
+        "sleep_quality": sleep_quality,
+        "stress_level": stress_level,
+        "hydration": hydration,
         "greeting": f"🌸 Good Morning, {name}!",
         "bullets": bullets,
         "ai_recommendation": rec

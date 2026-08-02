@@ -49,6 +49,7 @@ async function initApp() {
 
     // Attach Event Listeners
     setupMoodSelectors();
+    setupWellnessCalculator();
     setupArticleSearch();
 }
 
@@ -414,6 +415,137 @@ function setupMoodSelectors() {
 }
 
 
+function setupWellnessCalculator() {
+    // 1. Stress level pill buttons selection handling
+    const stressBtns = document.querySelectorAll('#wellness-stress-selector .pill-btn');
+    stressBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            stressBtns.forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+            updateLiveScoreGauge();
+        });
+    });
+
+    // 2. Range Sliders input change handling
+    const sleepSlider = document.getElementById('wellness-sleep-hours');
+    const sleepVal = document.getElementById('sleep-hours-val');
+    if (sleepSlider && sleepVal) {
+        sleepSlider.addEventListener('input', (e) => {
+            sleepVal.textContent = parseFloat(e.target.value).toFixed(1) + ' hours';
+            updateLiveScoreGauge();
+        });
+    }
+
+    const hydSlider = document.getElementById('wellness-hydration-liters');
+    const hydVal = document.getElementById('hydration-liters-val');
+    if (hydSlider && hydVal) {
+        hydSlider.addEventListener('input', (e) => {
+            hydVal.textContent = parseFloat(e.target.value).toFixed(1) + ' Liters';
+            updateLiveScoreGauge();
+        });
+    }
+
+    const exSlider = document.getElementById('wellness-exercise-minutes');
+    const exVal = document.getElementById('exercise-minutes-val');
+    if (exSlider && exVal) {
+        exSlider.addEventListener('input', (e) => {
+            exVal.textContent = e.target.value + ' mins';
+            updateLiveScoreGauge();
+        });
+    }
+
+    // 3. Update live score gauge when mood changes
+    document.querySelectorAll('#wellness-emoji-selector .emoji-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            updateLiveScoreGauge();
+        });
+    });
+
+    // 4. Date change listener to pre-populate logs
+    const dateInput = document.getElementById('wellness-log-date');
+    if (dateInput) {
+        dateInput.addEventListener('change', () => {
+            loadWellnessDataForSelectedDate();
+        });
+    }
+
+    // Initial update of gauge preview
+    updateLiveScoreGauge();
+}
+
+
+function updateLiveScoreGauge() {
+    const sleepSlider = document.getElementById('wellness-sleep-hours');
+    const hydSlider = document.getElementById('wellness-hydration-liters');
+    const exSlider = document.getElementById('wellness-exercise-minutes');
+
+    const sleep = parseFloat(sleepSlider ? sleepSlider.value : 8.0);
+    const hydration = parseFloat(hydSlider ? hydSlider.value : 2.5);
+    const exercise = parseInt(exSlider ? exSlider.value : 30);
+    
+    const stressBtn = document.querySelector('#wellness-stress-selector .pill-btn.selected');
+    const stress = stressBtn ? stressBtn.dataset.stress : 'low';
+    const mood = state.selectedMoodValue || 3;
+
+    const score = calculateWellnessScoreLocal(sleep, hydration, exercise, stress, mood);
+
+    const scoreValEl = document.getElementById('live-wellness-score-val');
+    if (scoreValEl) scoreValEl.textContent = score;
+
+    const scoreDescEl = document.getElementById('live-wellness-score-desc');
+    if (scoreDescEl) {
+        let desc = 'Needs Attention ⚠️';
+        if (score >= 85) desc = 'Excellent 🌸';
+        else if (score >= 70) desc = 'Good 😊';
+        else if (score >= 50) desc = 'Fair 😐';
+        scoreDescEl.textContent = desc;
+    }
+
+    // SVG Circular progress bar update
+    const circle = document.querySelector('.progress-ring__circle');
+    if (circle) {
+        const radius = circle.r.baseVal.value;
+        const circumference = radius * 2 * Math.PI;
+        const offset = circumference - (score / 100) * circumference;
+        circle.style.strokeDasharray = `${circumference} ${circumference}`;
+        circle.style.strokeDashoffset = offset;
+    }
+}
+
+
+function calculateWellnessScoreLocal(sleep, hydration, exercise, stress, mood) {
+    let sleepPts = 5;
+    if (sleep >= 7.0 && sleep <= 9.0) sleepPts = 20;
+    else if ((sleep >= 6.0 && sleep < 7.0) || (sleep > 9.0 && sleep <= 10.0)) sleepPts = 15;
+    else if ((sleep >= 5.0 && sleep < 6.0) || (sleep > 10.0 && sleep <= 11.0)) sleepPts = 10;
+
+    let hydPts = 4;
+    if (hydration >= 2.5) hydPts = 20;
+    else if (hydration >= 2.0) hydPts = 16;
+    else if (hydration >= 1.5) hydPts = 12;
+    else if (hydration >= 1.0) hydPts = 8;
+
+    let exPts = 5;
+    if (exercise >= 30) exPts = 20;
+    else if (exercise >= 15) exPts = 15;
+    else if (exercise > 0) exPts = 10;
+
+    let strPts = 4;
+    const stressLower = stress.toLowerCase();
+    if (stressLower === 'low') strPts = 20;
+    else if (stressLower === 'medium') strPts = 12;
+
+    let moodPts = 5;
+    if (mood === 5) moodPts = 20;
+    else if (mood === 4) moodPts = 17;
+    else if (mood === 3) moodPts = 14;
+    else if (mood === 2) moodPts = 10;
+
+    return sleepPts + hydPts + exPts + strPts + moodPts;
+}
+
+
+
 /* ==========================================================================
    VIEW 2: PERIOD TRACKER & CALENDAR
    ========================================================================== */
@@ -607,33 +739,143 @@ async function handleCycleLogSubmit(e) {
    ========================================================================== */
 
 async function loadWellnessData() {
-    document.getElementById('wellness-log-date').value = getTodayString();
+    const dateInput = document.getElementById('wellness-log-date');
+    if (dateInput && !dateInput.value) {
+        dateInput.value = getTodayString();
+    }
     
     try {
         const moodLogs = await apiCall('/mood/logs');
         state.moodLogs = moodLogs;
         renderMoodTrendChart(moodLogs);
+        
+        // Populate the form values for the selected date
+        await loadWellnessDataForSelectedDate();
     } catch (err) {
         console.error('Error loading wellness logs:', err);
     }
 }
 
-async function submitMoodLog() {
+async function loadWellnessDataForSelectedDate() {
+    const selectedDate = document.getElementById('wellness-log-date').value;
+    if (!selectedDate) return;
+
+    try {
+        // Fetch all logs to see if there's one for this date
+        const wellnessLogs = await apiCall('/wellness/logs');
+        const dayLog = wellnessLogs.find(log => log.date === selectedDate);
+
+        if (dayLog) {
+            // Pre-populate values
+            document.getElementById('wellness-sleep-hours').value = dayLog.sleep_hours;
+            document.getElementById('sleep-hours-val').textContent = dayLog.sleep_hours.toFixed(1) + ' hours';
+
+            document.getElementById('wellness-hydration-liters').value = dayLog.hydration_liters;
+            document.getElementById('hydration-liters-val').textContent = dayLog.hydration_liters.toFixed(1) + ' Liters';
+
+            document.getElementById('wellness-exercise-minutes').value = dayLog.exercise_minutes;
+            document.getElementById('exercise-minutes-val').textContent = dayLog.exercise_minutes + ' mins';
+
+            // Select stress pill
+            const stressBtns = document.querySelectorAll('#wellness-stress-selector .pill-btn');
+            stressBtns.forEach(btn => {
+                if (btn.dataset.stress === dayLog.stress_level.toLowerCase()) {
+                    btn.classList.add('selected');
+                } else {
+                    btn.classList.remove('selected');
+                }
+            });
+
+            // Select mood emoji
+            document.querySelectorAll('#wellness-emoji-selector .emoji-btn').forEach(b => {
+                if (parseInt(b.dataset.mood) === dayLog.mood_score) {
+                    b.classList.add('selected');
+                } else {
+                    b.classList.remove('selected');
+                }
+            });
+            state.selectedMoodValue = dayLog.mood_score;
+        } else {
+            // Reset to defaults
+            document.getElementById('wellness-sleep-hours').value = 8.0;
+            document.getElementById('sleep-hours-val').textContent = '8.0 hours';
+
+            document.getElementById('wellness-hydration-liters').value = 2.5;
+            document.getElementById('hydration-liters-val').textContent = '2.5 Liters';
+
+            document.getElementById('wellness-exercise-minutes').value = 30;
+            document.getElementById('exercise-minutes-val').textContent = '30 mins';
+
+            // Default stress low
+            const stressBtns = document.querySelectorAll('#wellness-stress-selector .pill-btn');
+            stressBtns.forEach(btn => {
+                if (btn.dataset.stress === 'low') btn.classList.add('selected');
+                else btn.classList.remove('selected');
+            });
+
+            // Default mood neutral (3)
+            document.querySelectorAll('#wellness-emoji-selector .emoji-btn').forEach(b => {
+                if (parseInt(b.dataset.mood) === 3) b.classList.add('selected');
+                else b.classList.remove('selected');
+            });
+            state.selectedMoodValue = 3;
+        }
+
+        // Also fetch the journal text if it was logged under mood logs
+        const moodLogs = await apiCall('/mood/logs');
+        const moodLog = moodLogs.find(log => log.date === selectedDate);
+        if (moodLog) {
+            document.getElementById('wellness-journal-text').value = moodLog.journal || '';
+        } else {
+            document.getElementById('wellness-journal-text').value = '';
+        }
+
+        updateLiveScoreGauge();
+    } catch (err) {
+        console.error('Error pre-populating wellness form:', err);
+    }
+}
+
+async function submitWellnessLog() {
     const logDate = document.getElementById('wellness-log-date').value;
     const journalText = document.getElementById('wellness-journal-text').value;
 
+    const sleep = parseFloat(document.getElementById('wellness-sleep-hours').value);
+    const hydration = parseFloat(document.getElementById('wellness-hydration-liters').value);
+    const exercise = parseInt(document.getElementById('wellness-exercise-minutes').value);
+    
+    const stressBtn = document.querySelector('#wellness-stress-selector .pill-btn.selected');
+    const stress = stressBtn ? stressBtn.dataset.stress : 'low';
+    const mood = state.selectedMoodValue || 3;
+
     try {
+        // Save mood in database (for mood trend lines)
         await apiCall('/mood/log', 'POST', {
             date: logDate,
-            mood: state.selectedMoodValue,
+            mood: mood,
             journal: journalText
         });
-        alert('Mood and journal entry saved successfully! 💖');
-        loadWellnessData();
+
+        // Save wellness data in database (for wellness score & dashboard metrics)
+        await apiCall('/wellness/log', 'POST', {
+            date: logDate,
+            sleep_hours: sleep,
+            hydration_liters: hydration,
+            exercise_minutes: exercise,
+            stress_level: stress,
+            mood_score: mood
+        });
+
+        alert('Daily wellness metrics and mood entry saved successfully! 🌸💖');
+        
+        // Reload page data
+        await loadWellnessData();
+        await loadAIHealthSummary(); // To refresh dashboard metrics instantly!
     } catch (err) {
-        alert('Error saving mood entry: ' + err.message);
+        alert('Error saving daily wellness entry: ' + err.message);
     }
 }
+
 
 function renderMoodTrendChart(logs) {
     const canvas = document.getElementById('mood-trend-chart');

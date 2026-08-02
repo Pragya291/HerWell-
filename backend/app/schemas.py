@@ -171,3 +171,30 @@ class AIHealthSummary(BaseModel):
     bullets: List[str]
     ai_recommendation: str
 
+
+# --- Wellness Score Calculator Schemas ---
+class WellnessLogCreate(BaseModel):
+    date: date
+    sleep_hours: float = Field(..., ge=0.0, le=24.0)
+    hydration_liters: float = Field(..., ge=0.0, le=10.0)
+    exercise_minutes: int = Field(..., ge=0, le=300)
+    stress_level: str
+    mood_score: int = Field(..., ge=1, le=5)
+
+
+class WellnessLogOut(BaseModel):
+    id: int
+    user_id: int
+    date: date
+    sleep_hours: float
+    hydration_liters: float
+    exercise_minutes: int
+    stress_level: str
+    mood_score: int
+    wellness_score: int
+    created_at: datetime
+
+    class Config:
+        from_attributes = True
+
+

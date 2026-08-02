@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from typing import List
 
 from ..database import get_db
-from ..models import User, CycleLog, MoodLog
+from ..models import User, CycleLog, MoodLog, WellnessLog
 from ..schemas import ArticleOut, MythFactOut, AIHealthSummary
 from ..auth import get_current_user
 from ..utils import get_health_articles, get_myth_cards, generate_ai_health_summary
@@ -20,7 +20,18 @@ def get_ai_health_summary(
     cycle_logs = db.query(CycleLog).filter(CycleLog.user_id == current_user.id).all()
     mood_logs = db.query(MoodLog).filter(MoodLog.user_id == current_user.id).all()
 
-    summary = generate_ai_health_summary(current_user.email, cycle_logs, mood_logs)
+    from datetime import date
+    wellness_log = db.query(WellnessLog).filter(
+        WellnessLog.user_id == current_user.id,
+        WellnessLog.date == date.today()
+    ).first()
+
+    summary = generate_ai_health_summary(
+        user_email=current_user.email,
+        cycle_logs=cycle_logs,
+        mood_logs=mood_logs,
+        wellness_log=wellness_log
+    )
     return summary
 
 

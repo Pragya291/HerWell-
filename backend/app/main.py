@@ -4,7 +4,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 
 from .database import engine, Base
-from .routers import auth, cycles, mood, fitness, health, chat
+from .routers import auth, cycles, mood, fitness, health, wellness
 
 # Create SQLite database tables if they do not exist
 Base.metadata.create_all(bind=engine)
@@ -30,7 +30,7 @@ app.include_router(cycles.router)
 app.include_router(mood.router)
 app.include_router(fitness.router)
 app.include_router(health.router)
-app.include_router(chat.router)
+app.include_router(wellness.router)
 
 
 @app.get("/api/health")

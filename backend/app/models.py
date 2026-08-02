@@ -1,5 +1,5 @@
 from datetime import datetime, date
-from sqlalchemy import Column, Integer, String, Boolean, Date, DateTime, Text, ForeignKey
+from sqlalchemy import Column, Integer, String, Float, Boolean, Date, DateTime, Text, ForeignKey
 from sqlalchemy.orm import relationship
 from .database import Base
 
@@ -17,6 +17,7 @@ class User(Base):
     cycle_logs = relationship("CycleLog", back_populates="user", cascade="all, delete-orphan")
     mood_logs = relationship("MoodLog", back_populates="user", cascade="all, delete-orphan")
     fitness_logs = relationship("FitnessLog", back_populates="user", cascade="all, delete-orphan")
+    wellness_logs = relationship("WellnessLog", back_populates="user", cascade="all, delete-orphan")
 
 
 class CycleLog(Base):
@@ -66,3 +67,22 @@ class FitnessLog(Base):
 
     # Relationship
     user = relationship("User", back_populates="fitness_logs")
+
+
+class WellnessLog(Base):
+    """Daily wellness calculation log entry."""
+    __tablename__ = "wellness_logs"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    date = Column(Date, nullable=False, index=True)
+    sleep_hours = Column(Float, nullable=False)
+    hydration_liters = Column(Float, nullable=False)
+    exercise_minutes = Column(Integer, nullable=False)
+    stress_level = Column(String, nullable=False)  # "low", "medium", "high"
+    mood_score = Column(Integer, nullable=False)  # 1 to 5
+    wellness_score = Column(Integer, nullable=False)  # calculated 0-100
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+    # Relationship
+    user = relationship("User", back_populates="wellness_logs")
