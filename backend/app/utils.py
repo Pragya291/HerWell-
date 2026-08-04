@@ -1,12 +1,18 @@
 import random
 from datetime import date, timedelta
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Optional
 
 
-def calculate_cycle_predictions(logs: List[Any]) -> Dict[str, Any]:
+def calculate_cycle_predictions(
+    logs: List[Any], 
+    tracking_mode: str = "regular", 
+    custom_cycle_length: Optional[int] = None
+) -> Dict[str, Any]:
     """
-    Calculate menstrual cycle predictions and determine current phase based on past logs.
+    Calculate menstrual cycle predictions, phase tracking, prediction confidence,
+    and specialized insights based on past logs and selected health profile mode (PCOS, Irregular, Regular).
     """
+    import math
     today = date.today()
 
     # Filter logs that have period_start=True and sort by date ascending
@@ -15,55 +21,143 @@ def calculate_cycle_predictions(logs: List[Any]) -> Dict[str, Any]:
         key=lambda x: x.date
     )
 
-    # Calculate average cycle length (default 28 days)
-    average_cycle_length = 28
+    # Set baseline default based on mode or user override
+    if custom_cycle_length and custom_cycle_length >= 15:
+        default_baseline = custom_cycle_length
+    elif tracking_mode == "pcos_pcod":
+        default_baseline = 35  # PCOS cycles lean longer on average
+    elif tracking_mode == "perimenopause":
+        default_baseline = 26
+    else:
+        default_baseline = 28
+
+    average_cycle_length = default_baseline
+    confidence = "High"
+    intervals = []
+
+    # Maximum interval window depending on mode
+    max_valid_interval = 120 if tracking_mode in ["pcos_pcod", "irregular"] else 50
+    min_valid_interval = 15
+
     if len(start_logs) >= 2:
-        intervals = []
         for i in range(1, len(start_logs)):
             diff = (start_logs[i].date - start_logs[i-1].date).days
-            # Filter out unrealistic log gaps (e.g., missed logging > 60 days)
-            if 18 <= diff <= 45:
+            if min_valid_interval <= diff <= max_valid_interval:
                 intervals.append(diff)
+
         if intervals:
-            average_cycle_length = int(round(sum(intervals) / len(intervals)))
+            if tracking_mode == "pcos_pcod":
+                # For PCOS, use median to reduce outlier distortion from missing/skipped cycles
+                sorted_intervals = sorted(intervals)
+                mid = len(sorted_intervals) // 2
+                if len(sorted_intervals) % 2 == 0:
+                    median_val = (sorted_intervals[mid - 1] + sorted_intervals[mid]) / 2.0
+                else:
+                    median_val = float(sorted_intervals[mid])
+                average_cycle_length = int(round(median_val))
+            elif tracking_mode == "irregular":
+                # Exponential weighting giving 60% weight to recent 2 cycles
+                if len(intervals) == 1:
+                    average_cycle_length = intervals[0]
+                else:
+                    weighted_sum = intervals[-1] * 0.4 + intervals[-2] * 0.3 + (sum(intervals[:-2]) / max(1, len(intervals)-2)) * 0.3
+                    average_cycle_length = int(round(weighted_sum))
+            else:
+                average_cycle_length = int(round(sum(intervals) / len(intervals)))
+
+            # Calculate Standard Deviation for Prediction Confidence
+            mean = sum(intervals) / len(intervals)
+            variance = sum((x - mean) ** 2 for x in intervals) / len(intervals)
+            std_dev = math.sqrt(variance)
+
+            if tracking_mode == "pcos_pcod":
+                confidence = "Moderate" if std_dev <= 7 else "Low (PCOS Variation)"
+            elif tracking_mode == "irregular":
+                confidence = "Moderate" if std_dev <= 5 else "Low"
+            else:
+                if std_dev <= 3:
+                    confidence = "High"
+                elif std_dev <= 6:
+                    confidence = "Moderate"
+                else:
+                    confidence = "Low"
+        else:
+            confidence = "Baseline Estimate"
+    else:
+        confidence = "Baseline Estimate"
 
     # Determine last period start date
     if start_logs:
         last_period_start = start_logs[-1].date
     else:
-        # Fallback to 14 days ago if no period logged yet
         last_period_start = today - timedelta(days=14)
 
     # Calculate next period start date
     predicted_next_period = last_period_start + timedelta(days=average_cycle_length)
     if predicted_next_period < today:
-        # If predicted next period date is in past, project forward to next cycle
         days_past = (today - last_period_start).days
         cycles_ahead = (days_past // average_cycle_length) + 1
         predicted_next_period = last_period_start + timedelta(days=cycles_ahead * average_cycle_length)
 
-    # Ovulation & Fertile Window
-    ovulation_date = predicted_next_period - timedelta(days=14)
-    fertile_window_start = ovulation_date - timedelta(days=3)
-    fertile_window_end = ovulation_date + timedelta(days=3)
+    # Ovulation & Fertile Window calculation
+    luteal_length = 14
+    ovulation_date = predicted_next_period - timedelta(days=luteal_length)
+    fertile_window_start = ovulation_date - timedelta(days=4)
+    fertile_window_end = ovulation_date + timedelta(days=2)
 
     # Current cycle day
     days_since_start = (today - last_period_start).days
     current_cycle_day = (days_since_start % average_cycle_length) + 1
 
-    # Determine Phase
+    # Determine Phase & Description
     if current_cycle_day <= 5:
         current_phase = "Menstrual"
-        phase_description = "Estrogen and progesterone are at their lowest. Focus on rest, hydration, and gentle activity."
-    elif current_cycle_day <= (average_cycle_length // 2) - 2:
+        phase_description = "Estrogen & progesterone low. Prioritize rest, hydration, anti-inflammatory nutrition, and gentle recovery."
+    elif current_cycle_day <= (average_cycle_length - 14 - 2):
         current_phase = "Follicular"
-        phase_description = "Estrogen levels are rising. Energy and mood climb. Ideal time for strength training and new initiatives."
-    elif current_cycle_day <= (average_cycle_length // 2) + 2:
+        if tracking_mode == "pcos_pcod":
+            phase_description = "Prolonged Follicular Phase typical in PCOS. Estrogen is gradually building. Keep up steady moderate exercise."
+        else:
+            phase_description = "Estrogen levels are rising. Energy and mood climb. Ideal time for strength training and high-focus work."
+    elif current_cycle_day <= (average_cycle_length - 14 + 2):
         current_phase = "Ovulatory"
-        phase_description = "Estrogen peaks and LH surges. Maximum stamina, confidence, and social energy."
+        phase_description = "LH surge window. Estrogen peaks. Log ovulation test strip results if tracking conception or LH levels."
     else:
         current_phase = "Luteal"
-        phase_description = "Progesterone rises then dips. High endurance early on, transitioning into low-impact recovery as your period approaches."
+        phase_description = "Progesterone dominant phase. Support insulin sensitivity, manage cravings with complex carbs, and focus on stress relief."
+
+    # Calculate deviation for current cycle
+    deviation = 0
+    deviation_message = None
+    if start_logs:
+        last_period_start_date = start_logs[-1].date
+        days_since_start = (today - last_period_start_date).days
+        
+        if days_since_start >= average_cycle_length + 4:
+            deviation = days_since_start - average_cycle_length
+            if tracking_mode == "pcos_pcod":
+                deviation_message = f"Cycle day {days_since_start} ({deviation} days past expected window). Delayed ovulation is common in PCOS."
+            else:
+                deviation_message = f"Your cycle is {deviation} days later than usual. High stress or hormonal variation detected?"
+        elif len(start_logs) >= 2:
+            last_completed_cycle_length = (start_logs[-1].date - start_logs[-2].date).days
+            diff = last_completed_cycle_length - average_cycle_length
+            if abs(diff) >= 4:
+                deviation = diff
+                dir_str = "later" if diff > 0 else "earlier"
+                deviation_message = f"Your last cycle was {abs(diff)} days {dir_str} than baseline average."
+
+    # PCOS & Profile Insights
+    pcos_insights = []
+    if tracking_mode == "pcos_pcod":
+        pcos_insights.append("🌸 **PCOS Mode Active**: Calculations use rolling medians to accommodate variable cycle lengths.")
+        pcos_insights.append("💡 **Insulin & Metabolism**: Pair carbohydrates with protein/fiber to keep blood glucose levels stable.")
+        pcos_insights.append("🧪 **LH Tracking**: Because LH can stay elevated in PCOS, track multiple positive test days or BBT for true ovulation confirmation.")
+    elif tracking_mode == "irregular":
+        pcos_insights.append("📊 **Irregular Mode Active**: Exponential smoothing applies higher weight to your most recent cycles.")
+        pcos_insights.append("🌿 **Symptom Logging**: Log daily symptoms to help identify recurring hormonal patterns.")
+    elif tracking_mode == "perimenopause":
+        pcos_insights.append("⚡ **Perimenopause Mode Active**: Shortening or skipping cycles is normal. Focus on bone health & sleep quality.")
 
     return {
         "average_cycle_length": average_cycle_length,
@@ -74,7 +168,13 @@ def calculate_cycle_predictions(logs: List[Any]) -> Dict[str, Any]:
         "current_cycle_day": current_cycle_day,
         "current_phase": current_phase,
         "phase_description": phase_description,
+        "deviation": deviation,
+        "deviation_message": deviation_message,
+        "tracking_mode": tracking_mode,
+        "prediction_confidence": confidence,
+        "pcos_insights": pcos_insights,
     }
+
 
 
 def calculate_wellness_score(sleep: float, hydration: float, exercise: int, stress: str, mood: int) -> int:
@@ -657,17 +757,84 @@ def get_myth_cards() -> List[Dict[str, Any]]:
     ]
 
 
-def generate_fallback_chat_reply(message: str) -> str:
+def retrieve_relevant_health_article(query: str) -> Optional[Dict[str, Any]]:
     """
-    Generate empathetic, CBT-focused, supportive response when OpenAI API is unavailable.
-    Vera Persona: Empathetic, supportive, non-diagnostic wellness companion.
+    RAG helper function: Search Health Library articles for relevant terms matching query.
+    Returns article dict if a match is found, else None.
+    """
+    q_lower = query.lower()
+    articles = get_health_articles()
+
+    best_article = None
+    best_score = 0
+
+    for article in articles:
+        score = 0
+        title_lower = article["title"].lower()
+        summary_lower = article["summary"].lower()
+        cat_lower = article["category"].lower()
+        content_lower = article["content"].lower()
+
+        for word in q_lower.split():
+            if len(word) >= 3:
+                if word in cat_lower:
+                    score += 4
+                elif word in title_lower:
+                    score += 3
+                elif word in summary_lower:
+                    score += 2
+                elif word in content_lower:
+                    score += 1
+
+        if score > best_score:
+            best_score = score
+            best_article = article
+
+    if best_score >= 2:
+        return best_article
+    return None
+
+
+def generate_fallback_chat_reply(
+    message: str, 
+    user_context: Optional[Dict[str, Any]] = None,
+    history: Optional[List[Dict[str, str]]] = None
+) -> Dict[str, Any]:
+    """
+    Generate empathetic, CBT-focused, context-aware, and RAG-grounded supportive response.
+    Vera Persona: Empathetic, supportive, non-diagnostic wellness companion with multi-turn memory.
     """
     msg_lower = message.lower()
+    context_prefix = ""
+
+    # Inspect history for previous topics if query is a follow-up ("tell me more", "what foods for that?", "how to treat it")
+    history_topics = []
+    if history:
+        for turn in reversed(history):
+            content = turn.get("content", "").lower()
+            for topic in ["pcos", "endometriosis", "menopause", "contraception", "pmdd", "cramps", "anxiety", "fitness"]:
+                if topic in content and topic not in history_topics:
+                    history_topics.append(topic)
+
+    search_query = message
+    if history_topics and any(vague in msg_lower for vague in ["that", "this", "it", "more", "foods", "treatment", "tips", "help", "how"]):
+        search_query = f"{message} {' '.join(history_topics)}"
+
+    # Build personalized context prefix if available
+    if user_context:
+        phase = user_context.get("current_phase")
+        day = user_context.get("current_cycle_day")
+        mode = user_context.get("tracking_mode", "regular")
+        mode_label = "PCOS Mode" if mode == "pcos_pcod" else (f"{mode.capitalize()} Mode" if mode != "regular" else "")
+
+        mode_str = f" • {mode_label}" if mode_label else ""
+        if phase and day:
+            context_prefix = f"🌸 *Current Context: Day {day} ({phase} Phase{mode_str})*\n\n"
 
     # Crisis detection keyword check
     crisis_keywords = ["suicide", "kill myself", "end my life", "harm myself", "hopeless", "can't go on", "want to die"]
     if any(k in msg_lower for k in crisis_keywords):
-        return (
+        resp_text = (
             "I hear how much pain you are in right now, and I care deeply about your safety. "
             "Please know that you do not have to carry this alone. If you are in crisis or distress, "
             "reach out immediately to compassionate professionals who want to help:\n\n"
@@ -676,23 +843,81 @@ def generate_fallback_chat_reply(message: str) -> str:
             "• **International Helplines**: Visit [findahelpline.com](https://findahelpline.com)\n\n"
             "Please take a deep breath and connect with someone right now. You matter."
         )
+        return {"response": resp_text, "source": "fallback", "article_citation": None}
+
+    # Real-Time Live Status & Metrics Query Check
+    if any(k in msg_lower for k in ["status", "summary", "how am i doing", "live update", "my metrics", "hydration", "water", "sleep", "score"]):
+        sleep = user_context.get("sleep_hours") if user_context else None
+        hyd = user_context.get("hydration_liters") if user_context else None
+        ex = user_context.get("exercise_minutes") if user_context else None
+        stress = user_context.get("stress_level") if user_context else None
+        score = user_context.get("wellness_score") if user_context else None
+
+        from datetime import datetime
+        now_str = datetime.now().strftime("%b %d, %H:%M")
+
+        metrics_list = []
+        if hyd is not None:
+            hyd_status = "✅ Goal Met" if float(hyd) >= 2.0 else "💧 Hydration Recommended"
+            metrics_list.append(f"• **Hydration**: {float(hyd):.1f}L ({hyd_status})")
+        if sleep is not None:
+            sleep_status = "Restorative 🌙" if float(sleep) >= 7.0 else "Sleep Deficit 😴"
+            metrics_list.append(f"• **Sleep Duration**: {float(sleep):.1f} hrs ({sleep_status})")
+        if ex is not None:
+            metrics_list.append(f"• **Movement**: {ex} mins logged")
+        if stress:
+            metrics_list.append(f"• **Stress Rating**: {str(stress).capitalize()}")
+        if score:
+            metrics_list.append(f"• **Real-Time Wellness Score**: **{score}/100**")
+
+        metrics_text = "\n".join(metrics_list) if metrics_list else "• Live metrics updating dynamically based on your daily inputs!"
+
+        resp_text = (
+            f"⚡ **Real-Time Health Sync** [{now_str}]\n\n"
+            f"{context_prefix}"
+            f"Here is your real-time wellness synthesis:\n\n"
+            f"{metrics_text}\n\n"
+            "💡 *Vera's Real-Time Rec*: Stay hydrated and prioritize restorative sleep during this cycle window. "
+            "What else can I help you analyze right now?"
+        )
+        return {"response": resp_text, "source": "live_sync", "article_citation": None}
+
+    # RAG Retrieval Check for medical / health topics
+    retrieved_article = retrieve_relevant_health_article(search_query)
+    article_citation = None
+    rag_text = ""
+
+    if retrieved_article:
+        article_citation = {
+            "id": retrieved_article["id"],
+            "title": retrieved_article["title"],
+            "category": retrieved_article["category"],
+            "summary": retrieved_article["summary"]
+        }
+        rag_text = (
+            f"\n\n📖 **Verified Clinical Knowledge from Health Library**:\n"
+            f"> *\"{retrieved_article['title']}\"*\n"
+            f"> {retrieved_article['summary']}\n\n"
+            f"You can read the full article in the **Health Library** tab!"
+        )
 
     # Topic specific empathetic responses
     if any(k in msg_lower for k in ["cramps", "period", "bleed", "pain", "flow", "spotting"]):
-        return (
-            "I am sending you warmth and soothing comfort. Period pain can feel so draining. 🌸\n\n"
-            "Here is a gentle 4-7-8 breathing exercise to soothe your nervous system right now:\n"
+        resp_text = (
+            f"{context_prefix}I am sending you warmth and soothing comfort. Period discomfort can feel so draining. 🌸\n\n"
+            "Here is a gentle **4-7-8 breathing exercise** to soothe your nervous system right now:\n"
             "1. **Inhale** quietly through your nose for 4 seconds.\n"
             "2. **Hold** your breath comfortably for 7 seconds.\n"
             "3. **Exhale** slowly through your mouth with a soft sigh for 8 seconds.\n\n"
-            "Consider placing a warm heating pad over your lower abdomen and sipping ginger or chamomile tea. "
-            "How are your energy levels overall today?"
+            "Consider placing a warm heating pad over your lower abdomen and sipping ginger or chamomile tea."
+            f"{rag_text}"
         )
+        return {"response": resp_text, "source": "rag_fallback" if article_citation else "fallback", "article_citation": article_citation}
 
     if any(k in msg_lower for k in ["anxious", "anxiety", "stressed", "overwhelmed", "panic", "worry"]):
-        return (
-            "Thank you for sharing how you feel with me. It takes courage to acknowledge stress and anxiety. 🌿\n\n"
-            "Here is a quick CBT grounding prompt to bring your mind back to safety:\n"
+        resp_text = (
+            f"{context_prefix}Thank you for sharing how you feel with me. It takes courage to acknowledge stress and anxiety. 🌿\n\n"
+            "Here is a quick **CBT grounding prompt** to bring your mind back to safety:\n"
             "• **5-4-3-2-1 Grounding Method**:\n"
             "  - Name 5 things you can see around you right now.\n"
             "  - Touch 4 physical objects near you.\n"
@@ -700,44 +925,56 @@ def generate_fallback_chat_reply(message: str) -> str:
             "  - Notice 2 scents.\n"
             "  - Take 1 deep, intentional breath.\n\n"
             "*Affirmation*: 'I am safe in this present moment. I give myself permission to rest and release control.'"
+            f"{rag_text}"
         )
+        return {"response": resp_text, "source": "rag_fallback" if article_citation else "fallback", "article_citation": article_citation}
 
     if any(k in msg_lower for k in ["sad", "depressed", "lonely", "crying", "down", "tired", "exhausted"]):
-        return (
-            "I hear you, and I am sitting softly with you in this moment. Your feelings are valid and allowed to exist. 💗\n\n"
+        resp_text = (
+            f"{context_prefix}I hear you, and I am sitting softly with you in this moment. Your feelings are valid and allowed to exist. 💗\n\n"
             "When energy feels low, try treating yourself with gentle self-compassion:\n"
             "• Journal prompt: *'What is one small kindness I can offer myself today, without expecting perfection?'*\n"
             "• Drink a glass of warm water.\n"
             "• Wrap yourself in a cozy blanket and rest your eyes for 10 minutes.\n\n"
             "Remember: You don't have to figure everything out today. Just one small step at a time."
+            f"{rag_text}"
         )
+        return {"response": resp_text, "source": "rag_fallback" if article_citation else "fallback", "article_citation": article_citation}
 
     if any(k in msg_lower for k in ["workout", "exercise", "fitness", "gym", "yoga", "energy"]):
-        return (
-            "Movement is such a powerful act of self-care! 💪\n\n"
+        resp_text = (
+            f"{context_prefix}Movement is such a powerful act of self-care! 💪\n\n"
             "Listening to your body's monthly cycle rhythm is key to sustainable fitness. "
             "Whether you're feeling energetic for high-intensity work or needing the gentle restoration of a slow yoga stretch, "
             "honoring your present energy yields the best long-term hormonal balance.\n\n"
-            "Be sure to check out the **Fitness** tab in the top navigation bar for workouts synchronized specifically to your current cycle phase!"
+            "Check out the **Fitness** tab for workouts synchronized specifically to your current phase!"
+            f"{rag_text}"
         )
+        return {"response": resp_text, "source": "rag_fallback" if article_citation else "fallback", "article_citation": article_citation}
+
+    if retrieved_article:
+        resp_text = (
+            f"{context_prefix}I found information on that in our medical library! 📚\n\n"
+            f"**{retrieved_article['title']}** ({retrieved_article['category']}):\n"
+            f"{retrieved_article['summary']}\n\n"
+            f"Here is a key insight: {retrieved_article['content'][:300]}...\n\n"
+            f"Would you like to read the full article or discuss any specific symptoms?"
+        )
+        return {"response": resp_text, "source": "rag_fallback", "article_citation": article_citation}
 
     # General supportive response pool
     general_replies = [
         (
-            "Hello! I am Vera, your wellness companion. 🌸 I am here to offer empathy, mindfulness techniques, "
+            f"{context_prefix}Hello! I am Vera, your wellness companion. 🌸 I am here to offer empathy, mindfulness techniques, "
             "and CBT-inspired journaling prompts. How can I support your mind and body today?"
         ),
         (
-            "I am so glad you reached out! Remember that taking time for your well-being is never selfish—it's essential. "
+            f"{context_prefix}I am so glad you reached out! Taking time for your well-being is never selfish—it's essential. "
             "What has been on your heart or mind today?"
         ),
         (
-            "Here is your positive affirmation for today: *'My body is wise, resilient, and deserving of gentle care every single day.'* "
+            f"{context_prefix}Here is your positive affirmation for today: *'My body is wise, resilient, and deserving of gentle care every single day.'* "
             "How can I assist you with your cycle, mood, or wellness journey today?"
-        ),
-        (
-            "Thank you for checking in with me. Taking a moment out of a busy day to focus on yourself is a wonderful step. "
-            "Would you like a quick breathing exercise, a journaling prompt, or cycle guidance?"
         )
     ]
-    return random.choice(general_replies)
+    return {"response": random.choice(general_replies), "source": "fallback", "article_citation": None}

@@ -107,8 +107,18 @@
 
         <!-- ================= VIEW 2: DASHBOARD ================= -->
         <section id="view-dashboard" class="app-view hidden">
+            <!-- Cycle Deviation Alert Banner -->
+            <div id="cycle-deviation-banner" class="deviation-alert-banner hidden">
+                <div class="deviation-alert-content">
+                    <span class="alert-icon">⚠️</span>
+                    <span class="alert-text" id="deviation-alert-text">Your cycle is 2 days later than usual. High stress detected? Let's log how you're feeling.</span>
+                </div>
+                <button class="btn btn-sm btn-secondary alert-action-btn" onclick="navigate('wellness')">Log Feelings & Stress</button>
+            </div>
+
             <!-- AI Daily Health Summary Header -->
             <div class="ai-summary-banner">
+
                 <div class="ai-summary-header-row">
                     <div class="ai-greeting-wrap">
                         <h1 class="ai-greeting" id="ai-summary-greeting">🌸 Good Morning, Shreya!</h1>
@@ -224,6 +234,53 @@
                     <button class="btn btn-sm btn-secondary margin-top-10" onclick="navigate('wellness')">Go to Wellness & Chat →</button>
                 </div>
 
+                <!-- Card: Symptom Severity Logger -->
+                <div class="dash-card symptom-severity-card">
+                    <div class="card-header">
+                        <h3><span class="card-icon">⚡</span> Symptom Severity Logger</h3>
+                        <span class="phase-tag" id="symptom-phase-tag">Menstrual Phase Focus</span>
+                    </div>
+                    <p class="card-subtitle" id="symptom-logger-subtitle">Log physical symptoms timed to your current phase.</p>
+                    
+                    <div class="symptom-rate-rows" id="dash-symptom-rate-rows">
+                        <div class="symptom-rate-row" data-symptom="cramps">
+                            <span class="symptom-label">Cramps</span>
+                            <div class="rate-pills">
+                                <button class="rate-pill" data-val="1">1</button>
+                                <button class="rate-pill" data-val="2">2</button>
+                                <button class="rate-pill" data-val="3">3</button>
+                            </div>
+                        </div>
+                        <div class="symptom-rate-row" data-symptom="headache">
+                            <span class="symptom-label">Headache</span>
+                            <div class="rate-pills">
+                                <button class="rate-pill" data-val="1">1</button>
+                                <button class="rate-pill" data-val="2">2</button>
+                                <button class="rate-pill" data-val="3">3</button>
+                            </div>
+                        </div>
+                        <div class="symptom-rate-row" data-symptom="acne">
+                            <span class="symptom-label">Acne</span>
+                            <div class="rate-pills">
+                                <button class="rate-pill" data-val="1">1</button>
+                                <button class="rate-pill" data-val="2">2</button>
+                                <button class="rate-pill" data-val="3">3</button>
+                            </div>
+                        </div>
+                        <div class="symptom-rate-row" data-symptom="breast_tenderness">
+                            <span class="symptom-label">Tender Breasts</span>
+                            <div class="rate-pills">
+                                <button class="rate-pill" data-val="1">1</button>
+                                <button class="rate-pill" data-val="2">2</button>
+                                <button class="rate-pill" data-val="3">3</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="symptom-log-status" class="status-note hidden">Symptoms logged successfully!</div>
+                    <button class="btn btn-sm btn-primary btn-block margin-top-10" id="btn-save-dashboard-symptoms" onclick="saveDashboardSymptoms()">Save Symptoms</button>
+                </div>
+
+
                 <!-- Card 3: Phase Workout Recommendation -->
                 <div class="dash-card workout-rec-card">
                     <div class="card-header">
@@ -302,10 +359,39 @@
                 <!-- Right Column: Predictions & History -->
                 <div class="tracker-sidebar">
                     
+                    <!-- Health Profile & Tracking Mode Card -->
+                    <div class="sidebar-card profile-mode-card" style="border-left: 4px solid var(--primary-color);">
+                        <h3><span class="icon">🌸</span> Health Profile Mode</h3>
+                        <p class="card-subtitle">Personalize cycle predictions based on your hormonal profile.</p>
+                        <form id="form-profile-settings" onsubmit="handleProfileSettingsSubmit(event)">
+                            <div class="form-group margin-top-10">
+                                <label for="profile-tracking-mode" style="font-weight:600; font-size:0.85rem;">Tracking Mode:</label>
+                                <select id="profile-tracking-mode" class="form-control">
+                                    <option value="regular">Regular Mode (Standard 28d)</option>
+                                    <option value="pcos_pcod">PCOS / PCOD Mode (Rolling Median)</option>
+                                    <option value="irregular">Irregular Cycle Mode (Weighted Avg)</option>
+                                    <option value="perimenopause">Perimenopause Mode</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="profile-custom-length" style="font-weight:600; font-size:0.85rem;">Custom Target Baseline (Days):</label>
+                                <input type="number" id="profile-custom-length" min="15" max="120" placeholder="Auto calculated" class="form-control">
+                            </div>
+                            <button type="submit" class="btn btn-sm btn-outline btn-block">Save Profile Mode</button>
+                        </form>
+                    </div>
+
                     <!-- Prediction Box -->
                     <div class="sidebar-card prediction-box">
-                        <h3><span class="icon">🔮</span> Cycle Predictions</h3>
+                        <div class="card-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                            <h3 style="margin:0;"><span class="icon">🔮</span> Cycle Predictions</h3>
+                            <span class="badge badge-accent" id="track-confidence-badge">High Confidence</span>
+                        </div>
                         <div class="prediction-list">
+                            <div class="pred-item">
+                                <span>Tracking Mode:</span>
+                                <strong id="track-active-mode" class="text-primary">Regular</strong>
+                            </div>
                             <div class="pred-item">
                                 <span>Average Cycle Length:</span>
                                 <strong id="track-avg-cycle">28 Days</strong>
@@ -327,12 +413,32 @@
                                 <span class="badge" id="track-current-phase">Follicular</span>
                             </div>
                         </div>
+
+                        <!-- PCOS & Mode Insights Box -->
+                        <div id="pcos-insights-box" class="pcos-insights-box margin-top-15" style="background: rgba(236, 72, 153, 0.08); padding: 12px; border-radius: 8px; border-left: 3px solid #ec4899;">
+                            <h4 style="font-size:0.85rem; color:#be185d; margin-bottom:6px; font-weight:700;">🌸 Health Mode Insights:</h4>
+                            <ul id="pcos-insights-list" style="padding-left:15px; font-size:0.8rem; color:#475569; margin:0;">
+                                <li>• Insights will update based on your selected profile mode.</li>
+                            </ul>
+                        </div>
                     </div>
 
                     <!-- Quick Log Today Button -->
                     <button class="btn btn-primary btn-block btn-lg" onclick="openLogModal(getTodayString())">
                         ➕ Log Today's Entry
                     </button>
+
+                    <!-- Partner Sharing Card -->
+                    <div class="sidebar-card partner-share-card">
+                        <h3><span class="icon">🔗</span> Partner Sharing</h3>
+                        <p class="card-subtitle">Generate a secure, time-limited link to share your fertile window & energy levels.</p>
+                        <div id="share-link-status" class="share-status-inactive">
+                            No active sharing link generated.
+                        </div>
+                        <button class="btn btn-secondary btn-block margin-top-10" onclick="openShareModal()">
+                            🔗 Create Share Link
+                        </button>
+                    </div>
 
                     <!-- Cycle History List -->
                     <div class="sidebar-card history-card">
@@ -341,6 +447,7 @@
                             <p class="empty-state">No cycle entries logged yet.</p>
                         </div>
                     </div>
+
 
                 </div>
             </div>
@@ -462,11 +569,23 @@
                 <!-- Column 2: Vera Chatbot Companion -->
                 <div class="wellness-col">
                     <div class="chat-card">
-                        <div class="chat-header">
-                            <div class="chat-avatar">🌸</div>
-                            <div>
-                                <h3>Vera AI Companion</h3>
-                                <span class="chat-status"><span class="status-dot"></span> Online & Listening</span>
+                        <div class="chat-header" style="display:flex; justify-content:space-between; align-items:center;">
+                            <div style="display:flex; align-items:center; gap:10px;">
+                                <div class="chat-avatar">🌸</div>
+                                <div>
+                                    <h3>Vera AI Companion</h3>
+                                    <span class="chat-status" style="display:flex; align-items:center; gap:6px;">
+                                        <span class="status-dot"></span> Online
+                                        <span style="font-size:0.7rem; background:rgba(219,39,119,0.15); color:#db2777; padding:1px 6px; border-radius:10px; font-weight:700;">⚡ Real-Time Sync</span>
+                                    </span>
+                                </div>
+                            </div>
+                            <div style="display:flex; align-items:center; gap:8px;">
+                                <label style="font-size:0.75rem; cursor:pointer; display:flex; align-items:center; gap:4px; font-weight:600; color:#475569;">
+                                    <input type="checkbox" id="toggle-auto-voice" style="accent-color:#db2777;"> 🔊 Auto-Speak
+                                </label>
+                                <button type="button" class="btn btn-xs btn-secondary" style="font-size:0.75rem;" onclick="openAIConfigModal()" title="Connect Live API Key">⚙️ Key Settings</button>
+                                <button type="button" class="btn btn-xs btn-outline" style="font-size:0.75rem;" onclick="clearChatHistory()" title="Clear Conversation">🧹 Clear</button>
                             </div>
                         </div>
 
@@ -474,22 +593,30 @@
                         <div class="chat-messages" id="chat-messages-container">
                             <div class="message message-vera">
                                 <div class="message-bubble">
-                                    Hello! I am Vera, your supportive wellness companion. 🌸 I am here to offer empathy, mindfulness exercises, and CBT journaling prompts. How are you feeling today?
+                                    Hello! I am Vera, your supportive wellness companion. 🌸 I am here to offer real-time health updates, CBT prompts, and cycle insights. How are you feeling right now?
                                 </div>
                                 <span class="message-time">Vera</span>
                             </div>
                         </div>
 
                         <!-- Quick Prompts -->
-                        <div class="quick-prompts">
+                        <div class="quick-prompts" id="vera-quick-prompts">
+                            <button class="prompt-chip" style="border:1px solid #db2777; color:#db2777; font-weight:700;" onclick="sendQuickPrompt('What is my real-time status today?')">⚡ Today's Live Status</button>
                             <button class="prompt-chip" onclick="sendQuickPrompt('I am feeling anxious and overwhelmed today.')">Feeling Anxious 😰</button>
                             <button class="prompt-chip" onclick="sendQuickPrompt('Can you guide me through a 4-7-8 breathing exercise?')">Breathing Exercise 🧘‍♀️</button>
-                            <button class="prompt-chip" onclick="sendQuickPrompt('Give me a positive affirmation for period cramps.')">Period Cramps 🌸</button>
+                            <button class="prompt-chip" onclick="sendQuickPrompt('Tell me about PCOS symptoms and evidence-based tips.')">PCOS Tips 🌸</button>
+                            <button class="prompt-chip" onclick="sendQuickPrompt('How does cycle syncing nutrition work?')">Cycle Syncing 📖</button>
+                        </div>
+
+                        <!-- Voice Status Banner -->
+                        <div id="voice-recording-status" class="voice-recording-status hidden" style="font-size:0.8rem; color:#db2777; font-weight:600; padding:4px 10px; background:rgba(219,39,119,0.1); border-radius:6px; margin-bottom:6px; display:flex; align-items:center; gap:6px;">
+                            <span class="status-dot" style="animation: blink 1s infinite;"></span> Listening... Speak now!
                         </div>
 
                         <!-- Chat Input Bar -->
                         <form class="chat-input-form" onsubmit="handleChatSubmit(event)">
-                            <input type="text" id="chat-input" placeholder="Type a message to Vera..." required autocomplete="off">
+                            <input type="text" id="chat-input" placeholder="Type or speak a message to Vera..." required autocomplete="off">
+                            <button type="button" id="btn-voice-input" class="btn btn-secondary" onclick="toggleVoiceInput()" title="Click to speak (Voice-to-Text)">🎤</button>
                             <button type="submit" class="btn btn-primary">Send</button>
                         </form>
                     </div>
@@ -648,8 +775,74 @@
                             <label class="chip"><input type="checkbox" value="moodiness"> Mood Swings</label>
                             <label class="chip"><input type="checkbox" value="breast tenderness"> Tender Breasts</label>
                             <label class="chip"><input type="checkbox" value="cravings"> Cravings</label>
+                            <label class="chip"><input type="checkbox" value="hair_loss"> Hair Thinning/Loss</label>
+                            <label class="chip"><input type="checkbox" value="hirsutism"> Hirsutism/Facial Hair</label>
                         </div>
                     </div>
+
+                    <div class="form-group">
+                        <label>Hormonal & Symptom Severity (1=Mild, 2=Moderate, 3=Severe):</label>
+                        <div class="modal-symptom-severities" id="modal-symptom-severities-container">
+                            <div class="modal-symptom-severity-row" data-symptom="cramps">
+                                <span class="symptom-label-text">Cramps:</span>
+                                <div class="rate-pills">
+                                    <button type="button" class="rate-pill" data-val="1">1</button>
+                                    <button type="button" class="rate-pill" data-val="2">2</button>
+                                    <button type="button" class="rate-pill" data-val="3">3</button>
+                                </div>
+                            </div>
+                            <div class="modal-symptom-severity-row" data-symptom="headache">
+                                <span class="symptom-label-text">Headache:</span>
+                                <div class="rate-pills">
+                                    <button type="button" class="rate-pill" data-val="1">1</button>
+                                    <button type="button" class="rate-pill" data-val="2">2</button>
+                                    <button type="button" class="rate-pill" data-val="3">3</button>
+                                </div>
+                            </div>
+                            <div class="modal-symptom-severity-row" data-symptom="acne">
+                                <span class="symptom-label-text">Acne:</span>
+                                <div class="rate-pills">
+                                    <button type="button" class="rate-pill" data-val="1">1</button>
+                                    <button type="button" class="rate-pill" data-val="2">2</button>
+                                    <button type="button" class="rate-pill" data-val="3">3</button>
+                                </div>
+                            </div>
+                            <div class="modal-symptom-severity-row" data-symptom="breast_tenderness">
+                                <span class="symptom-label-text">Tender Breasts:</span>
+                                <div class="rate-pills">
+                                    <button type="button" class="rate-pill" data-val="1">1</button>
+                                    <button type="button" class="rate-pill" data-val="2">2</button>
+                                    <button type="button" class="rate-pill" data-val="3">3</button>
+                                </div>
+                            </div>
+                            <div class="modal-symptom-severity-row" data-symptom="hair_loss">
+                                <span class="symptom-label-text">Hair Loss:</span>
+                                <div class="rate-pills">
+                                    <button type="button" class="rate-pill" data-val="1">1</button>
+                                    <button type="button" class="rate-pill" data-val="2">2</button>
+                                    <button type="button" class="rate-pill" data-val="3">3</button>
+                                </div>
+                            </div>
+                            <div class="modal-symptom-severity-row" data-symptom="hirsutism">
+                                <span class="symptom-label-text">Hirsutism:</span>
+                                <div class="rate-pills">
+                                    <button type="button" class="rate-pill" data-val="1">1</button>
+                                    <button type="button" class="rate-pill" data-val="2">2</button>
+                                    <button type="button" class="rate-pill" data-val="3">3</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="log-ovulation-test">Ovulation Test / LH Surge Result:</label>
+                        <select id="log-ovulation-test" class="form-control">
+                            <option value="">Not Tested / None</option>
+                            <option value="negative">Negative Test Strip</option>
+                            <option value="positive">Positive / LH Surge Detected</option>
+                        </select>
+                    </div>
+
 
                     <div class="form-group">
                         <label for="log-notes">Personal Notes / Symptoms detail:</label>
@@ -748,6 +941,122 @@
             </div>
         </div>
     </div>
+
+
+    <!-- Modal 5: Generate Partner Share Link -->
+    <div id="modal-share-link" class="modal-overlay hidden">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3>🔗 Partner Sharing Options</h3>
+                <button class="modal-close-btn" onclick="closeModal('modal-share-link')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="form-share-link" onsubmit="handleShareLinkSubmit(event)">
+                    <div class="form-group">
+                        <label for="share-duration">Link Expiration / Validity:</label>
+                        <select id="share-duration" class="form-control">
+                            <option value="24">24 Hours (1 Day)</option>
+                            <option value="72" selected>72 Hours (3 Days)</option>
+                            <option value="168">168 Hours (7 Days)</option>
+                        </select>
+                    </div>
+
+                    <div class="share-info-box" style="background: rgba(219, 39, 119, 0.05); padding: 12px; border-radius: 8px; margin-bottom: 15px;">
+                        <p style="font-weight:600; color:var(--primary-color); margin-bottom: 6px;">🌸 Partners will be able to view-only:</p>
+                        <ul style="list-style:none; padding-left: 5px;">
+                            <li>• Fertile Window predictions</li>
+                            <li>• Estimated Ovulation date</li>
+                            <li>• Predicted Low-Energy days</li>
+                            <li>• Actionable tips for how they can support you</li>
+                        </ul>
+                    </div>
+
+                    <div id="generated-link-container" class="generated-link-box hidden" style="margin-bottom:15px; background:#f8fafc; padding:12px; border-radius:8px; border:1px solid #e2e8f0;">
+                        <label style="font-weight:600; font-size:0.9rem;">Secure View-Only Sharing Link:</label>
+                        <div class="link-copy-row" style="display:flex; gap:8px; margin-top:5px;">
+                            <input type="text" id="share-link-input" readonly class="form-control" style="flex:1;">
+                            <button type="button" class="btn btn-secondary btn-sm" onclick="copyShareLink()">Copy</button>
+                        </div>
+                        <span class="copy-success-note hidden" id="copy-success-note" style="color:#16a34a; font-size:0.8rem; font-weight:600; display:block; margin-top:5px;">Copied to clipboard!</span>
+                    </div>
+
+                    <div class="modal-actions">
+                        <button type="button" class="btn btn-secondary" onclick="closeModal('modal-share-link')">Close</button>
+                        <button type="submit" class="btn btn-primary" id="btn-generate-share">Generate Link</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Modal 6: Interactive 4-7-8 Breathing Exercise Modal -->
+    <div id="modal-breathing" class="modal-overlay hidden">
+        <div class="modal-card text-center" style="max-width:440px;">
+            <div class="modal-header">
+                <h3>🧘‍♀️ Guided 4-7-8 Breathing Exercise</h3>
+                <button class="modal-close-btn" onclick="stopBreathingExercise()">&times;</button>
+            </div>
+            <div class="modal-body" style="padding:20px 10px;">
+                <p style="font-size:0.9rem; color:#64748b; margin-bottom:20px;">Soothe your nervous system and reduce stress/cramps with rhythmic breathing.</p>
+
+                <!-- Animated Ring Container -->
+                <div class="breathing-circle-container" style="position:relative; width:160px; height:160px; margin:0 auto 20px auto; display:flex; align-items:center; justify-content:center;">
+                    <div id="breathing-ring" style="position:absolute; width:140px; height:140px; border-radius:50%; background:radial-gradient(circle, rgba(219,39,119,0.3) 0%, rgba(244,63,94,0.1) 70%); transition: transform 4s ease-in-out; transform: scale(1);"></div>
+                    <div style="position:relative; z-index:2;">
+                        <span id="breathing-stage-text" style="font-size:1.2rem; font-weight:700; color:#db2777; display:block;">Inhale</span>
+                        <span id="breathing-countdown" style="font-size:2.2rem; font-weight:800; color:#1e293b;">4</span>
+                    </div>
+                </div>
+
+                <div class="breathing-actions">
+                    <button id="btn-start-breathing" class="btn btn-primary btn-block" onclick="startBreathingCycle()">Begin Exercise</button>
+                    <button type="button" class="btn btn-secondary btn-block margin-top-10" onclick="stopBreathingExercise()">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Modal 7: Vera AI API Key Settings Modal -->
+    <div id="modal-ai-config" class="modal-overlay hidden">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3>⚙️ Connect Live AI API Key</h3>
+                <button class="modal-close-btn" onclick="closeModal('modal-ai-config')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="form-ai-config" onsubmit="handleSaveAPIKey(event)">
+                    <div id="ai-connection-status-box" style="padding:10px 14px; border-radius:8px; background:#f8fafc; border:1px solid #e2e8f0; margin-bottom:15px;">
+                        <span style="font-size:0.85rem; font-weight:700;" id="ai-status-indicator">Checking connection...</span>
+                        <p style="font-size:0.8rem; color:#64748b; margin-top:4px;" id="ai-status-message">Loading active API status...</p>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="ai-provider-select">LLM Provider:</label>
+                        <select id="ai-provider-select" class="form-control">
+                            <option value="groq" selected>Groq (Free & Fast Llama 3.3 70B)</option>
+                            <option value="openai">OpenAI (GPT-3.5-Turbo / GPT-4o)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="ai-key-input">API Key:</label>
+                        <input type="password" id="ai-key-input" required placeholder="gsk_... or sk-..." class="form-control">
+                        <small style="color:#64748b; font-size:0.75rem; display:block; margin-top:4px;">
+                            💡 Keys are tested instantly and stored securely. Get a free key at <a href="https://console.groq.com/keys" target="_blank">console.groq.com</a> or <a href="https://platform.openai.com/api-keys" target="_blank">platform.openai.com</a>.
+                        </small>
+                    </div>
+
+                    <div class="modal-actions">
+                        <button type="button" class="btn btn-secondary" onclick="closeModal('modal-ai-config')">Cancel</button>
+                        <button type="submit" class="btn btn-primary" id="btn-save-api-key">Test & Connect API</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
 
     <!-- JS Application Script -->
     <script src="/js/app.js"></script>

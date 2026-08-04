@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HerWellness Shared Insights 🌸</title>
+    <meta name="description" content="View-only shared reproductive insights, fertile windows, and energy cycles.">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #db2777;
+            --primary-hover: #be185d;
+            --primary-light: #fbcfe8;
+            --accent-color: #ec4899;
+            --bg-gradient: linear-gradient(135deg, #fdf2f8 0%, #fff1f2 100%);
+            --card-bg: rgba(255, 255, 255, 0.95);
+            --glass-border: rgba(219, 39, 119, 0.12);
+            --text-color: #1e293b;
+            --text-muted: #64748b;
+            --border-radius-lg: 22px;
+            --border-radius-md: 14px;
+            --shadow-soft: 0 10px 25px -5px rgba(219, 39, 119, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.03);
+            --font-heading: 'Outfit', sans-serif;
+            --font-body: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background: var(--bg-gradient);
+            color: var(--text-color);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 700px;
+            width: 100%;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+
+        h1 {
+            font-family: var(--font-heading);
+            font-size: 2.2rem;
+            color: var(--text-color);
+            font-weight: 700;
+        }
+
+        h1 span {
+            color: var(--primary-color);
+        }
+
+        .subtitle {
+            color: var(--text-muted);
+            margin-top: 6px;
+            font-size: 1rem;
+        }
+
+        /* Card styles */
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--border-radius-lg);
+            padding: 30px;
+            box-shadow: var(--shadow-soft);
+            margin-bottom: 24px;
+            transition: transform 0.2s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+        }
+
+        .card-title {
+            font-family: var(--font-heading);
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-color);
+            border-bottom: 2px solid rgba(219, 39, 119, 0.05);
+            padding-bottom: 10px;
+        }
+
+        .phase-badge {
+            background: var(--primary-light);
+            color: var(--primary-color);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: inline-block;
+            margin-bottom: 15px;
+        }
+
+        .dates-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .date-box {
+            background: rgba(219, 39, 119, 0.03);
+            border: 1px solid rgba(219, 39, 119, 0.08);
+            border-radius: var(--border-radius-md);
+            padding: 15px;
+            text-align: center;
+        }
+
+        .date-box label {
+            display: block;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+
+        .date-box strong {
+            font-size: 1.1rem;
+            color: var(--primary-color);
+            font-weight: 700;
+        }
+
+        .energy-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .energy-day {
+            background: rgba(14, 165, 233, 0.05);
+            border: 1px solid rgba(14, 165, 233, 0.15);
+            color: #0369a1;
+            padding: 8px 12px;
+            border-radius: var(--border-radius-md);
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .tips-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .tip-item {
+            background: rgba(22, 163, 74, 0.05);
+            border-left: 4px solid #16a34a;
+            padding: 12px 16px;
+            border-radius: 0 8px 8px 0;
+            font-size: 0.95rem;
+        }
+
+        .tip-item.intro {
+            background: rgba(219, 39, 119, 0.04);
+            border-left-color: var(--primary-color);
+            font-weight: 500;
+        }
+
+        /* Error States */
+        .error-card {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .error-icon {
+            font-size: 4rem;
+            margin-bottom: 15px;
+        }
+
+        .error-card h2 {
+            font-family: var(--font-heading);
+            margin-bottom: 10px;
+            color: #b91c1c;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        
+        <header>
+            <div class="logo">🌸</div>
+            <h1>HerWellness <span>Shared Insights</span></h1>
+            <p class="subtitle">A secure window to support mutual wellness & care</p>
+        </header>
+
+        <!-- Loading View -->
+        <div id="view-loading" class="card" style="text-align: center; padding: 50px;">
+            <h3>Loading Shared Insights... ⌛</h3>
+            <p class="subtitle">Verifying secure token and fetching insights.</p>
+        </div>
+
+        <!-- Error View -->
+        <div id="view-error" class="card error-card hidden">
+            <div class="error-icon">⚠️</div>
+            <h2 id="error-title">Link Expired or Invalid</h2>
+            <p id="error-desc" class="subtitle">This secure view-only share link is no longer available. Please ask your partner to generate a new secure sharing link.</p>
+        </div>
+
+        <!-- Shared Content View -->
+        <div id="view-content" class="hidden">
+            
+            <!-- Phase Overview Card -->
+            <div class="card">
+                <div class="card-title">🌸 Current Cycle Overview</div>
+                <div class="phase-badge" id="shared-phase">Loading Phase...</div>
+                <p style="margin-bottom: 20px; font-size:1rem;" id="shared-phase-desc">This overview helps you understand your partner's current physical state.</p>
+                
+                <div class="dates-grid">
+                    <div class="date-box">
+                        <label>Fertile Window</label>
+                        <strong id="shared-fertile-window">Calculating...</strong>
+                    </div>
+                    <div class="date-box">
+                        <label>Estimated Ovulation</label>
+                        <strong id="shared-ovulation">Calculating...</strong>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Low-Energy Days Card -->
+            <div class="card">
+                <div class="card-title">⚡ Predicted Low-Energy Days</div>
+                <p class="subtitle" style="margin-bottom: 15px;">During these dates, hormones dip, causing reduced stamina. Suggest low-stress activities and focus on comfort.</p>
+                <div class="energy-list" id="shared-energy-list">
+                    <!-- Loaded dynamically -->
+                </div>
+            </div>
+
+            <!-- Partner Care Card -->
+            <div class="card">
+                <div class="card-title">🤝 How to Support Your Partner</div>
+                <p class="subtitle" style="margin-bottom: 10px;">Tips timed to their current cycle phase:</p>
+                <div class="tips-list" id="shared-tips-list">
+                    <!-- Tips loaded dynamically -->
+                </div>
+            </div>
+
+        </div>
+
+        <div class="footer">
+            HerWellness Hub &copy; 2026. Secure View-Only Session.
+        </div>
+
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            loadSharedInsights();
+        });
+
+        async function loadSharedInsights() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const token = urlParams.get('token');
+
+            if (!token) {
+                showError("Invalid Sharing URL", "No security token was detected in the link. Please double-check the address.");
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/cycle/share/view?token=${token}`);
+                if (!response.ok) {
+                    if (response.status === 410) {
+                        showError("Link Expired ⏰", "This secure sharing link has expired. Sharing links are time-limited for privacy safety.");
+                    } else {
+                        showError("Link Not Found 🔍", "The sharing link is invalid or has been revoked by the owner.");
+                    }
+                    return;
+                }
+
+                const data = await response.json();
+                renderSharedData(data);
+            } catch (err) {
+                showError("Network Error 🌐", "Could not connect to the HerWellness server. Please check your internet connection.");
+            }
+        }
+
+        function renderSharedData(data) {
+            document.getElementById('view-loading').classList.add('hidden');
+            document.getElementById('view-content').classList.remove('hidden');
+
+            // Phase and Predictions
+            document.getElementById('shared-phase').textContent = data.current_phase + ' Phase';
+            
+            // Format Fertile Window
+            const start = formatDateShort(data.fertile_window_start);
+            const end = formatDateShort(data.fertile_window_end);
+            document.getElementById('shared-fertile-window').textContent = `${start} - ${end}`;
+            document.getElementById('shared-ovulation').textContent = formatDateStr(data.ovulation_date);
+
+            // Energy list
+            const energyListEl = document.getElementById('shared-energy-list');
+            energyListEl.innerHTML = '';
+            
+            if (data.low_energy_days && data.low_energy_days.length > 0) {
+                data.low_energy_days.forEach(dayStr => {
+                    const box = document.createElement('div');
+                    box.className = 'energy-day';
+                    box.textContent = formatDateShort(dayStr);
+                    energyListEl.appendChild(box);
+                });
+            } else {
+                energyListEl.innerHTML = '<p style="color:var(--text-muted); font-size:0.9rem;">No predicted low-energy days in the immediate cycle.</p>';
+            }
+
+            // Tips list
+            const tipsEl = document.getElementById('shared-tips-list');
+            tipsEl.innerHTML = '';
+            
+            if (data.partner_tips && data.partner_tips.length > 0) {
+                data.partner_tips.forEach((tip, idx) => {
+                    const item = document.createElement('div');
+                    item.className = 'tip-item' + (idx === 0 ? ' intro' : '');
+                    item.textContent = tip;
+                    tipsEl.appendChild(item);
+                });
+            }
+        }
+
+        function showError(title, desc) {
+            document.getElementById('view-loading').classList.add('hidden');
+            document.getElementById('view-error').classList.remove('hidden');
+            document.getElementById('error-title').textContent = title;
+            document.getElementById('error-desc').textContent = desc;
+        }
+
+        // Helpers
+        function formatDateStr(dateStr) {
+            if (!dateStr) return 'N/A';
+            const d = new Date(dateStr);
+            if (isNaN(d.getTime())) return dateStr;
+            return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        }
+
+        function formatDateShort(dateStr) {
+            if (!dateStr) return 'N/A';
+            const d = new Date(dateStr);
+            if (isNaN(d.getTime())) return dateStr;
+            return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        }
+    </script>
+</body>
+</html>

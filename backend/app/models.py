@@ -11,6 +11,8 @@ class User(Base):
     id = Column(Integer, primary_key=True, index=True)
     email = Column(String, unique=True, index=True, nullable=False)
     hashed_password = Column(String, nullable=False)
+    tracking_mode = Column(String, default="regular", nullable=False)  # "regular", "pcos_pcod", "irregular", "perimenopause"
+    custom_cycle_length = Column(Integer, nullable=True)  # User target/average baseline override
     created_at = Column(DateTime, default=datetime.utcnow)
 
     # Relationships
@@ -18,6 +20,8 @@ class User(Base):
     mood_logs = relationship("MoodLog", back_populates="user", cascade="all, delete-orphan")
     fitness_logs = relationship("FitnessLog", back_populates="user", cascade="all, delete-orphan")
     wellness_logs = relationship("WellnessLog", back_populates="user", cascade="all, delete-orphan")
+    share_links = relationship("ShareLink", back_populates="user", cascade="all, delete-orphan")
+
 
 
 class CycleLog(Base):
@@ -31,11 +35,19 @@ class CycleLog(Base):
     period_end = Column(Boolean, default=False)
     flow_intensity = Column(Integer, nullable=True)  # 1=Spotting, 2=Light, 3=Medium, 4=Heavy
     symptoms = Column(String, nullable=True)  # Comma-separated: "cramps,headache,bloating"
+    cramps_severity = Column(Integer, nullable=True)  # 1=Mild, 2=Moderate, 3=Severe
+    headache_severity = Column(Integer, nullable=True)  # 1=Mild, 2=Moderate, 3=Severe
+    acne_severity = Column(Integer, nullable=True)  # 1=Mild, 2=Moderate, 3=Severe
+    breast_tenderness_severity = Column(Integer, nullable=True)  # 1=Mild, 2=Moderate, 3=Severe
+    hair_loss_severity = Column(Integer, nullable=True)  # 1=Mild, 2=Moderate, 3=Severe (PCOS/Hormonal)
+    hirsutism_severity = Column(Integer, nullable=True)  # 1=Mild, 2=Moderate, 3=Severe (PCOS/Hormonal)
+    ovulation_test_result = Column(String, nullable=True)  # "negative", "positive", "lh_surge"
     notes = Column(Text, nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow)
 
     # Relationship
     user = relationship("User", back_populates="cycle_logs")
+
 
 
 class MoodLog(Base):
@@ -86,3 +98,18 @@ class WellnessLog(Base):
 
     # Relationship
     user = relationship("User", back_populates="wellness_logs")
+
+
+class ShareLink(Base):
+    """Secure, time-limited link sharing model."""
+    __tablename__ = "share_links"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    token = Column(String, unique=True, index=True, nullable=False)
+    expires_at = Column(DateTime, nullable=False)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+    # Relationship
+    user = relationship("User", back_populates="share_links")
+

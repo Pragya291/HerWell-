@@ -1789,3 +1789,180 @@ a:hover {
         text-align: center;
     }
 }
+
+/* ==========================================================================
+   NEW FEATURES STYLING (SYMPTOMS, DEVIATIONS, PARTNER SHARING)
+   ========================================================================== */
+
+/* Deviation Alert Banner */
+.deviation-alert-banner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(251, 191, 36, 0.08); /* Amber warning glow */
+    border: 1px solid rgba(251, 191, 36, 0.3);
+    border-left: 5px solid #fbbf24;
+    padding: 14px 20px;
+    border-radius: var(--border-radius-md);
+    margin-bottom: 24px;
+    box-shadow: 0 4px 15px -3px rgba(251, 191, 36, 0.1);
+    animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.deviation-alert-content {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.deviation-alert-banner .alert-icon {
+    font-size: 1.3rem;
+}
+
+.deviation-alert-banner .alert-text {
+    font-weight: 500;
+    color: #b45309;
+}
+
+.deviation-alert-banner .alert-action-btn {
+    background: #fbbf24;
+    color: #78350f;
+    border: none;
+    font-weight: 600;
+}
+
+.deviation-alert-banner .alert-action-btn:hover {
+    background: #f59e0b;
+    box-shadow: 0 4px 10px rgba(245, 158, 11, 0.2);
+}
+
+/* Symptom Severity Logger */
+.symptom-rate-rows {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin: 15px 0;
+}
+
+.symptom-rate-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 14px;
+    border-radius: var(--border-radius-sm);
+    background: rgba(219, 39, 119, 0.02);
+    border: 1px solid rgba(219, 39, 119, 0.04);
+    transition: all 0.2s ease;
+}
+
+.symptom-rate-row.highlighted-symptom {
+    background: rgba(219, 39, 119, 0.06);
+    border: 1px solid rgba(219, 39, 119, 0.2);
+    box-shadow: 0 2px 8px rgba(219, 39, 119, 0.04);
+}
+
+.symptom-label {
+    font-weight: 600;
+    color: var(--text-color);
+}
+
+.rate-pills {
+    display: flex;
+    gap: 6px;
+}
+
+.rate-pill {
+    background: white;
+    border: 1px solid #cbd5e1;
+    color: var(--text-muted);
+    padding: 4px 12px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.rate-pill:hover {
+    background: rgba(219, 39, 119, 0.05);
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+}
+
+.rate-pill.selected-1 {
+    background: #fef08a; /* Soft yellow for mild */
+    border-color: #eab308;
+    color: #854d0e;
+}
+
+.rate-pill.selected-2 {
+    background: #fed7aa; /* Soft orange for moderate */
+    border-color: #f97316;
+    color: #c2410c;
+}
+
+.rate-pill.selected-3 {
+    background: #fecaca; /* Soft red for severe */
+    border-color: #ef4444;
+    color: #991b1b;
+}
+
+/* Modal symptom severity grid */
+.modal-symptom-severities {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+    background: #f8fafc;
+    padding: 12px;
+    border-radius: var(--border-radius-sm);
+    border: 1px solid #e2e8f0;
+}
+
+.modal-symptom-severity-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.modal-symptom-severity-row .symptom-label-text {
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+/* Share status */
+.share-status-inactive {
+    background: #f1f5f9;
+    color: var(--text-muted);
+    padding: 10px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    text-align: center;
+    border: 1px dashed #cbd5e1;
+    margin-top: 8px;
+}
+
+.share-status-active {
+    background: rgba(22, 163, 74, 0.08);
+    color: #15803d;
+    padding: 10px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    text-align: center;
+    border: 1px solid rgba(22, 163, 74, 0.2);
+    margin-top: 8px;
+    word-break: break-all;
+}
+
+.link-copy-row {
+    margin-top: 8px;
+}
+
+.copy-success-note {
+    animation: fadeIn 0.2s ease-in-out;
+}
+

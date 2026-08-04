@@ -14,9 +14,16 @@ class UserLogin(BaseModel):
     password: str
 
 
+class UserProfileUpdate(BaseModel):
+    tracking_mode: Optional[str] = Field("regular", description="Tracking mode: regular, pcos_pcod, irregular, perimenopause")
+    custom_cycle_length: Optional[int] = Field(None, ge=15, le=120, description="Optional custom expected cycle length baseline")
+
+
 class UserOut(BaseModel):
     id: int
     email: str
+    tracking_mode: str = "regular"
+    custom_cycle_length: Optional[int] = None
     created_at: datetime
 
     class Config:
@@ -40,6 +47,13 @@ class CycleLogCreate(BaseModel):
     period_end: Optional[bool] = False
     flow_intensity: Optional[int] = Field(None, ge=1, le=4)
     symptoms: Optional[str] = None
+    cramps_severity: Optional[int] = Field(None, ge=1, le=3)
+    headache_severity: Optional[int] = Field(None, ge=1, le=3)
+    acne_severity: Optional[int] = Field(None, ge=1, le=3)
+    breast_tenderness_severity: Optional[int] = Field(None, ge=1, le=3)
+    hair_loss_severity: Optional[int] = Field(None, ge=1, le=3)
+    hirsutism_severity: Optional[int] = Field(None, ge=1, le=3)
+    ovulation_test_result: Optional[str] = Field(None, description="negative, positive, lh_surge")
     notes: Optional[str] = None
 
 
@@ -51,6 +65,13 @@ class CycleLogOut(BaseModel):
     period_end: bool
     flow_intensity: Optional[int] = None
     symptoms: Optional[str] = None
+    cramps_severity: Optional[int] = None
+    headache_severity: Optional[int] = None
+    acne_severity: Optional[int] = None
+    breast_tenderness_severity: Optional[int] = None
+    hair_loss_severity: Optional[int] = None
+    hirsutism_severity: Optional[int] = None
+    ovulation_test_result: Optional[str] = None
     notes: Optional[str] = None
     created_at: datetime
 
@@ -67,6 +88,12 @@ class CyclePredictions(BaseModel):
     current_cycle_day: int
     current_phase: str
     phase_description: str
+    deviation: int = 0
+    deviation_message: Optional[str] = None
+    tracking_mode: str = "regular"
+    prediction_confidence: str = "High"
+    pcos_insights: List[str] = []
+
 
 
 # --- Mood Schemas ---
@@ -137,11 +164,33 @@ class FitnessRecommendationsResponse(BaseModel):
 # --- Health & Chat Schemas ---
 class ChatMessage(BaseModel):
     message: str
+    user_context: Optional[dict] = Field(None, description="Optional current cycle phase, tracking mode, mood, and wellness score context")
+    history: Optional[List[dict]] = Field(default=[], description="List of previous conversation turns: [{role: 'user'|'assistant', content: str}]")
+
+
+class ArticleCitation(BaseModel):
+    id: int
+    title: str
+    category: str
+    summary: str
 
 
 class ChatResponse(BaseModel):
     response: str
-    source: str  # "openai" or "fallback"
+    source: str  # "openai", "groq", "rag_fallback", or "fallback"
+    article_citation: Optional[ArticleCitation] = None
+
+
+class APIKeyConfig(BaseModel):
+    api_key: str = Field(..., description="API Key for OpenAI, Groq, or Gemini")
+    provider: Optional[str] = Field("openai", description="openai, groq, gemini")
+
+
+class APIKeyStatus(BaseModel):
+    is_connected: bool
+    provider: str
+    model: str
+    message: str
 
 
 class ArticleOut(BaseModel):
@@ -196,5 +245,46 @@ class WellnessLogOut(BaseModel):
 
     class Config:
         from_attributes = True
+
+
+# --- Partner Sharing Schemas ---
+class ShareLinkCreate(BaseModel):
+    hours_valid: int = Field(48, ge=1, le=168)  # up to 7 days
+
+
+class ShareLinkOut(BaseModel):
+    share_url: str
+    expires_at: datetime
+
+
+class SharedCycleData(BaseModel):
+    fertile_window_start: Optional[str] = None
+    fertile_window_end: Optional[str] = None
+    ovulation_date: Optional[str] = None
+    current_phase: str
+    low_energy_days: List[str]
+    partner_tips: List[str]
+
+
+# --- Gamification & Community Pulse Schemas ---
+class BadgeStatus(BaseModel):
+    unlocked: bool
+    progress: int
+    target: int
+    current_streak: int
+
+
+class GamificationResponse(BaseModel):
+    mood_streak: BadgeStatus
+    hydration_streak: BadgeStatus
+
+
+class CommunityPulseResponse(BaseModel):
+    percentage: int
+    phase: str
+    message: str
+    pulse_type: str
+
+
 
 

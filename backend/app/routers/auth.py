@@ -4,7 +4,7 @@ from datetime import timedelta
 
 from ..database import get_db
 from ..models import User
-from ..schemas import UserCreate, UserLogin, UserOut, Token
+from ..schemas import UserCreate, UserLogin, UserOut, UserProfileUpdate, Token
 from ..auth import (
     get_password_hash,
     verify_password,
@@ -62,4 +62,28 @@ def login(credentials: UserLogin, db: Session = Depends(get_db)):
 @router.get("/me", response_model=UserOut)
 def get_me(current_user: User = Depends(get_current_user)):
     """Return currently authenticated user information."""
+    return current_user
+
+
+@router.put("/profile", response_model=UserOut)
+def update_user_profile(
+    profile_data: UserProfileUpdate,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """Update user tracking mode and custom cycle length baseline."""
+    if profile_data.tracking_mode is not None:
+        valid_modes = ["regular", "pcos_pcod", "irregular", "perimenopause"]
+        if profile_data.tracking_mode not in valid_modes:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=f"Invalid tracking mode. Choose from {valid_modes}"
+            )
+        current_user.tracking_mode = profile_data.tracking_mode
+
+    if profile_data.custom_cycle_length is not None:
+        current_user.custom_cycle_length = profile_data.custom_cycle_length
+
+    db.commit()
+    db.refresh(current_user)
     return current_user

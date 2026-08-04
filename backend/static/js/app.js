@@ -20,7 +20,8 @@ const state = {
     articles: [],
     myths: [],
     selectedArticleCategory: 'All',
-    selectedMoodValue: 3
+    selectedMoodValue: 3,
+    chatHistory: JSON.parse(sessionStorage.getItem('herwellness_chat_history') || '[]')
 };
 
 // Initialize Application on DOM Ready
@@ -51,7 +52,13 @@ async function initApp() {
     setupMoodSelectors();
     setupWellnessCalculator();
     setupArticleSearch();
+    setupDashboardSymptomLogger();
+    setupModalSymptomLogger();
+
+    // Check Vera AI API Connection Status
+    checkAPIKeyStatus();
 }
+
 
 /**
  * Central API Call Helper
@@ -246,6 +253,14 @@ async function loadDashboardData() {
         state.cyclePredictions = predictions;
         renderDashboardCycle(predictions);
 
+        // Fetch cycle logs for symptom rating pre-population
+        const logs = await apiCall('/cycle/logs');
+        state.cycleLogs = logs;
+
+        // Render new dashboards features
+        renderDashboardSymptomLogger(predictions);
+        renderCycleDeviationAlert(predictions);
+
         // Fetch workout recommendation
         const fitRecs = await apiCall('/fitness/recommendations');
         renderDashboardWorkout(fitRecs);
@@ -263,6 +278,7 @@ async function loadDashboardData() {
         console.error('Error loading dashboard data:', err);
     }
 }
+
 
 async function loadAIHealthSummary() {
     try {
@@ -562,10 +578,12 @@ async function loadTrackerData() {
 
         renderCalendar(state.currentCalYear, state.currentCalMonth);
         renderCycleHistory(logs);
+        checkActiveShareLink();
     } catch (err) {
         console.error('Error loading tracker data:', err);
     }
 }
+
 
 function renderTrackerPredictions(pred) {
     document.getElementById('track-avg-cycle').textContent = `${pred.average_cycle_length} Days`;
@@ -573,6 +591,69 @@ function renderTrackerPredictions(pred) {
     document.getElementById('track-ovulation').textContent = formatDateStr(pred.ovulation_date);
     document.getElementById('track-fertile-window').textContent = `${formatDateShort(pred.fertile_window_start)} - ${formatDateShort(pred.fertile_window_end)}`;
     document.getElementById('track-current-phase').textContent = pred.current_phase;
+
+    // Render Confidence & Active Mode
+    const confBadge = document.getElementById('track-confidence-badge');
+    if (confBadge && pred.prediction_confidence) {
+        confBadge.textContent = pred.prediction_confidence;
+        if (pred.prediction_confidence.includes('High')) {
+            confBadge.className = 'badge badge-accent';
+        } else if (pred.prediction_confidence.includes('Moderate')) {
+            confBadge.className = 'badge';
+        } else {
+            confBadge.className = 'badge badge-warning';
+        }
+    }
+
+    const modeEl = document.getElementById('track-active-mode');
+    if (modeEl && pred.tracking_mode) {
+        const modeNames = {
+            regular: 'Regular Mode',
+            pcos_pcod: 'PCOS / PCOD Mode',
+            irregular: 'Irregular Cycle Mode',
+            perimenopause: 'Perimenopause Mode'
+        };
+        modeEl.textContent = modeNames[pred.tracking_mode] || pred.tracking_mode;
+    }
+
+    // Render PCOS & Profile Insights
+    const insightsList = document.getElementById('pcos-insights-list');
+    if (insightsList && pred.pcos_insights) {
+        if (pred.pcos_insights.length > 0) {
+            insightsList.innerHTML = pred.pcos_insights.map(item => `<li>${item}</li>`).join('');
+        } else {
+            insightsList.innerHTML = '<li>• Logging symptoms regularly increases prediction accuracy.</li>';
+        }
+    }
+
+    // Pre-select form controls if present
+    const modeSelect = document.getElementById('profile-tracking-mode');
+    if (modeSelect && (pred.tracking_mode || (state.user && state.user.tracking_mode))) {
+        modeSelect.value = pred.tracking_mode || state.user.tracking_mode;
+    }
+    const lenInput = document.getElementById('profile-custom-length');
+    if (lenInput && state.user && state.user.custom_cycle_length) {
+        lenInput.value = state.user.custom_cycle_length;
+    }
+}
+
+async function handleProfileSettingsSubmit(e) {
+    e.preventDefault();
+    const mode = document.getElementById('profile-tracking-mode').value;
+    const customLen = document.getElementById('profile-custom-length').value;
+
+    try {
+        const updatedUser = await apiCall('/auth/profile', 'PUT', {
+            tracking_mode: mode,
+            custom_cycle_length: customLen ? parseInt(customLen) : null
+        });
+        state.user = updatedUser;
+        alert('Health Profile Mode updated successfully! 🌸');
+        await loadTrackerData();
+        await loadDashboardData();
+    } catch (err) {
+        alert('Error updating profile mode: ' + err.message);
+    }
 }
 
 function renderCalendar(year, month) {
@@ -684,6 +765,15 @@ function openLogModal(dateStr) {
     document.getElementById('modal-log-date-display').textContent = formatDateStr(dateStr);
     document.getElementById('log-date-input').value = dateStr;
 
+    // Reset severities first
+    state.modalSymptoms = { cramps: null, headache: null, acne: null, breast_tenderness: null, hair_loss: null, hirsutism: null };
+    document.querySelectorAll('#modal-symptom-severities-container .rate-pill').forEach(p => {
+        p.className = 'rate-pill';
+    });
+
+    const ovuTestSelect = document.getElementById('log-ovulation-test');
+    if (ovuTestSelect) ovuTestSelect.value = '';
+
     // Pre-fill existing data if logged
     const existingLog = state.cycleLogs.find(l => l.date === dateStr);
     if (existingLog) {
@@ -692,10 +782,30 @@ function openLogModal(dateStr) {
         document.getElementById('log-flow').value = existingLog.flow_intensity || '';
         document.getElementById('log-notes').value = existingLog.notes || '';
 
+        if (ovuTestSelect) ovuTestSelect.value = existingLog.ovulation_test_result || '';
+
         const activeSymptoms = (existingLog.symptoms || '').split(',');
         document.querySelectorAll('#symptom-chips-container input').forEach(chip => {
             chip.checked = activeSymptoms.includes(chip.value);
         });
+
+        // Populate rating pills
+        const severities = {
+            cramps: existingLog.cramps_severity,
+            headache: existingLog.headache_severity,
+            acne: existingLog.acne_severity,
+            breast_tenderness: existingLog.breast_tenderness_severity,
+            hair_loss: existingLog.hair_loss_severity,
+            hirsutism: existingLog.hirsutism_severity
+        };
+
+        for (const [symp, val] of Object.entries(severities)) {
+            if (val) {
+                state.modalSymptoms[symp] = val;
+                const pill = document.querySelector(`#modal-symptom-severities-container .modal-symptom-severity-row[data-symptom="${symp}"] .rate-pill[data-val="${val}"]`);
+                if (pill) pill.classList.add(`selected-${val}`);
+            }
+        }
     } else {
         document.getElementById('form-cycle-log').reset();
     }
@@ -710,11 +820,30 @@ async function handleCycleLogSubmit(e) {
     const periodEnd = document.getElementById('log-period-end').checked;
     const flowVal = document.getElementById('log-flow').value;
     const notes = document.getElementById('log-notes').value;
+    const ovuTestVal = document.getElementById('log-ovulation-test') ? document.getElementById('log-ovulation-test').value : null;
 
     const selectedSymptoms = [];
     document.querySelectorAll('#symptom-chips-container input:checked').forEach(chip => {
         selectedSymptoms.push(chip.value);
     });
+
+    // Automatically ensure standard symptom strings are set if severity rating is chosen
+    const sympMapping = {
+        cramps: "cramps",
+        headache: "headache",
+        acne: "acne",
+        breast_tenderness: "breast tenderness",
+        hair_loss: "hair_loss",
+        hirsutism: "hirsutism"
+    };
+    for (const [key, val] of Object.entries(state.modalSymptoms)) {
+        if (val) {
+            const valStr = sympMapping[key];
+            if (valStr && !selectedSymptoms.includes(valStr)) {
+                selectedSymptoms.push(valStr);
+            }
+        }
+    }
 
     try {
         await apiCall('/cycle/log', 'POST', {
@@ -723,15 +852,24 @@ async function handleCycleLogSubmit(e) {
             period_end: periodEnd,
             flow_intensity: flowVal ? parseInt(flowVal) : null,
             symptoms: selectedSymptoms.join(','),
+            cramps_severity: state.modalSymptoms.cramps,
+            headache_severity: state.modalSymptoms.headache,
+            acne_severity: state.modalSymptoms.acne,
+            breast_tenderness_severity: state.modalSymptoms.breast_tenderness,
+            hair_loss_severity: state.modalSymptoms.hair_loss,
+            hirsutism_severity: state.modalSymptoms.hirsutism,
+            ovulation_test_result: ovuTestVal || null,
             notes: notes
         });
 
         closeModal('modal-cycle-log');
         loadTrackerData(); // Refresh tracker view
+        loadDashboardData(); // Refresh dashboard logger card too
     } catch (err) {
         alert('Error saving cycle log: ' + err.message);
     }
 }
+
 
 
 /* ==========================================================================
@@ -953,36 +1091,372 @@ async function handleChatSubmit(e) {
     appendChatMessage(msg, 'user');
     inputField.value = '';
 
+    // Stop voice recording if active
+    if (state.isRecordingVoice && speechRecognitionInstance) {
+        speechRecognitionInstance.stop();
+        state.isRecordingVoice = false;
+        const statusEl = document.getElementById('voice-recording-status');
+        if (statusEl) statusEl.classList.add('hidden');
+    }
+
+    // Append to local state chat history
+    state.chatHistory.push({ role: 'user', content: msg });
+
+    // Build real-time live user context
+    let userCtx = null;
+    const liveSleep = parseFloat(document.getElementById('wellness-sleep-hours') ? document.getElementById('wellness-sleep-hours').value : 8.0);
+    const liveHyd = parseFloat(document.getElementById('wellness-hydration-liters') ? document.getElementById('wellness-hydration-liters').value : 2.5);
+    const liveEx = parseInt(document.getElementById('wellness-exercise-minutes') ? document.getElementById('wellness-exercise-minutes').value : 30);
+    const stressBtn = document.querySelector('#wellness-stress-selector .pill-btn.selected');
+    const liveStress = stressBtn ? stressBtn.dataset.stress : 'low';
+    const liveScore = calculateWellnessScoreLocal(liveSleep, liveHyd, liveEx, liveStress, state.selectedMoodValue || 3);
+
+    if (state.cyclePredictions) {
+        userCtx = {
+            current_phase: state.cyclePredictions.current_phase,
+            current_cycle_day: state.cyclePredictions.current_cycle_day,
+            tracking_mode: state.cyclePredictions.tracking_mode || (state.user ? state.user.tracking_mode : 'regular'),
+            sleep_hours: liveSleep,
+            hydration_liters: liveHyd,
+            exercise_minutes: liveEx,
+            stress_level: liveStress,
+            wellness_score: liveScore
+        };
+    }
+
     // Show typing indicator
     const typingId = appendTypingIndicator();
 
     try {
-        const response = await apiCall('/wellness/chat', 'POST', { message: msg });
+        const response = await apiCall('/wellness/chat', 'POST', {
+            message: msg,
+            user_context: userCtx,
+            history: state.chatHistory.slice(-8)  // Send up to 8 recent turns
+        });
         removeTypingIndicator(typingId);
-        appendChatMessage(response.response, 'vera');
+
+        // Store assistant turn in history
+        state.chatHistory.push({ role: 'assistant', content: response.response });
+        sessionStorage.setItem('herwellness_chat_history', JSON.stringify(state.chatHistory));
+
+        appendStreamingChatMessage(response.response, 'vera', response.article_citation);
     } catch (err) {
         removeTypingIndicator(typingId);
         appendChatMessage('I am here with you, but I encountered a momentary connection issue. Take a deep breath.', 'vera');
     }
 }
 
+function clearChatHistory() {
+    state.chatHistory = [];
+    sessionStorage.removeItem('herwellness_chat_history');
+    const container = document.getElementById('chat-messages-container');
+    if (container) {
+        container.innerHTML = `
+            <div class="message message-vera">
+                <div class="message-bubble">
+                    Hello! I am Vera, your supportive wellness companion. 🌸 I am here to offer empathy, mindfulness exercises, and CBT journaling prompts. How are you feeling today?
+                </div>
+                <span class="message-time">Vera</span>
+            </div>
+        `;
+    }
+}
+
 function sendQuickPrompt(promptText) {
+    if (promptText.includes('4-7-8 breathing exercise')) {
+        openBreathingModal();
+        return;
+    }
     document.getElementById('chat-input').value = promptText;
     handleChatSubmit(new Event('submit'));
 }
 
-function appendChatMessage(text, sender) {
+/* CBT Journal Quick-Save from Vera */
+function saveJournalFromVera(text) {
+    const journalTextarea = document.getElementById('wellness-journal-text');
+    if (journalTextarea) {
+        const cleanPrompt = decodeURIComponent(text).replace(/[*_#>`~]/g, '');
+        journalTextarea.value = (journalTextarea.value ? journalTextarea.value + '\n\n' : '') + `[CBT Reflection from Vera]: ${cleanPrompt}`;
+        journalTextarea.scrollIntoView({ behavior: 'smooth' });
+        journalTextarea.focus();
+        alert('CBT reflection copied to your Daily Journal! ✍️');
+    }
+}
+
+/* Interactive 4-7-8 Guided Breathing Timer Modal */
+let breathingTimerId = null;
+
+function openBreathingModal() {
+    document.getElementById('modal-breathing').classList.remove('hidden');
+}
+
+function stopBreathingExercise() {
+    if (breathingTimerId) clearInterval(breathingTimerId);
+    breathingTimerId = null;
+    const ring = document.getElementById('breathing-ring');
+    if (ring) ring.style.transform = 'scale(1)';
+    closeModal('modal-breathing');
+}
+
+function startBreathingCycle() {
+    const btn = document.getElementById('btn-start-breathing');
+    if (btn) btn.disabled = true;
+
+    const ring = document.getElementById('breathing-ring');
+    const stageText = document.getElementById('breathing-stage-text');
+    const countdownEl = document.getElementById('breathing-countdown');
+
+    let phase = 'inhale'; // inhale (4s), hold (7s), exhale (8s)
+    let secondsLeft = 4;
+
+    if (ring) ring.style.transform = 'scale(1.4)';
+    if (stageText) stageText.textContent = 'Inhale... 🫁';
+    if (countdownEl) countdownEl.textContent = '4';
+
+    if (breathingTimerId) clearInterval(breathingTimerId);
+
+    breathingTimerId = setInterval(() => {
+        secondsLeft--;
+        if (secondsLeft > 0) {
+            if (countdownEl) countdownEl.textContent = secondsLeft;
+        } else {
+            if (phase === 'inhale') {
+                phase = 'hold';
+                secondsLeft = 7;
+                if (stageText) stageText.textContent = 'Hold... ⏸️';
+                if (countdownEl) countdownEl.textContent = '7';
+            } else if (phase === 'hold') {
+                phase = 'exhale';
+                secondsLeft = 8;
+                if (ring) ring.style.transform = 'scale(1)';
+                if (stageText) stageText.textContent = 'Exhale... 💨';
+                if (countdownEl) countdownEl.textContent = '8';
+            } else {
+                phase = 'inhale';
+                secondsLeft = 4;
+                if (ring) ring.style.transform = 'scale(1.4)';
+                if (stageText) stageText.textContent = 'Inhale... 🫁';
+                if (countdownEl) countdownEl.textContent = '4';
+            }
+        }
+    }, 1000);
+}
+
+/* API Key Settings Modal Handlers */
+async function checkAPIKeyStatus() {
+    try {
+        const res = await apiCall('/wellness/config-api');
+        const indicator = document.getElementById('ai-status-indicator');
+        const msg = document.getElementById('ai-status-message');
+
+        if (res.is_connected) {
+            if (indicator) {
+                indicator.style.color = '#16a34a';
+                indicator.textContent = `🟢 Connected: ${res.provider} (${res.model})`;
+            }
+            if (msg) msg.textContent = res.message;
+        } else {
+            if (indicator) {
+                indicator.style.color = '#d97706';
+                indicator.textContent = `🟡 RAG Engine Active (No Live Key)`;
+            }
+            if (msg) msg.textContent = res.message;
+        }
+    } catch (e) {
+        console.warn('API Key status check failed:', e);
+    }
+}
+
+function openAIConfigModal() {
+    document.getElementById('modal-ai-config').classList.remove('hidden');
+    checkAPIKeyStatus();
+}
+
+async function handleSaveAPIKey(e) {
+    e.preventDefault();
+    const key = document.getElementById('ai-key-input').value.trim();
+    const provider = document.getElementById('ai-provider-select').value;
+    const btn = document.getElementById('btn-save-api-key');
+
+    if (!key) return;
+
+    if (btn) {
+        btn.disabled = true;
+        btn.textContent = 'Testing API Connection...';
+    }
+
+    try {
+        const res = await apiCall('/wellness/config-api', 'POST', { api_key: key, provider: provider });
+        alert(`✅ ${res.message}`);
+        closeModal('modal-ai-config');
+        checkAPIKeyStatus();
+    } catch (err) {
+        alert(`❌ API Connection Failed: ${err.message}`);
+    } finally {
+        if (btn) {
+            btn.disabled = false;
+            btn.textContent = 'Test & Connect API';
+        }
+    }
+}
+
+let speechRecognitionInstance = null;
+
+function toggleVoiceInput() {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+        alert('Voice input is not supported in this browser. Please use Chrome, Edge, or Safari.');
+        return;
+    }
+
+    const statusEl = document.getElementById('voice-recording-status');
+    const btn = document.getElementById('btn-voice-input');
+
+    if (speechRecognitionInstance && state.isRecordingVoice) {
+        speechRecognitionInstance.stop();
+        state.isRecordingVoice = false;
+        if (statusEl) statusEl.classList.add('hidden');
+        if (btn) btn.style.background = '';
+        return;
+    }
+
+    speechRecognitionInstance = new SpeechRecognition();
+    speechRecognitionInstance.continuous = false;
+    speechRecognitionInstance.interimResults = false;
+    speechRecognitionInstance.lang = 'en-US';
+
+    speechRecognitionInstance.onstart = () => {
+        state.isRecordingVoice = true;
+        if (statusEl) statusEl.classList.remove('hidden');
+        if (btn) btn.style.background = 'rgba(219,39,119,0.2)';
+    };
+
+    speechRecognitionInstance.onresult = (event) => {
+        const transcript = event.results[0][0].transcript;
+        const inputField = document.getElementById('chat-input');
+        if (inputField) inputField.value = transcript;
+    };
+
+    speechRecognitionInstance.onerror = (event) => {
+        console.warn('Speech recognition error:', event.error);
+        state.isRecordingVoice = false;
+        if (statusEl) statusEl.classList.add('hidden');
+        if (btn) btn.style.background = '';
+    };
+
+    speechRecognitionInstance.onend = () => {
+        state.isRecordingVoice = false;
+        if (statusEl) statusEl.classList.add('hidden');
+        if (btn) btn.style.background = '';
+    };
+
+    speechRecognitionInstance.start();
+}
+
+function speakVeraResponse(text) {
+    if (!('speechSynthesis' in window)) {
+        alert('Text-to-speech is not supported in this browser.');
+        return;
+    }
+
+    window.speechSynthesis.cancel(); // Stop active speech
+
+    const cleanText = text.replace(/[*_#>`~]/g, '');
+    const utterance = new SpeechSynthesisUtterance(cleanText);
+    utterance.rate = 0.95;
+    utterance.pitch = 1.05;
+
+    window.speechSynthesis.speak(utterance);
+}
+
+function appendChatMessage(text, sender, articleCitation = null) {
     const container = document.getElementById('chat-messages-container');
     const msgDiv = document.createElement('div');
     msgDiv.className = `message message-${sender}`;
     
-    const formattedText = text.replace(/\n/g, '<br>');
+    let formattedText = text.replace(/\n/g, '<br>');
+    formattedText = formattedText.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+
+    let citationHTML = '';
+    if (articleCitation) {
+        citationHTML = `
+            <div class="article-citation-box" style="margin-top:10px; padding:8px 12px; background:rgba(219, 39, 119, 0.08); border-radius:6px; border-left:3px solid #db2777;">
+                <span style="font-size:0.75rem; font-weight:700; color:#be185d;">📖 Health Article Citation:</span>
+                <p style="font-size:0.8rem; margin:2px 0; font-weight:600;">${articleCitation.title}</p>
+                <button type="button" class="btn btn-xs btn-outline" style="margin-top:4px; padding:2px 8px; font-size:0.75rem;" onclick="openArticleModal(${articleCitation.id})">Read Article →</button>
+            </div>
+        `;
+    }
+
+    let ttsHTML = '';
+    if (sender === 'vera') {
+        const escapedText = encodeURIComponent(text);
+        ttsHTML = `<button class="btn-tts" title="Read Aloud" style="background:none; border:none; cursor:pointer; font-size:0.85rem; margin-left:8px;" onclick="speakVeraResponse(decodeURIComponent('${escapedText}'))">🔊</button>`;
+    }
+
     msgDiv.innerHTML = `
-        <div class="message-bubble">${formattedText}</div>
-        <span class="message-time">${sender === 'user' ? 'You' : 'Vera'}</span>
+        <div class="message-bubble">${formattedText}${citationHTML}</div>
+        <span class="message-time">${sender === 'user' ? 'You' : 'Vera'} ${ttsHTML}</span>
     `;
     container.appendChild(msgDiv);
     container.scrollTop = container.scrollHeight;
+}
+
+function appendStreamingChatMessage(text, sender, articleCitation = null) {
+    const container = document.getElementById('chat-messages-container');
+    const msgDiv = document.createElement('div');
+    msgDiv.className = `message message-${sender}`;
+    
+    let citationHTML = '';
+    if (articleCitation) {
+        citationHTML = `
+            <div class="article-citation-box" style="margin-top:10px; padding:8px 12px; background:rgba(219, 39, 119, 0.08); border-radius:6px; border-left:3px solid #db2777;">
+                <span style="font-size:0.75rem; font-weight:700; color:#be185d;">📖 Health Article Citation:</span>
+                <p style="font-size:0.8rem; margin:2px 0; font-weight:600;">${articleCitation.title}</p>
+                <button type="button" class="btn btn-xs btn-outline" style="margin-top:4px; padding:2px 8px; font-size:0.75rem;" onclick="openArticleModal(${articleCitation.id})">Read Article →</button>
+            </div>
+        `;
+    }
+
+    const escapedText = encodeURIComponent(text);
+    const ttsHTML = `<button class="btn-tts" title="Read Aloud" style="background:none; border:none; cursor:pointer; font-size:0.85rem; margin-left:8px;" onclick="speakVeraResponse(decodeURIComponent('${escapedText}'))">🔊</button>`;
+
+    const bubbleDiv = document.createElement('div');
+    bubbleDiv.className = 'message-bubble';
+    
+    const timeSpan = document.createElement('span');
+    timeSpan.className = 'message-time';
+    timeSpan.innerHTML = `Vera ${ttsHTML}`;
+
+    msgDiv.appendChild(bubbleDiv);
+    msgDiv.appendChild(timeSpan);
+    container.appendChild(msgDiv);
+
+    // Split into words for real-time streaming effect
+    const words = text.split(' ');
+    let wordIndex = 0;
+    let accumulatedText = '';
+
+    const streamInterval = setInterval(() => {
+        if (wordIndex < words.length) {
+            accumulatedText += (wordIndex === 0 ? '' : ' ') + words[wordIndex];
+            let formatted = accumulatedText.replace(/\n/g, '<br>');
+            formatted = formatted.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            bubbleDiv.innerHTML = formatted;
+            container.scrollTop = container.scrollHeight;
+            wordIndex++;
+        } else {
+            clearInterval(streamInterval);
+            if (citationHTML) {
+                bubbleDiv.innerHTML += citationHTML;
+            }
+            // Auto-speak if enabled
+            const autoVoiceCheck = document.getElementById('toggle-auto-voice');
+            if (autoVoiceCheck && autoVoiceCheck.checked) {
+                speakVeraResponse(text);
+            }
+        }
+    }, 30); // Stream 1 word every 30ms for smooth real-time typewriter effect
 }
 
 function appendTypingIndicator() {
@@ -1294,3 +1768,249 @@ function getFlowName(intensity) {
         default: return 'Not Logged';
     }
 }
+
+/* ==========================================================================
+   NEW SYMPTOM SEVERITY LOGGING, DEVIATIONS, & SHARING ACTIONS
+   ========================================================================== */
+
+state.dashboardSymptoms = { cramps: null, headache: null, acne: null, breast_tenderness: null };
+state.modalSymptoms = { cramps: null, headache: null, acne: null, breast_tenderness: null };
+
+function setupDashboardSymptomLogger() {
+    const rows = document.querySelectorAll('#dash-symptom-rate-rows .symptom-rate-row');
+    if (!rows.length) return;
+    rows.forEach(row => {
+        const symptom = row.dataset.symptom;
+        const pills = row.querySelectorAll('.rate-pill');
+        pills.forEach(pill => {
+            pill.addEventListener('click', () => {
+                const val = parseInt(pill.dataset.val);
+                if (state.dashboardSymptoms[symptom] === val) {
+                    state.dashboardSymptoms[symptom] = null;
+                    pill.className = 'rate-pill';
+                } else {
+                    state.dashboardSymptoms[symptom] = val;
+                    pills.forEach(p => p.className = 'rate-pill');
+                    pill.classList.add(`selected-${val}`);
+                }
+            });
+        });
+    });
+}
+
+function setupModalSymptomLogger() {
+    const rows = document.querySelectorAll('#modal-symptom-severities-container .modal-symptom-severity-row');
+    if (!rows.length) return;
+    rows.forEach(row => {
+        const symptom = row.dataset.symptom;
+        const pills = row.querySelectorAll('.rate-pill');
+        pills.forEach(pill => {
+            pill.addEventListener('click', () => {
+                const val = parseInt(pill.dataset.val);
+                if (state.modalSymptoms[symptom] === val) {
+                    state.modalSymptoms[symptom] = null;
+                    pill.className = 'rate-pill';
+                } else {
+                    state.modalSymptoms[symptom] = val;
+                    pills.forEach(p => p.className = 'rate-pill');
+                    pill.classList.add(`selected-${val}`);
+                }
+            });
+        });
+    });
+}
+
+async function saveDashboardSymptoms() {
+    const dateStr = getTodayString();
+    let periodStart = false;
+    let periodEnd = false;
+    let flowVal = null;
+    let symptomsStr = "";
+    let notes = "";
+
+    const existingLog = state.cycleLogs.find(l => l.date === dateStr);
+    if (existingLog) {
+        periodStart = existingLog.period_start || false;
+        periodEnd = existingLog.period_end || false;
+        flowVal = existingLog.flow_intensity || null;
+        symptomsStr = existingLog.symptoms || "";
+        notes = existingLog.notes || "";
+    }
+
+    let activeSymptoms = symptomsStr ? symptomsStr.split(',') : [];
+    const symptomsMap = {
+        cramps: "cramps",
+        headache: "headache",
+        acne: "acne",
+        breast_tenderness: "breast tenderness"
+    };
+
+    for (const [key, val] of Object.entries(state.dashboardSymptoms)) {
+        const chipVal = symptomsMap[key];
+        if (val && !activeSymptoms.includes(chipVal)) {
+            activeSymptoms.push(chipVal);
+        } else if (!val && activeSymptoms.includes(chipVal)) {
+            activeSymptoms = activeSymptoms.filter(s => s !== chipVal);
+        }
+    }
+
+    try {
+        await apiCall('/cycle/log', 'POST', {
+            date: dateStr,
+            period_start: periodStart,
+            period_end: periodEnd,
+            flow_intensity: flowVal,
+            symptoms: activeSymptoms.join(','),
+            cramps_severity: state.dashboardSymptoms.cramps,
+            headache_severity: state.dashboardSymptoms.headache,
+            acne_severity: state.dashboardSymptoms.acne,
+            breast_tenderness_severity: state.dashboardSymptoms.breast_tenderness,
+            notes: notes
+        });
+
+        const status = document.getElementById('symptom-log-status');
+        if (status) {
+            status.classList.remove('hidden');
+            setTimeout(() => status.classList.add('hidden'), 3000);
+        }
+        
+        // Refresh local cache
+        const logs = await apiCall('/cycle/logs');
+        state.cycleLogs = logs;
+    } catch (err) {
+        alert('Error saving symptoms: ' + err.message);
+    }
+}
+
+function renderDashboardSymptomLogger(pred) {
+    const phase = pred.current_phase || "Follicular";
+    const tag = document.getElementById('symptom-phase-tag');
+    const subtitle = document.getElementById('symptom-logger-subtitle');
+
+    if (tag) tag.textContent = `${phase} Phase Focus`;
+
+    const rows = document.querySelectorAll('#dash-symptom-rate-rows .symptom-rate-row');
+    rows.forEach(row => row.classList.remove('highlighted-symptom'));
+
+    if (phase === 'Menstrual') {
+        if (subtitle) subtitle.innerHTML = '🩺 Estrogen is low. <strong>Cramps</strong> & <strong>Headaches</strong> are common now.';
+        const crampsRow = document.querySelector('#dash-symptom-rate-rows .symptom-rate-row[data-symptom="cramps"]');
+        const headacheRow = document.querySelector('#dash-symptom-rate-rows .symptom-rate-row[data-symptom="headache"]');
+        if (crampsRow) crampsRow.classList.add('highlighted-symptom');
+        if (headacheRow) headacheRow.classList.add('highlighted-symptom');
+    } else if (phase === 'Luteal') {
+        if (subtitle) subtitle.innerHTML = '🩺 Progesterone peaks then dips. <strong>Breast Tenderness</strong> & <strong>Acne</strong> are common.';
+        const breastRow = document.querySelector('#dash-symptom-rate-rows .symptom-rate-row[data-symptom="breast_tenderness"]');
+        const acneRow = document.querySelector('#dash-symptom-rate-rows .symptom-rate-row[data-symptom="acne"]');
+        if (breastRow) breastRow.classList.add('highlighted-symptom');
+        if (acneRow) acneRow.classList.add('highlighted-symptom');
+    } else if (phase === 'Ovulatory') {
+        if (subtitle) subtitle.innerHTML = '🩺 Estrogen peaks. You might experience light mid-cycle <strong>Cramping</strong>.';
+        const crampsRow = document.querySelector('#dash-symptom-rate-rows .symptom-rate-row[data-symptom="cramps"]');
+        if (crampsRow) crampsRow.classList.add('highlighted-symptom');
+    } else {
+        if (subtitle) subtitle.textContent = '🩺 Estrogen is rising. Energy is high. Physical symptoms are typically minimal.';
+    }
+
+    const todayStr = getTodayString();
+    const todayLog = state.cycleLogs.find(l => l.date === todayStr);
+
+    state.dashboardSymptoms = { cramps: null, headache: null, acne: null, breast_tenderness: null };
+    document.querySelectorAll('#dash-symptom-rate-rows .rate-pill').forEach(p => p.className = 'rate-pill');
+
+    if (todayLog) {
+        const symptomsList = {
+            cramps: todayLog.cramps_severity,
+            headache: todayLog.headache_severity,
+            acne: todayLog.acne_severity,
+            breast_tenderness: todayLog.breast_tenderness_severity
+        };
+
+        for (const [symptom, severity] of Object.entries(symptomsList)) {
+            if (severity) {
+                state.dashboardSymptoms[symptom] = severity;
+                const pill = document.querySelector(`#dash-symptom-rate-rows .symptom-rate-row[data-symptom="${symptom}"] .rate-pill[data-val="${severity}"]`);
+                if (pill) pill.classList.add(`selected-${severity}`);
+            }
+        }
+    }
+}
+
+function renderCycleDeviationAlert(pred) {
+    const banner = document.getElementById('cycle-deviation-banner');
+    const textEl = document.getElementById('deviation-alert-text');
+
+    if (pred && pred.deviation_message) {
+        if (textEl) textEl.textContent = pred.deviation_message;
+        if (banner) banner.classList.remove('hidden');
+    } else {
+        if (banner) banner.classList.add('hidden');
+    }
+}
+
+function openShareModal() {
+    document.getElementById('generated-link-container').classList.add('hidden');
+    document.getElementById('copy-success-note').classList.add('hidden');
+    document.getElementById('modal-share-link').classList.remove('hidden');
+}
+
+async function handleShareLinkSubmit(e) {
+    e.preventDefault();
+    const hours = parseInt(document.getElementById('share-duration').value);
+
+    try {
+        const response = await apiCall('/cycle/share', 'POST', { hours_valid: hours });
+        const absoluteUrl = window.location.origin + response.share_url;
+
+        document.getElementById('share-link-input').value = absoluteUrl;
+        document.getElementById('generated-link-container').classList.remove('hidden');
+
+        localStorage.setItem('herwellness_share_link', absoluteUrl);
+        localStorage.setItem('herwellness_share_expiry', response.expires_at);
+
+        updateShareLinkStatusUI(absoluteUrl, response.expires_at);
+    } catch (err) {
+        alert('Error generating share link: ' + err.message);
+    }
+}
+
+function copyShareLink() {
+    const input = document.getElementById('share-link-input');
+    input.select();
+    input.setSelectionRange(0, 99999);
+    navigator.clipboard.writeText(input.value);
+
+    const note = document.getElementById('copy-success-note');
+    if (note) {
+        note.classList.remove('hidden');
+        setTimeout(() => note.classList.add('hidden'), 3000);
+    }
+}
+
+function updateShareLinkStatusUI(url, expiryStr) {
+    const statusBox = document.getElementById('share-link-status');
+    if (!statusBox) return;
+
+    if (url && expiryStr) {
+        const expiry = new Date(expiryStr);
+        if (expiry > new Date()) {
+            statusBox.className = 'share-status-active';
+            statusBox.innerHTML = `
+                <strong>Active Sharing Link:</strong><br>
+                <a href="${url}" target="_blank" style="text-decoration:underline; font-size:0.8rem; word-break:break-all;">${url}</a><br>
+                <small style="display:block; margin-top:4px;">Expires: ${expiry.toLocaleString()}</small>
+            `;
+            return;
+        }
+    }
+
+    statusBox.className = 'share-status-inactive';
+    statusBox.textContent = 'No active sharing link generated.';
+}
+
+function checkActiveShareLink() {
+    const url = localStorage.getItem('herwellness_share_link');
+    const expiryStr = localStorage.getItem('herwellness_share_expiry');
+    updateShareLinkStatusUI(url, expiryStr);
+}
+
