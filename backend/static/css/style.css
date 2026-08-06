@@ -3,21 +3,21 @@
    ========================================================================== */
 
 :root {
-    --primary-color: #db2777;
-    --primary-hover: #be185d;
-    --primary-light: #fbcfe8;
-    --accent-color: #ec4899;
-    --bg-color: #fdf2f8;
-    --bg-gradient: linear-gradient(135deg, #fdf2f8 0%, #fff1f2 100%);
-    --card-bg: rgba(255, 255, 255, 0.95);
-    --glass-border: rgba(219, 39, 119, 0.12);
+    --primary-color: #ff5a8f;
+    --primary-hover: #e04a79;
+    --primary-light: #ffe4ef;
+    --accent-color: #a78bfa;
+    --bg-color: #fafbfe;
+    --bg-gradient: linear-gradient(135deg, #fafbfe 0%, #ffeef4 100%);
+    --card-bg: #ffffff;
+    --glass-border: rgba(255, 90, 143, 0.1);
     --text-color: #1e293b;
     --text-muted: #64748b;
-    --border-radius-sm: 8px;
-    --border-radius-md: 14px;
-    --border-radius-lg: 22px;
-    --shadow-soft: 0 10px 25px -5px rgba(219, 39, 119, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.03);
-    --shadow-hover: 0 20px 30px -10px rgba(219, 39, 119, 0.18);
+    --border-radius-sm: 10px;
+    --border-radius-md: 16px;
+    --border-radius-lg: 24px;
+    --shadow-soft: 0 10px 30px rgba(255, 90, 143, 0.04), 0 1px 3px rgba(0, 0, 0, 0.01);
+    --shadow-hover: 0 20px 40px rgba(255, 90, 143, 0.08);
     --font-heading: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
     --font-body: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
 }
@@ -1964,5 +1964,907 @@ a:hover {
 
 .copy-success-note {
     animation: fadeIn 0.2s ease-in-out;
+}
+
+
+/* ==========================================================================
+   New App Layout, Sidebar & Revamped Dashboard
+   ========================================================================== */
+
+/* Layout & Grid wrapper */
+.app-layout {
+    display: flex;
+    min-height: 100vh;
+    width: 100%;
+}
+
+.app-sidebar {
+    width: 260px;
+    background: #ffffff;
+    border-right: 1px solid var(--glass-border);
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    padding: 24px 20px;
+    z-index: 100;
+}
+
+.app-main-wrapper {
+    margin-left: 260px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background: var(--bg-gradient);
+    min-height: 100vh;
+    width: calc(100% - 260px);
+}
+
+.app-top-header {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--glass-border);
+    padding: 16px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 90;
+}
+
+.top-header-right {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.btn-notification {
+    background: #fff;
+    border: 1px solid var(--glass-border);
+    border-radius: var(--border-radius-sm);
+    padding: 8px 12px;
+    cursor: pointer;
+    font-size: 1.1rem;
+    position: relative;
+    transition: all 0.2s ease;
+}
+
+.btn-notification:hover {
+    background: var(--primary-light);
+    transform: scale(1.05);
+}
+
+.notification-badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background: var(--primary-color);
+    color: white;
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 10px;
+    border: 1.5px solid white;
+}
+
+/* Hide sidebar and top header on login view using :has selector */
+body:has(#view-login:not(.hidden)) .app-sidebar {
+    display: none !important;
+}
+body:has(#view-login:not(.hidden)) .app-main-wrapper {
+    margin-left: 0 !important;
+    width: 100% !important;
+}
+body:has(#view-login:not(.hidden)) .app-top-header {
+    display: none !important;
+}
+
+/* Sidebar Brand Logo */
+.sidebar-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 32px;
+    padding-left: 6px;
+}
+
+.brand-logo-icon {
+    font-size: 1.8rem;
+}
+
+.brand-text-wrap {
+    display: flex;
+    flex-direction: column;
+}
+
+.brand-name {
+    font-family: var(--font-heading);
+    font-weight: 750;
+    font-size: 1.35rem;
+    color: var(--text-color);
+    line-height: 1.15;
+}
+
+.brand-tagline {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    font-weight: 600;
+    margin-top: 1px;
+}
+
+/* Sidebar Navigation Items */
+.sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    flex: 1;
+}
+
+.sidebar-nav .nav-btn {
+    width: 100%;
+    background: transparent;
+    border: none;
+    padding: 12px 16px;
+    border-radius: 12px;
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transition: all 0.2s ease;
+    text-align: left;
+}
+
+.sidebar-nav .nav-btn:hover {
+    color: var(--primary-color);
+    background: rgba(255, 90, 143, 0.05);
+}
+
+.sidebar-nav .nav-btn.active {
+    color: var(--primary-color);
+    background: var(--primary-light);
+    box-shadow: inset 3px 0 0 var(--primary-color);
+}
+
+.sidebar-nav .nav-icon {
+    font-size: 1.15rem;
+}
+
+/* Daily Tip Sidebar Card */
+.sidebar-tip-card {
+    background: linear-gradient(135deg, #fdf4f7 0%, #faf5ff 100%);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--border-radius-md);
+    padding: 16px;
+    margin-top: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.tip-header-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 6px;
+}
+
+.tip-header-icon {
+    font-size: 1.05rem;
+}
+
+.sidebar-tip-card h4 {
+    font-family: var(--font-heading);
+    font-size: 0.95rem;
+    color: var(--text-color);
+    margin: 0;
+}
+
+.tip-content {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    line-height: 1.35;
+    margin-bottom: 12px;
+}
+
+.tip-illustration {
+    width: 100%;
+    max-height: 90px;
+    object-fit: contain;
+    border-radius: 8px;
+    background: transparent;
+}
+
+/* Dashboard Row Top */
+.dashboard-row-top {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+/* AI Daily Synthesis Card */
+.ai-synthesis-card {
+    background: linear-gradient(135deg, #e0e7ff 0%, #fbcfe8 100%);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--border-radius-md);
+    padding: 20px 24px;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    box-shadow: var(--shadow-soft);
+}
+
+.ai-synthesis-header {
+    margin-bottom: 8px;
+}
+
+.ai-badge-text {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #4f46e5;
+    letter-spacing: 0.6px;
+}
+
+.ai-synthesis-recommendation {
+    font-size: 0.98rem;
+    line-height: 1.5;
+    color: #1e1b4b;
+    z-index: 2;
+    max-width: 82%;
+}
+
+.ai-synthesis-recommendation strong {
+    font-weight: 700;
+    color: var(--primary-hover);
+}
+
+.ai-bullets-list {
+    margin-top: 8px;
+    list-style: none;
+    padding-left: 0;
+    font-size: 0.85rem;
+    color: #312e81;
+}
+
+.ai-lotus-watermark {
+    position: absolute;
+    right: -10px;
+    bottom: -15px;
+    font-size: 7.5rem;
+    opacity: 0.15;
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* Circular Wellness Score Card */
+.wellness-circular-card {
+    background: #ffffff;
+    border: 1px solid var(--glass-border);
+    border-radius: var(--border-radius-md);
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: var(--shadow-soft);
+    position: relative;
+}
+
+.wellness-gauge-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.gauge-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    letter-spacing: 0.4px;
+}
+
+.gauge-score-display {
+    display: flex;
+    align-items: baseline;
+}
+
+.gauge-score-display strong {
+    font-family: var(--font-heading);
+    font-size: 2.2rem;
+    font-weight: 800;
+    color: var(--text-color);
+}
+
+.gauge-denom {
+    font-size: 0.95rem;
+    color: var(--text-muted);
+    font-weight: 600;
+    margin-left: 2px;
+}
+
+.wellness-gauge-ring {
+    width: 72px;
+    height: 72px;
+}
+
+.wellness-gauge-ring svg {
+    transform: rotate(-90deg);
+    width: 100%;
+    height: 100%;
+}
+
+.gauge-bg-circle {
+    stroke: #f1f5f9;
+    stroke-width: 8;
+    fill: none;
+}
+
+.gauge-val-circle {
+    stroke: var(--primary-color);
+    stroke-width: 10;
+    stroke-linecap: round;
+    stroke-dasharray: 251.2;
+    stroke-dashoffset: 32.6; /* 87/100 -> ~32.6 offset */
+    transition: stroke-dashoffset 0.4s ease;
+    fill: none;
+}
+
+.wellness-circular-card .date-badge {
+    position: absolute;
+    bottom: -10px;
+    left: 20px;
+    background: #fdf2f8;
+    border: 1px solid var(--glass-border);
+    color: var(--primary-color);
+    padding: 2px 10px;
+    border-radius: 12px;
+    font-size: 0.72rem;
+    font-weight: 700;
+}
+
+/* Metrics Dashboard Grid (Row 2) */
+.dashboard-metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.metric-card {
+    background: #ffffff;
+    border: 1px solid var(--glass-border);
+    border-radius: var(--border-radius-md);
+    padding: 16px 20px;
+    box-shadow: var(--shadow-soft);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: transform 0.2s ease;
+}
+
+.metric-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-hover);
+}
+
+.metric-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.metric-icon {
+    font-size: 1.15rem;
+}
+
+.metric-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    letter-spacing: 0.4px;
+}
+
+.metric-value-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.metric-value-row strong {
+    font-family: var(--font-heading);
+    font-size: 1.15rem;
+    font-weight: 750;
+    color: var(--text-color);
+}
+
+.sparkline {
+    width: 65px;
+    height: 25px;
+    opacity: 0.85;
+}
+
+/* Metric Colors overrides */
+.metric-card.pink { border-left: 4.5px solid var(--primary-color); }
+.metric-card.purple { border-left: 4.5px solid var(--accent-color); }
+.metric-card.indigo { border-left: 4.5px solid #6366f1; }
+.metric-card.blue { border-left: 4.5px solid #3b82f6; }
+
+/* Dashboard Card Grid (Row 3) */
+.dashboard-grid-cards {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.dash-grid-card {
+    background: #ffffff;
+    border: 1px solid var(--glass-border);
+    border-radius: var(--border-radius-md);
+    padding: 20px;
+    box-shadow: var(--shadow-soft);
+    display: flex;
+    flex-direction: column;
+    min-height: 380px;
+}
+
+.card-title-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+}
+
+.card-title-row h3 {
+    font-family: var(--font-heading);
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--text-color);
+    margin: 0;
+}
+
+.phase-badge {
+    background: var(--primary-light);
+    color: var(--primary-color);
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.phase-badge.badge-lavender {
+    background: #f3e8ff;
+    color: #7c3aed;
+}
+
+/* Cycle Dial */
+.cycle-dial-container {
+    position: relative;
+    width: 140px;
+    height: 140px;
+    margin: 12px auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.cycle-dial-svg {
+    transform: rotate(-90deg);
+    width: 100%;
+    height: 100%;
+}
+
+.cycle-progress-ring {
+    stroke-linecap: round;
+    stroke-dasharray: 515.2;
+    stroke-dashoffset: 276.0; /* Adjusted for Day 13/28 */
+    transition: stroke-dashoffset 0.4s ease;
+}
+
+.cycle-dial-text {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 0 10px;
+}
+
+.cycle-dial-label {
+    font-size: 0.62rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.cycle-dial-number {
+    font-family: var(--font-heading);
+    font-size: 1.7rem;
+    font-weight: 800;
+    color: var(--text-color);
+    line-height: 1;
+    margin: 2px 0;
+}
+
+.cycle-dial-phase {
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+.cycle-details-pills {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 12px;
+}
+
+.cycle-detail-item {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.78rem;
+    padding-bottom: 5px;
+    border-bottom: 1px dashed #e2e8f0;
+}
+
+.cycle-detail-item .label {
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+.cycle-detail-item .val {
+    font-weight: 700;
+    color: var(--text-color);
+}
+
+.phase-desc-text {
+    font-size: 0.75rem;
+    color: #475569;
+    background: #fdf2f8;
+    padding: 6px 10px;
+    border-radius: 8px;
+    margin-bottom: 14px;
+    line-height: 1.35;
+    border-left: 2.5px solid var(--primary-color);
+}
+
+.btn-action-pink {
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    width: 100%;
+    padding: 8px 14px;
+    border-radius: var(--border-radius-sm);
+    font-family: var(--font-body);
+    font-size: 0.82rem;
+    font-weight: 700;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.2s ease;
+    margin-top: auto;
+}
+
+.btn-action-pink:hover {
+    background: var(--primary-hover);
+    box-shadow: 0 4px 12px rgba(255, 90, 143, 0.2);
+}
+
+/* Quick Mood Check-In card items */
+.card-description-text {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-bottom: 10px;
+}
+
+.mood-chart-wrapper {
+    height: 110px;
+    margin-bottom: 14px;
+    position: relative;
+    border-bottom: 1.5px solid #f1f5f9;
+}
+
+.emoji-selector-pills {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 14px;
+}
+
+.emoji-btn-round {
+    background: #f8fafc;
+    border: 1px solid #cbd5e1;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    font-size: 1.15rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.emoji-btn-round:hover,
+.emoji-btn-round.selected {
+    border-color: var(--primary-color);
+    background: var(--primary-light);
+    transform: scale(1.15);
+}
+
+/* Symptom Severity split-screen & calendar */
+.symptom-layout-split {
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: 12px;
+    margin-bottom: 14px;
+}
+
+.symptom-slider-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+}
+
+.symptom-slider-row .label {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--text-color);
+}
+
+.symptom-slider-row .rate-pills {
+    display: flex;
+    gap: 3px;
+}
+
+.symptom-slider-row .rate-pill {
+    padding: 3px 8px;
+    font-size: 0.72rem;
+    border-radius: 8px;
+}
+
+.mini-calendar-wrapper {
+    background: #fdfafb;
+    border: 1px solid var(--glass-border);
+    border-radius: 10px;
+    padding: 8px;
+    display: flex;
+    flex-direction: column;
+}
+
+.mini-calendar-header {
+    font-size: 0.68rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    text-transform: uppercase;
+    margin-bottom: 6px;
+    text-align: center;
+}
+
+.mini-calendar-weekdays {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    text-align: center;
+    font-size: 0.58rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    margin-bottom: 4px;
+}
+
+.mini-calendar-days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 2.5px;
+    text-align: center;
+}
+
+.mini-calendar-days span {
+    font-size: 0.65rem;
+    font-weight: 600;
+    padding: 2.5px 0;
+    border-radius: 4px;
+    color: var(--text-color);
+    display: inline-block;
+}
+
+.mini-calendar-days span.other {
+    opacity: 0.35;
+}
+
+.mini-calendar-days span.active {
+    background: var(--primary-color);
+    color: white;
+    font-weight: 700;
+}
+
+/* Personalized Insights List */
+.insights-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.insight-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px;
+    border-radius: 10px;
+    background: #fbfbfb;
+    border: 1px solid #f1f1f1;
+}
+
+.insight-item p {
+    font-size: 0.78rem;
+    color: #334155;
+    line-height: 1.35;
+    margin: 0;
+    font-weight: 600;
+}
+
+.insight-icon {
+    font-size: 1.1rem;
+    line-height: 1;
+    flex-shrink: 0;
+}
+
+.insight-icon.icon-pink { color: var(--primary-color); }
+.insight-icon.icon-blue { color: #3b82f6; }
+.insight-icon.icon-purple { color: var(--accent-color); }
+
+/* Dashboard Bottom Row (Row 4) */
+.dashboard-row-bottom {
+    display: grid;
+    grid-template-columns: 1.7fr 1.3fr;
+    gap: 16px;
+}
+
+.wellness-focus-card {
+    background: #ffffff;
+    border: 1px solid var(--glass-border);
+    border-radius: var(--border-radius-md);
+    padding: 20px;
+    box-shadow: var(--shadow-soft);
+}
+
+.wellness-focus-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 12px;
+}
+
+.focus-pill {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 16px;
+    border-radius: 20px;
+    border: 1px solid transparent;
+}
+
+.focus-pill .icon {
+    font-size: 1.25rem;
+}
+
+.focus-pill .text-wrap {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.2;
+}
+
+.focus-pill .title {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: var(--text-color);
+}
+
+.focus-pill .desc {
+    font-size: 0.68rem;
+    color: var(--text-muted);
+    font-weight: 600;
+}
+
+.focus-pill.pill-blue {
+    background: #eff6ff;
+    border-color: #dbeafe;
+}
+.focus-pill.pill-purple {
+    background: #faf5ff;
+    border-color: #f3e8ff;
+}
+.focus-pill.pill-pink {
+    background: #fdf2f8;
+    border-color: #fce7f3;
+}
+.focus-pill.pill-green {
+    background: #f0fdf4;
+    border-color: #dcfce7;
+}
+
+.btn-focus-add {
+    background: transparent;
+    border: 1px dashed var(--primary-color);
+    color: var(--primary-color);
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s ease;
+}
+
+.btn-focus-add:hover {
+    background: var(--primary-light);
+}
+
+/* Achievements badges */
+.achievements-card {
+    background: #ffffff;
+    border: 1px solid var(--glass-border);
+    border-radius: var(--border-radius-md);
+    padding: 20px;
+    box-shadow: var(--shadow-soft);
+}
+
+.view-all-link {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    text-decoration: none;
+}
+
+.achievements-shields {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.achievement-shield-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    flex: 1;
+}
+
+.shield-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    margin-bottom: 6px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.04);
+}
+
+.achievement-shield-item.pink .shield-icon { background: #ffe4ef; color: #ff5a8f; }
+.achievement-shield-item.blue .shield-icon { background: #e0f2fe; color: #0284c7; }
+.achievement-shield-item.purple .shield-icon { background: #f3e8ff; color: #7c3aed; }
+.achievement-shield-item.pink-light .shield-icon { background: #fdf2f8; color: #ec4899; }
+
+.shield-label {
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: var(--text-color);
+    line-height: 1.2;
 }
 

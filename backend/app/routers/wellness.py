@@ -1,5 +1,5 @@
 import os
-import requests
+import httpx
 from fastapi import APIRouter, Depends, Query, status, HTTPException
 from sqlalchemy.orm import Session
 from datetime import date, timedelta
@@ -134,7 +134,7 @@ def call_llm_completion(provider: str, api_key: str, messages: list) -> str:
         "temperature": 0.7
     }
 
-    resp = requests.post(url, headers=headers, json=payload, timeout=12)
+    resp = httpx.post(url, headers=headers, json=payload, timeout=12.0)
     if resp.status_code == 200:
         return resp.json()["choices"][0]["message"]["content"]
     else:
@@ -246,3 +246,69 @@ def chat_with_vera(payload: ChatMessage):
     else:
         reply_dict = generate_fallback_chat_reply(user_message, user_context=user_context, history=history)
         return reply_dict
+
+
+@router.post("/log", response_model=WellnessLogOut, status_code=status.HTTP_201_CREATED)
+def log_wellness_entry(
+    entry: WellnessLogCreate,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """Log or update daily wellness log and calculate score."""
+    score = calculate_wellness_score(
+        sleep=entry.sleep_hours,
+        hydration=entry.hydration_liters,
+        exercise=entry.exercise_minutes,
+        stress=entry.stress_level,
+        mood=entry.mood_score
+    )
+
+    existing_log = db.query(WellnessLog).filter(
+        WellnessLog.user_id == current_user.id,
+        WellnessLog.date == entry.date
+    ).first()
+
+    if existing_log:
+        existing_log.sleep_hours = entry.sleep_hours
+        existing_log.hydration_liters = entry.hydration_liters
+        existing_log.exercise_minutes = entry.exercise_minutes
+        existing_log.stress_level = entry.stress_level
+        existing_log.mood_score = entry.mood_score
+        existing_log.wellness_score = score
+        db.commit()
+        db.refresh(existing_log)
+        return existing_log
+
+    new_log = WellnessLog(
+        user_id=current_user.id,
+        date=entry.date,
+        sleep_hours=entry.sleep_hours,
+        hydration_liters=entry.hydration_liters,
+        exercise_minutes=entry.exercise_minutes,
+        stress_level=entry.stress_level,
+        mood_score=entry.mood_score,
+        wellness_score=score
+    )
+    db.add(new_log)
+    db.commit()
+    db.refresh(new_log)
+    return new_log
+
+
+@router.get("/logs", response_model=List[WellnessLogOut])
+def get_wellness_logs(
+    start_date: Optional[date] = Query(None),
+    end_date: Optional[date] = Query(None),
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """Fetch wellness history within optional date range."""
+    query = db.query(WellnessLog).filter(WellnessLog.user_id == current_user.id)
+
+    if start_date:
+        query = query.filter(WellnessLog.date >= start_date)
+    if end_date:
+        query = query.filter(WellnessLog.date <= end_date)
+
+    logs = query.order_by(WellnessLog.date.asc()).all()
+    return logs

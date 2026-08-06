@@ -298,6 +298,15 @@ function renderAIHealthSummary(data) {
     const scoreEl = document.getElementById('ai-wellness-score');
     if (scoreEl) scoreEl.textContent = data.wellness_score || 87;
 
+    const scoreVal = data.wellness_score || 87;
+    const wellnessRing = document.getElementById('dashboard-wellness-ring');
+    if (wellnessRing) {
+        const circumference = 2 * Math.PI * 40; // r=40 -> 251.2
+        const offset = circumference - (scoreVal / 100) * circumference;
+        wellnessRing.style.strokeDasharray = `${circumference} ${circumference}`;
+        wellnessRing.style.strokeDashoffset = offset;
+    }
+
     const bulletsList = document.getElementById('ai-summary-bullets');
     if (bulletsList && data.bullets) {
         bulletsList.innerHTML = data.bullets.map(b => `<li>${b.startsWith('•') ? b : '• ' + b}</li>`).join('');
@@ -333,6 +342,21 @@ function renderDashboardCycle(pred) {
     document.getElementById('dash-fertile-window').textContent = `${formatDateShort(pred.fertile_window_start)} - ${formatDateShort(pred.fertile_window_end)}`;
     document.getElementById('dash-avg-cycle').textContent = `${pred.average_cycle_length} Days`;
     document.getElementById('dash-phase-desc').textContent = pred.phase_description;
+
+    const cycleRing = document.getElementById('dashboard-cycle-ring');
+    if (cycleRing) {
+        const currentDay = pred.current_cycle_day || 1;
+        const totalDays = pred.average_cycle_length || 28;
+        const pct = Math.min(Math.max(currentDay / totalDays, 0), 1);
+        const circumference = 2 * Math.PI * 82; // r=82 -> 515.2
+        const offset = circumference - pct * circumference;
+        cycleRing.style.strokeDasharray = `${circumference} ${circumference}`;
+        cycleRing.style.strokeDashoffset = offset;
+    }
+    const phaseCenter = document.getElementById('dash-cycle-phase-center');
+    if (phaseCenter) {
+        phaseCenter.textContent = pred.current_phase + ' Phase';
+    }
 }
 
 function renderDashboardWorkout(data) {
@@ -357,44 +381,78 @@ function renderMiniMoodChart(trendsData) {
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     
-    // Clear canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     const trends = trendsData.weekly_trends || [];
     if (trends.length === 0) return;
 
-    const barWidth = 40;
-    const gap = 25;
-    const startX = 30;
-    const maxHeight = 100;
-    const chartBottom = 130;
+    const points = [];
+    const paddingLeft = 20;
+    const paddingRight = 20;
+    const chartWidth = canvas.width - paddingLeft - paddingRight;
+    const chartHeight = canvas.height - 35; // Save space for labels
+    const startX = paddingLeft;
+    const stepX = chartWidth / Math.max(trends.length - 1, 1);
 
     trends.forEach((item, index) => {
-        const x = startX + index * (barWidth + gap);
-        // Mood is 1 to 5 scale
-        const height = (item.average_mood / 5) * maxHeight;
-        const y = chartBottom - height;
+        const x = startX + index * stepX;
+        // Mood is 1 to 5 scale. Map to chartHeight with safety margin
+        const y = chartHeight - ((item.average_mood - 1) / 4) * (chartHeight - 20) - 10;
+        points.push({ x, y, label: item.week_label, value: item.average_mood });
+    });
 
-        // Bar gradient
-        const gradient = ctx.createLinearGradient(0, y, 0, chartBottom);
-        gradient.addColorStop(0, '#db2777');
-        gradient.addColorStop(1, '#fbcfe8');
+    // 1. Draw smooth line path
+    ctx.beginPath();
+    ctx.strokeStyle = '#ff5a8f';
+    ctx.lineWidth = 3;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
 
-        ctx.fillStyle = gradient;
+    if (points.length > 0) {
+        ctx.moveTo(points[0].x, points[0].y);
+        for (let i = 0; i < points.length - 1; i++) {
+            const xc = (points[i].x + points[i + 1].x) / 2;
+            const yc = (points[i].y + points[i + 1].y) / 2;
+            ctx.quadraticCurveTo(points[i].x, points[i].y, xc, yc);
+        }
+        ctx.lineTo(points[points.length - 1].x, points[points.length - 1].y);
+    }
+    ctx.stroke();
+
+    // 2. Draw gradient fill below line
+    if (points.length > 0) {
         ctx.beginPath();
-        ctx.roundRect(x, y, barWidth, height, [6, 6, 0, 0]);
+        ctx.moveTo(points[0].x, canvas.height - 25);
+        points.forEach(p => ctx.lineTo(p.x, p.y));
+        ctx.lineTo(points[points.length - 1].x, canvas.height - 25);
+        ctx.closePath();
+
+        const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height - 25);
+        gradient.addColorStop(0, 'rgba(255, 90, 143, 0.15)');
+        gradient.addColorStop(1, 'rgba(255, 90, 143, 0.0)');
+        ctx.fillStyle = gradient;
+        ctx.fill();
+    }
+
+    // 3. Draw markers (dots) and labels
+    points.forEach(p => {
+        // Draw dot shadow
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, 6, 0, 2 * Math.PI);
+        ctx.fillStyle = 'rgba(255, 90, 143, 0.2)';
         ctx.fill();
 
-        // Mood text value on top of bar
-        ctx.fillStyle = '#1e293b';
-        ctx.font = 'bold 12px "Plus Jakarta Sans"';
-        ctx.textAlign = 'center';
-        ctx.fillText(item.average_mood.toFixed(1), x + barWidth / 2, y - 6);
+        // Draw inner dot
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, 4, 0, 2 * Math.PI);
+        ctx.fillStyle = '#ff5a8f';
+        ctx.fill();
 
-        // Label below bar
+        // Draw label below marker
         ctx.fillStyle = '#64748b';
-        ctx.font = '10px "Plus Jakarta Sans"';
-        ctx.fillText(item.week_label, x + barWidth / 2, chartBottom + 18);
+        ctx.font = 'bold 9px "Plus Jakarta Sans"';
+        ctx.textAlign = 'center';
+        ctx.fillText(p.label, p.x, canvas.height - 10);
     });
 }
 

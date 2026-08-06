@@ -9,19 +9,24 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/css/style.css?v=2">
+    <link rel="stylesheet" href="/css/style.css?v=101">
 </head>
 <body>
 
-    <!-- Header Navigation -->
-    <header class="app-header">
-        <div class="header-container">
-            <a href="#" class="logo-link" onclick="navigate('dashboard'); return false;">
-                <div class="logo-icon">🌸</div>
-                <span class="logo-text">HerWellness <span class="logo-accent">Hub</span></span>
-            </a>
-            
-            <nav class="main-nav" id="main-nav">
+    <!-- App Layout Container -->
+    <div class="app-layout">
+
+        <!-- Fixed Left Sidebar -->
+        <aside class="app-sidebar">
+            <div class="sidebar-brand">
+                <div class="brand-logo-icon">🌸</div>
+                <div class="brand-text-wrap">
+                    <span class="brand-name">HerWellness <span class="logo-accent">Hub</span></span>
+                    <span class="brand-tagline">Empowered. Every day.</span>
+                </div>
+            </div>
+
+            <nav class="sidebar-nav" id="main-nav">
                 <button class="nav-btn active" data-view="dashboard" onclick="navigate('dashboard')">
                     <span class="nav-icon">📊</span> Dashboard
                 </button>
@@ -39,289 +44,438 @@
                 </button>
             </nav>
 
-            <div class="user-action-area" id="user-action-area">
-                <span class="user-badge" id="user-email-display">Guest</span>
-                <button class="auth-btn" id="auth-action-btn" onclick="handleAuthAction()">Login</button>
+            <!-- Daily Tip Sidebar Card -->
+            <div class="sidebar-tip-card">
+                <div class="tip-header-row">
+                    <span class="tip-header-icon">💡</span>
+                    <h4>Daily Tip</h4>
+                </div>
+                <p class="tip-content">Small steps every day lead to big changes. You've got this! 💜</p>
+                <img src="/assets/meditation_illustration.png" alt="Meditating Woman" class="tip-illustration">
             </div>
-        </div>
-    </header>
+        </aside>
 
-    <!-- Main Views Container -->
-    <main class="app-main-content">
+        <!-- Main Wrapper (Offsets the sidebar) -->
+        <div class="app-main-wrapper">
 
-        <!-- ================= VIEW 1: LOGIN / SIGNUP ================= -->
-        <section id="view-login" class="app-view">
-            <div class="auth-card-container">
-                <div class="auth-brand-header">
-                    <div class="brand-emoji">🌸</div>
-                    <h2>Welcome to HerWellness Hub</h2>
-                    <p>Your personalized companion for cycle tracking, mental wellness, and cycle-synced fitness.</p>
+            <!-- Top Header (Greeting, bell notification, user actions) -->
+            <header class="app-top-header">
+                <div class="greeting-section">
+                    <h1 class="ai-greeting" id="ai-summary-greeting">Good Morning, Shreya! 🌸</h1>
                 </div>
-
-                <!-- Auth Tabs -->
-                <div class="auth-tabs">
-                    <button class="auth-tab-btn active" id="tab-login-btn" onclick="switchAuthTab('login')">Log In</button>
-                    <button class="auth-tab-btn" id="tab-signup-btn" onclick="switchAuthTab('signup')">Sign Up</button>
-                </div>
-
-                <!-- Alert Messages -->
-                <div id="auth-alert" class="alert-message hidden"></div>
-
-                <!-- Login Form -->
-                <form id="form-login" class="auth-form" onsubmit="handleLoginSubmit(event)">
-                    <div class="form-group">
-                        <label for="login-email">Email Address</label>
-                        <input type="email" id="login-email" required placeholder="you@example.com">
-                    </div>
-                    <div class="form-group">
-                        <label for="login-password">Password</label>
-                        <input type="password" id="login-password" required placeholder="••••••••">
-                    </div>
-                    <button type="submit" class="btn btn-primary btn-block">Sign In</button>
-                </form>
-
-                <!-- Signup Form -->
-                <form id="form-signup" class="auth-form hidden" onsubmit="handleSignupSubmit(event)">
-                    <div class="form-group">
-                        <label for="signup-email">Email Address</label>
-                        <input type="email" id="signup-email" required placeholder="you@example.com">
-                    </div>
-                    <div class="form-group">
-                        <label for="signup-password">Create Password (min 6 chars)</label>
-                        <input type="password" id="signup-password" required minlength="6" placeholder="••••••••">
-                    </div>
-                    <button type="submit" class="btn btn-primary btn-block">Create Account</button>
-                </form>
-
-                <div class="auth-divider">
-                    <span>OR</span>
-                </div>
-
-                <!-- Quick Hackathon Demo Mode -->
-                <button class="btn btn-secondary btn-block demo-btn" onclick="enableDemoMode()">
-                    ✨ Instant Demo Mode (No Login Required)
-                </button>
-            </div>
-        </section>
-
-
-        <!-- ================= VIEW 2: DASHBOARD ================= -->
-        <section id="view-dashboard" class="app-view hidden">
-            <!-- Cycle Deviation Alert Banner -->
-            <div id="cycle-deviation-banner" class="deviation-alert-banner hidden">
-                <div class="deviation-alert-content">
-                    <span class="alert-icon">⚠️</span>
-                    <span class="alert-text" id="deviation-alert-text">Your cycle is 2 days later than usual. High stress detected? Let's log how you're feeling.</span>
-                </div>
-                <button class="btn btn-sm btn-secondary alert-action-btn" onclick="navigate('wellness')">Log Feelings & Stress</button>
-            </div>
-
-            <!-- AI Daily Health Summary Header -->
-            <div class="ai-summary-banner">
-
-                <div class="ai-summary-header-row">
-                    <div class="ai-greeting-wrap">
-                        <h1 class="ai-greeting" id="ai-summary-greeting">🌸 Good Morning, Shreya!</h1>
-                        <span class="ai-badge-tag">✨ AI Daily Synthesis</span>
-                    </div>
-                    <div class="ai-header-right">
-                        <div class="wellness-score-pill">
-                            <span class="score-label">Wellness Score:</span>
-                            <span class="score-val" id="ai-wellness-score">87</span><span class="score-denom">/100</span>
-                        </div>
-                        <div class="date-badge" id="current-date-badge">Today</div>
+                <div class="top-header-right">
+                    <button class="btn-notification" title="Notifications">
+                        🔔 <span class="notification-badge">3</span>
+                    </button>
+                    <div class="user-action-area" id="user-action-area">
+                        <span class="user-badge" id="user-email-display">Guest</span>
+                        <button class="auth-btn" id="auth-action-btn" onclick="handleAuthAction()">Logout</button>
                     </div>
                 </div>
+            </header>
 
-                <div class="ai-recommendation-box">
-                    <span class="rec-sparkle">✨ AI Rec:</span>
-                    <p id="ai-recommendation-text">"Take a 20-minute walk after lunch to improve energy."</p>
-                    <ul class="ai-bullets-list hidden" id="ai-summary-bullets">
-                        <li>• Day 4 Cycle</li>
-                        <li>• Mood +12%</li>
-                    </ul>
-                </div>
+            <!-- SPA Main Content Views -->
+            <main class="app-main-content">
 
-                <!-- 5 Metrics Bar -->
-                <div class="ai-metrics-row">
-                    <div class="metric-pill">
-                        <span class="pill-icon">🌸</span>
-                        <div>
-                            <span class="pill-label">Wellness</span>
-                            <strong id="metric-wellness-score">87/100</strong>
+                <!-- ================= VIEW 1: LOGIN / SIGNUP ================= -->
+                <section id="view-login" class="app-view">
+                    <div class="auth-card-container">
+                        <div class="auth-brand-header">
+                            <div class="brand-emoji">🌸</div>
+                            <h2>Welcome to HerWellness Hub</h2>
+                            <p>Your personalized companion for cycle tracking, mental wellness, and cycle-synced fitness.</p>
                         </div>
-                    </div>
-                    <div class="metric-pill">
-                        <span class="pill-icon">🧠</span>
-                        <div>
-                            <span class="pill-label">AI Health</span>
-                            <strong id="metric-ai-score">89/100</strong>
-                        </div>
-                    </div>
-                    <div class="metric-pill">
-                        <span class="pill-icon">🌙</span>
-                        <div>
-                            <span class="pill-label">Sleep Quality</span>
-                            <strong id="metric-sleep-quality">8.2 hrs • Restorative</strong>
-                        </div>
-                    </div>
-                    <div class="metric-pill">
-                        <span class="pill-icon">⚡</span>
-                        <div>
-                            <span class="pill-label">Stress Level</span>
-                            <strong id="metric-stress-level">Low (22%)</strong>
-                        </div>
-                    </div>
-                    <div class="metric-pill">
-                        <span class="pill-icon">💧</span>
-                        <div>
-                            <span class="pill-label">Hydration</span>
-                            <strong id="metric-hydration">2.4L Goal</strong>
-                        </div>
-                    </div>
-                </div>
-            </div>
 
-
-            <!-- Dashboard Grid -->
-            <div class="dashboard-grid">
-                
-                <!-- Card 1: Cycle Overview -->
-                <div class="dash-card cycle-summary-card">
-                    <div class="card-header">
-                        <h3><span class="card-icon">🌸</span> Cycle Overview</h3>
-                        <span class="phase-badge" id="dash-phase-badge">Menstrual</span>
-                    </div>
-                    <div class="cycle-metric-display">
-                        <div class="metric-circle">
-                            <span class="metric-number" id="dash-cycle-day">14</span>
-                            <span class="metric-label">Cycle Day</span>
+                        <!-- Auth Tabs -->
+                        <div class="auth-tabs">
+                            <button class="auth-tab-btn active" id="tab-login-btn" onclick="switchAuthTab('login')">Log In</button>
+                            <button class="auth-tab-btn" id="tab-signup-btn" onclick="switchAuthTab('signup')">Sign Up</button>
                         </div>
-                        <div class="metric-details">
-                            <div class="detail-item">
-                                <span class="detail-label">Predicted Next Period:</span>
-                                <strong id="dash-next-period">Calculating...</strong>
+
+                        <!-- Alert Messages -->
+                        <div id="auth-alert" class="alert-message hidden"></div>
+
+                        <!-- Login Form -->
+                        <form id="form-login" class="auth-form" onsubmit="handleLoginSubmit(event)">
+                            <div class="form-group">
+                                <label for="login-email">Email Address</label>
+                                <input type="email" id="login-email" required placeholder="you@example.com">
                             </div>
-                            <div class="detail-item">
-                                <span class="detail-label">Fertile Window:</span>
-                                <strong id="dash-fertile-window">Calculating...</strong>
+                            <div class="form-group">
+                                <label for="login-password">Password</label>
+                                <input type="password" id="login-password" required placeholder="••••••••">
                             </div>
-                            <div class="detail-item">
-                                <span class="detail-label">Average Cycle:</span>
-                                <strong id="dash-avg-cycle">28 Days</strong>
+                            <button type="submit" class="btn btn-primary btn-block">Sign In</button>
+                        </form>
+
+                        <!-- Signup Form -->
+                        <form id="form-signup" class="auth-form hidden" onsubmit="handleSignupSubmit(event)">
+                            <div class="form-group">
+                                <label for="signup-email">Email Address</label>
+                                <input type="email" id="signup-email" required placeholder="you@example.com">
+                            </div>
+                            <div class="form-group">
+                                <label for="signup-password">Create Password (min 6 chars)</label>
+                                <input type="password" id="signup-password" required minlength="6" placeholder="••••••••">
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-block">Create Account</button>
+                        </form>
+
+                        <div class="auth-divider">
+                            <span>OR</span>
+                        </div>
+
+                        <!-- Quick Hackathon Demo Mode -->
+                        <button class="btn btn-secondary btn-block demo-btn" onclick="enableDemoMode()">
+                            ✨ Instant Demo Mode (No Login Required)
+                        </button>
+                    </div>
+                </section>
+
+
+                <!-- ================= VIEW 2: DASHBOARD ================= -->
+                <section id="view-dashboard" class="app-view hidden">
+                    <!-- Cycle Deviation Alert Banner -->
+                    <div id="cycle-deviation-banner" class="deviation-alert-banner hidden">
+                        <div class="deviation-alert-content">
+                            <span class="alert-icon">⚠️</span>
+                            <span class="alert-text" id="deviation-alert-text">Your cycle is 2 days later than usual. High stress detected? Let's log how you're feeling.</span>
+                        </div>
+                        <button class="btn btn-sm btn-secondary alert-action-btn" onclick="navigate('wellness')">Log Feelings & Stress</button>
+                    </div>
+
+                    <!-- Row 1: AI Recommendation & Wellness Score circular widget -->
+                    <div class="dashboard-row-top">
+                        <!-- AI Synthesis -->
+                        <div class="ai-synthesis-card">
+                            <div class="ai-synthesis-header">
+                                <span class="ai-badge-text">✨ AI DAILY SYNTHESIS</span>
+                            </div>
+                            <div class="ai-synthesis-recommendation">
+                                <strong>Recommendation:</strong>
+                                <span id="ai-recommendation-text">"Entrate with high energy, consider a intense workout, press past 7 days in ovs 1 weeks."</span>
+                            </div>
+                            <ul class="ai-bullets-list hidden" id="ai-summary-bullets">
+                                <li>• Day 4 Cycle</li>
+                                <li>• Mood +12%</li>
+                            </ul>
+                            <!-- Lotus flower outline background -->
+                            <div class="ai-lotus-watermark">🪷</div>
+                        </div>
+
+                        <!-- Wellness circular score widget -->
+                        <div class="wellness-circular-card">
+                            <div class="wellness-gauge-meta">
+                                <span class="gauge-label">WELLNESS SCORE</span>
+                                <div class="gauge-score-display">
+                                    <strong id="ai-wellness-score">87</strong><span class="gauge-denom">/100</span>
+                                </div>
+                            </div>
+                            <div class="wellness-gauge-ring">
+                                <svg viewBox="0 0 100 100">
+                                    <circle cx="50" cy="50" r="40" class="gauge-bg-circle" fill="none" />
+                                    <circle cx="50" cy="50" r="40" class="gauge-val-circle" id="dashboard-wellness-ring" fill="none" />
+                                </svg>
+                            </div>
+                            <div class="date-badge" id="current-date-badge">Thu, Aug 6, 2026</div>
+                        </div>
+                    </div>
+
+                    <!-- Row 2: 4 Metrics Cards -->
+                    <div class="dashboard-metrics-grid">
+                        <div class="metric-card pink">
+                            <div class="metric-header">
+                                <span class="metric-icon">🌸</span>
+                                <span class="metric-label">WELLNESS</span>
+                            </div>
+                            <div class="metric-value-row">
+                                <strong id="metric-wellness-score">87/100</strong>
+                                <svg class="sparkline" viewBox="0 0 100 30">
+                                    <path d="M0,25 Q15,10 30,20 T60,5 T90,15 T100,10" fill="none" stroke="#ff5a8f" stroke-width="2.5" />
+                                </svg>
                             </div>
                         </div>
-                    </div>
-                    <p class="phase-description" id="dash-phase-desc">Loading phase insight...</p>
-                    <button class="btn btn-sm btn-outline" onclick="navigate('tracker')">Open Period Tracker →</button>
-                </div>
-
-                <!-- Card 2: Quick Mood Check-In -->
-                <div class="dash-card mood-checkin-card">
-                    <div class="card-header">
-                        <h3><span class="card-icon">💖</span> Quick Mood Check-In</h3>
-                        <span class="sub-tag">Today</span>
-                    </div>
-                    <p class="card-subtitle">How are you feeling right now?</p>
-                    <div class="emoji-selector" id="dash-emoji-selector">
-                        <button class="emoji-btn" data-mood="1" title="Very Sad">😢</button>
-                        <button class="emoji-btn" data-mood="2" title="Sad">😟</button>
-                        <button class="emoji-btn" data-mood="3" title="Neutral">😐</button>
-                        <button class="emoji-btn" data-mood="4" title="Happy">😊</button>
-                        <button class="emoji-btn" data-mood="5" title="Very Happy">😁</button>
-                    </div>
-                    <div id="dash-mood-status" class="status-note hidden">Mood logged for today!</div>
-                    <button class="btn btn-sm btn-secondary margin-top-10" onclick="navigate('wellness')">Go to Wellness & Chat →</button>
-                </div>
-
-                <!-- Card: Symptom Severity Logger -->
-                <div class="dash-card symptom-severity-card">
-                    <div class="card-header">
-                        <h3><span class="card-icon">⚡</span> Symptom Severity Logger</h3>
-                        <span class="phase-tag" id="symptom-phase-tag">Menstrual Phase Focus</span>
-                    </div>
-                    <p class="card-subtitle" id="symptom-logger-subtitle">Log physical symptoms timed to your current phase.</p>
-                    
-                    <div class="symptom-rate-rows" id="dash-symptom-rate-rows">
-                        <div class="symptom-rate-row" data-symptom="cramps">
-                            <span class="symptom-label">Cramps</span>
-                            <div class="rate-pills">
-                                <button class="rate-pill" data-val="1">1</button>
-                                <button class="rate-pill" data-val="2">2</button>
-                                <button class="rate-pill" data-val="3">3</button>
+                        <div class="metric-card purple">
+                            <div class="metric-header">
+                                <span class="metric-icon">🧠</span>
+                                <span class="metric-label">AI HEALTH</span>
+                            </div>
+                            <div class="metric-value-row">
+                                <strong id="metric-ai-score">89/100</strong>
+                                <svg class="sparkline" viewBox="0 0 100 30">
+                                    <path d="M0,20 Q15,5 30,15 T60,8 T90,2 T100,6" fill="none" stroke="#a78bfa" stroke-width="2.5" />
+                                </svg>
                             </div>
                         </div>
-                        <div class="symptom-rate-row" data-symptom="headache">
-                            <span class="symptom-label">Headache</span>
-                            <div class="rate-pills">
-                                <button class="rate-pill" data-val="1">1</button>
-                                <button class="rate-pill" data-val="2">2</button>
-                                <button class="rate-pill" data-val="3">3</button>
+                        <div class="metric-card indigo">
+                            <div class="metric-header">
+                                <span class="metric-icon">🌙</span>
+                                <span class="metric-label">SLEEP QUALITY</span>
+                            </div>
+                            <div class="metric-value-row">
+                                <strong id="metric-sleep-quality">8.2 hrs • Restorative</strong>
+                                <svg class="sparkline" viewBox="0 0 100 30">
+                                    <path d="M0,25 Q15,22 30,18 T60,10 T90,15 T100,8" fill="none" stroke="#6366f1" stroke-width="2.5" />
+                                </svg>
                             </div>
                         </div>
-                        <div class="symptom-rate-row" data-symptom="acne">
-                            <span class="symptom-label">Acne</span>
-                            <div class="rate-pills">
-                                <button class="rate-pill" data-val="1">1</button>
-                                <button class="rate-pill" data-val="2">2</button>
-                                <button class="rate-pill" data-val="3">3</button>
+                        <div class="metric-card blue">
+                            <div class="metric-header">
+                                <span class="metric-icon">💧</span>
+                                <span class="metric-label">HYDRATION</span>
                             </div>
-                        </div>
-                        <div class="symptom-rate-row" data-symptom="breast_tenderness">
-                            <span class="symptom-label">Tender Breasts</span>
-                            <div class="rate-pills">
-                                <button class="rate-pill" data-val="1">1</button>
-                                <button class="rate-pill" data-val="2">2</button>
-                                <button class="rate-pill" data-val="3">3</button>
+                            <div class="metric-value-row">
+                                <strong id="metric-hydration">2.4L / 80% Goal</strong>
+                                <svg class="sparkline" viewBox="0 0 100 30">
+                                    <path d="M0,25 Q15,20 30,22 T60,15 T90,8 T100,5" fill="none" stroke="#3b82f6" stroke-width="2.5" />
+                                </svg>
                             </div>
                         </div>
                     </div>
-                    <div id="symptom-log-status" class="status-note hidden">Symptoms logged successfully!</div>
-                    <button class="btn btn-sm btn-primary btn-block margin-top-10" id="btn-save-dashboard-symptoms" onclick="saveDashboardSymptoms()">Save Symptoms</button>
-                </div>
 
+                    <!-- Row 3: Main dashboard grid cards (4-column layout) -->
+                    <div class="dashboard-grid-cards">
+                        
+                        <!-- Cycle Overview -->
+                        <div class="dash-grid-card">
+                            <div class="card-title-row">
+                                <h3>🌸 Cycle Overview</h3>
+                                <span class="phase-badge" id="dash-phase-badge">Menstrual</span>
+                            </div>
+                            <div class="cycle-dial-container">
+                                <svg class="cycle-dial-svg" viewBox="0 0 200 200">
+                                    <circle cx="100" cy="100" r="82" fill="none" stroke="#ffe4ef" stroke-width="6" />
+                                    <!-- Dynamic overlay ring -->
+                                    <circle cx="100" cy="100" r="82" fill="none" stroke="#ff5a8f" stroke-width="10" 
+                                            class="cycle-progress-ring" id="dashboard-cycle-ring" />
+                                </svg>
+                                <div class="cycle-dial-text">
+                                    <span class="cycle-dial-label">Cycle Day</span>
+                                    <span class="cycle-dial-number" id="dash-cycle-day">14</span>
+                                    <span class="cycle-dial-phase" id="dash-cycle-phase-center">Menstrual Phase</span>
+                                </div>
+                            </div>
+                            <div class="cycle-details-pills">
+                                <div class="cycle-detail-item">
+                                    <span class="label">Predicted Next Period:</span>
+                                    <span class="val" id="dash-next-period">Aug 22, 2026</span>
+                                </div>
+                                <div class="cycle-detail-item">
+                                    <span class="label">Fertile Window:</span>
+                                    <span class="val" id="dash-fertile-window">Aug 4 - 10</span>
+                                </div>
+                                <div class="cycle-detail-item hidden">
+                                    <!-- Hidden support for backend avg cycle binding -->
+                                    <span class="val" id="dash-avg-cycle">28 Days</span>
+                                </div>
+                            </div>
+                            <p class="phase-desc-text" id="dash-phase-desc">Loading cycle phase details...</p>
+                            <button class="btn-action-pink" onclick="navigate('tracker')">Open Period Tracker →</button>
+                        </div>
 
-                <!-- Card 3: Phase Workout Recommendation -->
-                <div class="dash-card workout-rec-card">
-                    <div class="card-header">
-                        <h3><span class="card-icon">🧘‍♀️</span> Phase-Synced Workout</h3>
-                        <span class="phase-tag" id="dash-rec-phase-tag">Follicular</span>
+                        <!-- Quick Mood Check-In -->
+                        <div class="dash-grid-card">
+                            <div class="card-title-row">
+                                <h3>💖 Quick Mood Check-In</h3>
+                                <span class="sub-tag">Today</span>
+                            </div>
+                            <p class="card-description-text">How are you feeling right now?</p>
+                            
+                            <!-- Mood Line Trend Chart -->
+                            <div class="mood-chart-wrapper">
+                                <canvas id="mini-mood-chart" height="110"></canvas>
+                            </div>
+
+                            <div class="emoji-selector-pills" id="dash-emoji-selector">
+                                <button class="emoji-btn-round" data-mood="1" title="Very Sad">😢</button>
+                                <button class="emoji-btn-round" data-mood="2" title="Sad">😟</button>
+                                <button class="emoji-btn-round" data-mood="3" title="Neutral">😐</button>
+                                <button class="emoji-btn-round" data-mood="4" title="Happy">😊</button>
+                                <button class="emoji-btn-round" data-mood="5" title="Very Happy">😁</button>
+                            </div>
+                            <div id="dash-mood-status" class="status-note hidden">Mood logged for today!</div>
+                            <button class="btn-action-pink margin-top-auto" onclick="navigate('wellness')">Go to Wellness & Chat →</button>
+                        </div>
+
+                        <!-- Symptom Severity Logger -->
+                        <div class="dash-grid-card">
+                            <div class="card-title-row">
+                                <h3>⚡ Symptom Severity Logger</h3>
+                                <span class="phase-badge badge-lavender" id="symptom-phase-tag">Ovulatory Phase Focus</span>
+                            </div>
+                            <p class="card-description-text" id="symptom-logger-subtitle">Estrogen peaks. You might experience light mid-cycle cramping.</p>
+                            
+                            <div class="symptom-layout-split">
+                                <!-- Sliders -->
+                                <div class="symptom-rate-sliders" id="dash-symptom-rate-rows">
+                                    <div class="symptom-slider-row" data-symptom="cramps">
+                                        <span class="label">Cramps</span>
+                                        <div class="rate-pills">
+                                            <button class="rate-pill" data-val="1">1</button>
+                                            <button class="rate-pill" data-val="2">2</button>
+                                            <button class="rate-pill" data-val="3">3</button>
+                                        </div>
+                                    </div>
+                                    <div class="symptom-slider-row" data-symptom="headache">
+                                        <span class="label">Headache</span>
+                                        <div class="rate-pills">
+                                            <button class="rate-pill" data-val="1">1</button>
+                                            <button class="rate-pill" data-val="2">2</button>
+                                            <button class="rate-pill" data-val="3">3</button>
+                                        </div>
+                                    </div>
+                                    <div class="symptom-slider-row" data-symptom="acne">
+                                        <span class="label">Acne</span>
+                                        <div class="rate-pills">
+                                            <button class="rate-pill" data-val="1">1</button>
+                                            <button class="rate-pill" data-val="2">2</button>
+                                            <button class="rate-pill" data-val="3">3</button>
+                                        </div>
+                                    </div>
+                                    <div class="symptom-slider-row" data-symptom="breast_tenderness">
+                                        <span class="label">Tender Breasts</span>
+                                        <div class="rate-pills">
+                                            <button class="rate-pill" data-val="1">1</button>
+                                            <button class="rate-pill" data-val="2">2</button>
+                                            <button class="rate-pill" data-val="3">3</button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Mini Calendar -->
+                                <div class="mini-calendar-wrapper">
+                                    <div class="mini-calendar-header">
+                                        <span>Calendar</span>
+                                    </div>
+                                    <div class="mini-calendar-weekdays">
+                                        <span>S</span><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span>
+                                    </div>
+                                    <div class="mini-calendar-days">
+                                        <span class="other">26</span><span class="other">27</span><span class="other">28</span><span class="other">29</span><span class="other">30</span><span class="other">31</span><span>1</span>
+                                        <span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span>
+                                        <span>9</span><span>10</span><span>11</span><span>12</span><span class="active">13</span><span>14</span><span>15</span>
+                                        <span>16</span><span>17</span><span>18</span><span>19</span><span>20</span><span>21</span><span>22</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="severity-quick-select hidden">
+                                <span class="label">Level:</span>
+                                <button class="level-btn active">1</button>
+                                <button class="level-btn">2</button>
+                                <button class="level-btn">3</button>
+                            </div>
+                            
+                            <div id="symptom-log-status" class="status-note hidden">Symptoms logged successfully!</div>
+                            <button class="btn-action-pink btn-block margin-top-auto" id="btn-save-dashboard-symptoms" onclick="saveDashboardSymptoms()">Save Symptoms →</button>
+                        </div>
+
+                        <!-- Personalized Insights & Article (Mapped to mockup) -->
+                        <div class="dash-grid-card">
+                            <div class="card-title-row">
+                                <h3>✨ Personalized Insights</h3>
+                            </div>
+                            
+                            <div class="insights-list">
+                                <div class="insight-item">
+                                    <span class="insight-icon icon-pink">★</span>
+                                    <p>Estrogen levels correlate with high energy; consider a intense workout.</p>
+                                </div>
+                                <div class="insight-item">
+                                    <span class="insight-icon icon-blue">💧</span>
+                                    <p>Hydration goal correlate with high energy.</p>
+                                </div>
+                                <div class="insight-item">
+                                    <span class="insight-icon icon-purple">✿</span>
+                                    <p>Hydration goal reached for 5 of 7 days.</p>
+                                </div>
+                            </div>
+
+                            <!-- Mapped dynamic articles support (hidden elements for system binding) -->
+                            <div class="hidden">
+                                <span id="dash-art-category">Wellness</span>
+                                <span id="dash-art-title">Demystifying PCOS & Daily Hormonal Balance</span>
+                                <p id="dash-art-summary">Discover how daily movement, nutrition, and stress regulation support your reproductive wellness.</p>
+                                <span id="dash-rec-phase-tag">Follicular</span>
+                                <span id="dash-workout-title">Gentle Restorative Yoga</span>
+                                <p id="dash-workout-desc">Slow, grounding postures designed to support your body's energy levels.</p>
+                                <span id="dash-workout-duration">25 mins</span>
+                                <span id="dash-workout-intensity">Low Intensity</span>
+                            </div>
+                        </div>
+
                     </div>
-                    <div id="dash-workout-recommendation-content">
-                        <h4 id="dash-workout-title">Gentle Restorative Yoga</h4>
-                        <p class="rec-desc" id="dash-workout-desc">Slow, grounding postures designed to support your body's energy levels.</p>
-                        <div class="rec-tags">
-                            <span class="badge" id="dash-workout-duration">25 mins</span>
-                            <span class="badge badge-accent" id="dash-workout-intensity">Low Intensity</span>
+
+                    <!-- Row 4: Today's Wellness Focus & Achievements -->
+                    <div class="dashboard-row-bottom">
+                        <!-- Wellness Focus -->
+                        <div class="wellness-focus-card">
+                            <div class="card-title-row">
+                                <h3>🌸 Today's Wellness Focus</h3>
+                            </div>
+                            <div class="wellness-focus-pills">
+                                <div class="focus-pill pill-blue">
+                                    <span class="icon">💧</span>
+                                    <div class="text-wrap">
+                                        <span class="title">Stay Hydrated</span>
+                                        <span class="desc">2.4L / 80%</span>
+                                    </div>
+                                </div>
+                                <div class="focus-pill pill-purple">
+                                    <span class="icon">🧘‍♀️</span>
+                                    <div class="text-wrap">
+                                        <span class="title">Light Stretching</span>
+                                        <span class="desc">15-20 min</span>
+                                    </div>
+                                </div>
+                                <div class="focus-pill pill-pink">
+                                    <span class="icon">🌸</span>
+                                    <div class="text-wrap">
+                                        <span class="title">Mindful Breathing</span>
+                                        <span class="desc">5 min</span>
+                                    </div>
+                                </div>
+                                <div class="focus-pill pill-green">
+                                    <span class="icon">🍃</span>
+                                    <div class="text-wrap">
+                                        <span class="title">Healthy Meal</span>
+                                        <span class="desc">Balanced</span>
+                                    </div>
+                                </div>
+                                <button class="btn-focus-add">
+                                    <span class="icon">+</span> Add Your Goal
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Achievements -->
+                        <div class="achievements-card">
+                            <div class="card-title-row">
+                                <h3>🏆 Achievements</h3>
+                                <a href="#" onclick="navigate('library'); return false;" class="view-all-link">View All</a>
+                            </div>
+                            <div class="achievements-shields">
+                                <div class="achievement-shield-item pink">
+                                    <div class="shield-icon">🛡️</div>
+                                    <span class="shield-label">7 Days Active</span>
+                                </div>
+                                <div class="achievement-shield-item blue">
+                                    <div class="shield-icon">💧</div>
+                                    <span class="shield-label">Hydration Hero</span>
+                                </div>
+                                <div class="achievement-shield-item purple">
+                                    <div class="shield-icon">🧘‍♀️</div>
+                                    <span class="shield-label">Wellness Warrior</span>
+                                </div>
+                                <div class="achievement-shield-item pink-light">
+                                    <div class="shield-icon">🌸</div>
+                                    <span class="shield-label">Cycle Master</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <button class="btn btn-sm btn-outline margin-top-15" onclick="navigate('fitness')">View Fitness Plan →</button>
-                </div>
+                </section>
 
-                <!-- Card 4: Mood Trends Mini-Chart -->
-                <div class="dash-card chart-card">
-                    <div class="card-header">
-                        <h3><span class="card-icon">📈</span> 4-Week Mood Trend</h3>
-                        <span class="sub-tag">Average</span>
-                    </div>
-                    <div class="canvas-container">
-                        <canvas id="mini-mood-chart" height="160"></canvas>
-                    </div>
-                </div>
-
-                <!-- Card 5: Article of the Day -->
-                <div class="dash-card article-snippet-card span-insight">
-                    <div class="card-header">
-                        <h3><span class="card-icon">💡</span> Health Insight of the Day</h3>
-                        <span class="category-pill" id="dash-art-category">Wellness</span>
-                    </div>
-                    <h4 id="dash-art-title" class="article-snippet-title">Demystifying PCOS & Daily Hormonal Balance</h4>
-                    <p id="dash-art-summary" class="article-snippet-summary">Discover how daily movement, nutrition, and stress regulation support your reproductive wellness.</p>
-                    <button class="btn btn-sm btn-secondary" onclick="openArticleModal(1)">Read Full Article →</button>
-                </div>
-
-            </div>
-        </section>
 
 
         <!-- ================= VIEW 3: PERIOD TRACKER ================= -->
@@ -728,6 +882,9 @@
         </div>
     </footer>
 
+    </div> <!-- Close app-main-wrapper -->
+</div> <!-- Close app-layout -->
+
 
     <!-- ================= MODALS ================= -->
 
@@ -1059,6 +1216,6 @@
 
 
     <!-- JS Application Script -->
-    <script src="/js/app.js"></script>
+    <script src="/js/app.js?v=101"></script>
 </body>
 </html>
