@@ -2868,3 +2868,85 @@ body:has(#view-login:not(.hidden)) .app-top-header {
     line-height: 1.2;
 }
 
+/* ========================================================================= */
+/* Dashboard Fit-to-Screen Adjustments */
+/* ========================================================================= */
+
+body {
+    overflow: hidden; /* Prevent body scroll */
+}
+
+.app-main-content {
+    height: calc(100vh - 75px); /* Header is approx 75px */
+    padding: 10px 20px !important;
+    display: flex;
+    flex-direction: column;
+}
+
+.app-view {
+    height: 100%;
+    overflow-y: auto; /* allow other views to scroll internally */
+    padding-bottom: 20px; /* add some padding for other views */
+}
+
+#view-dashboard {
+    overflow-y: hidden !important; /* dashboard should not scroll */
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    gap: 12px;
+    padding-bottom: 0;
+}
+
+#view-dashboard > div {
+    margin-bottom: 0 !important;
+}
+
+#view-dashboard .dashboard-grid-cards {
+    flex: 1;
+    min-height: 0; 
+}
+
+#view-dashboard .dash-grid-card {
+    min-height: 0;
+    padding: 12px 16px;
+    display: flex;
+    flex-direction: column;
+}
+
+#view-dashboard .dash-grid-card > div:not(.card-title-row) {
+    flex: 1;
+    overflow-y: auto;
+}
+
+/* Reduce paddings and sizes for top and metric rows to save space */
+#view-dashboard .ai-synthesis-card, 
+#view-dashboard .wellness-circular-card {
+    padding: 10px 16px;
+}
+
+#view-dashboard .wellness-gauge-ring {
+    width: 50px;
+    height: 50px;
+}
+
+#view-dashboard .gauge-score-display strong {
+    font-size: 1.8rem;
+}
+
+#view-dashboard .metric-card {
+    padding: 8px 12px;
+}
+
+#view-dashboard .metric-value-row strong {
+    font-size: 1rem;
+}
+
+#view-dashboard .sparkline {
+    height: 20px;
+}
+
+/* Make sure buttons/forms inside cards don't get pushed out */
+.symptom-grid, .mood-grid {
+    gap: 6px !important;
+}
