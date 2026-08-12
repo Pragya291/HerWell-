@@ -128,10 +128,21 @@ a:hover {
 .user-badge {
     font-size: 0.85rem;
     font-weight: 600;
-    color: var(--primary-color);
-    background: rgba(219, 39, 119, 0.1);
-    padding: 4px 12px;
+    color: #f43f5e;
+    background: #ffe4e6;
+    padding: 6px 14px;
     border-radius: 20px;
+}
+
+.auth-btn.btn-pill-pink {
+    background: #f43f5e;
+    color: white;
+    border-radius: 20px;
+    padding: 8px 18px;
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 6px -1px rgba(244, 63, 94, 0.2);
 }
 
 .auth-btn {
@@ -1734,15 +1745,6 @@ a:hover {
 .margin-top-10 { margin-top: 10px; }
 .margin-top-15 { margin-top: 15px; }
 
-.app-footer {
-    background: #ffffff;
-    border-top: 1px solid var(--glass-border);
-    padding: 20px;
-    text-align: center;
-    font-size: 0.85rem;
-    color: var(--text-muted);
-    margin-top: auto;
-}
 
 /* Responsive Media Queries */
 @media (max-width: 900px) {
@@ -2003,10 +2005,9 @@ a:hover {
 }
 
 .app-top-header {
-    background: rgba(255, 255, 255, 0.85);
-    backdrop-filter: blur(12px);
-    border-bottom: 1px solid var(--glass-border);
-    padding: 16px 32px;
+    background: transparent;
+    border-bottom: none;
+    padding: 8px 32px;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -2138,8 +2139,8 @@ body:has(#view-login:not(.hidden)) .app-top-header {
 
 /* Daily Tip Sidebar Card */
 .sidebar-tip-card {
-    background: linear-gradient(135deg, #fdf4f7 0%, #faf5ff 100%);
-    border: 1px solid var(--glass-border);
+    background: #fff0f5; /* Light pink from mockup */
+    border: none;
     border-radius: var(--border-radius-md);
     padding: 16px;
     margin-top: auto;
@@ -2181,25 +2182,24 @@ body:has(#view-login:not(.hidden)) .app-top-header {
     background: transparent;
 }
 
-/* Dashboard Row Top */
+/* Dashboard Top Row (Row 1) */
 .dashboard-row-top {
     display: grid;
-    grid-template-columns: 2fr 1fr;
+    grid-template-columns: 1.1fr 0.9fr;
     gap: 16px;
-    margin-bottom: 16px;
+    margin-bottom: 12px;
 }
 
 /* AI Daily Synthesis Card */
 .ai-synthesis-card {
-    background: linear-gradient(135deg, #e0e7ff 0%, #fbcfe8 100%);
-    border: 1px solid var(--glass-border);
+    background: linear-gradient(135deg, #fff0f5 0%, #ffe4e6 100%);
     border-radius: var(--border-radius-md);
-    padding: 20px 24px;
-    position: relative;
-    overflow: hidden;
+    padding: 8px 14px;
     display: flex;
     flex-direction: column;
     justify-content: center;
+    position: relative;
+    overflow: hidden;
     box-shadow: var(--shadow-soft);
 }
 
@@ -2214,17 +2214,17 @@ body:has(#view-login:not(.hidden)) .app-top-header {
     letter-spacing: 0.6px;
 }
 
+.recommendation-label {
+    font-weight: 700;
+    color: #f43f5e;
+}
+
 .ai-synthesis-recommendation {
     font-size: 0.98rem;
     line-height: 1.5;
     color: #1e1b4b;
     z-index: 2;
     max-width: 82%;
-}
-
-.ai-synthesis-recommendation strong {
-    font-weight: 700;
-    color: var(--primary-hover);
 }
 
 .ai-bullets-list {
@@ -2246,103 +2246,90 @@ body:has(#view-login:not(.hidden)) .app-top-header {
 }
 
 /* Circular Wellness Score Card */
-.wellness-circular-card {
+.wellness-score-card {
     background: #ffffff;
     border: 1px solid var(--glass-border);
     border-radius: var(--border-radius-md);
-    padding: 16px 20px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+    padding: 8px 14px;
     box-shadow: var(--shadow-soft);
-    position: relative;
+    display: grid;
+    grid-template-columns: 80px 1fr;
+    gap: 12px;
+    align-items: center;
 }
 
-.wellness-gauge-meta {
+.wellness-score-left {
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    align-items: center;
+    justify-content: center;
 }
 
-.gauge-label {
-    font-size: 0.72rem;
-    font-weight: 700;
-    color: var(--text-muted);
-    letter-spacing: 0.4px;
+.wellness-gauge-ring-new {
+    position: relative;
+    width: 65px;
+    height: 65px;
 }
 
-.gauge-score-display {
-    display: flex;
-    align-items: baseline;
-}
-
-.gauge-score-display strong {
-    font-family: var(--font-heading);
-    font-size: 2.2rem;
-    font-weight: 800;
-    color: var(--text-color);
-}
-
-.gauge-denom {
-    font-size: 0.95rem;
-    color: var(--text-muted);
-    font-weight: 600;
-    margin-left: 2px;
-}
-
-.wellness-gauge-ring {
-    width: 72px;
-    height: 72px;
-}
-
-.wellness-gauge-ring svg {
-    transform: rotate(-90deg);
+.wellness-gauge-ring-new svg {
     width: 100%;
     height: 100%;
+    transform: rotate(-90deg);
 }
 
-.gauge-bg-circle {
-    stroke: #f1f5f9;
-    stroke-width: 8;
-    fill: none;
-}
-
-.gauge-val-circle {
-    stroke: var(--primary-color);
-    stroke-width: 10;
-    stroke-linecap: round;
-    stroke-dasharray: 251.2;
-    stroke-dashoffset: 32.6; /* 87/100 -> ~32.6 offset */
-    transition: stroke-dashoffset 0.4s ease;
-    fill: none;
-}
-
-.wellness-circular-card .date-badge {
+.gauge-score-display-new {
     position: absolute;
-    bottom: -10px;
-    left: 20px;
-    background: #fdf2f8;
-    border: 1px solid var(--glass-border);
-    color: var(--primary-color);
-    padding: 2px 10px;
-    border-radius: 12px;
-    font-size: 0.72rem;
-    font-weight: 700;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.gauge-score-display-new strong {
+    font-size: 1.15rem;
+    font-family: var(--font-heading);
+    color: var(--text-color);
+    line-height: 1;
+}
+
+.gauge-score-display-new .gauge-denom {
+    font-size: 0.6rem;
+    color: var(--text-muted);
+}
+
+.wellness-trend {
+    text-align: center;
+    margin-top: 8px;
+}
+
+.wellness-score-right {
+    display: flex;
+    flex-direction: column;
+}
+
+.wellness-bar-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 6px;
 }
 
 /* Metrics Dashboard Grid (Row 2) */
 .dashboard-metrics-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 16px;
-    margin-bottom: 16px;
+    gap: 8px;
+    margin-bottom: 8px;
 }
 
 .metric-card {
     background: #ffffff;
     border: 1px solid var(--glass-border);
     border-radius: var(--border-radius-md);
-    padding: 16px 20px;
+    padding: 8px 12px;
     box-shadow: var(--shadow-soft);
     display: flex;
     flex-direction: column;
@@ -2359,7 +2346,7 @@ body:has(#view-login:not(.hidden)) .app-top-header {
     display: flex;
     align-items: center;
     gap: 8px;
-    margin-bottom: 10px;
+    margin-bottom: 4px;
 }
 
 .metric-icon {
@@ -2375,15 +2362,21 @@ body:has(#view-login:not(.hidden)) .app-top-header {
 
 .metric-value-row {
     display: flex;
-    align-items: center;
+    align-items: flex-end;
     justify-content: space-between;
+}
+
+.metric-text-group {
+    display: flex;
+    flex-direction: column;
 }
 
 .metric-value-row strong {
     font-family: var(--font-heading);
-    font-size: 1.15rem;
-    font-weight: 750;
+    font-size: 1.05rem;
+    font-weight: 800;
     color: var(--text-color);
+    line-height: 1.2;
 }
 
 .sparkline {
@@ -2392,11 +2385,11 @@ body:has(#view-login:not(.hidden)) .app-top-header {
     opacity: 0.85;
 }
 
-/* Metric Colors overrides */
-.metric-card.pink { border-left: 4.5px solid var(--primary-color); }
-.metric-card.purple { border-left: 4.5px solid var(--accent-color); }
-.metric-card.indigo { border-left: 4.5px solid #6366f1; }
-.metric-card.blue { border-left: 4.5px solid #3b82f6; }
+/* Metric Colors overrides (borders removed for cleaner mockup look) */
+.metric-card.pink { border: 1px solid var(--glass-border); }
+.metric-card.purple { border: 1px solid var(--glass-border); }
+.metric-card.indigo { border: 1px solid var(--glass-border); }
+.metric-card.blue { border: 1px solid var(--glass-border); }
 
 /* Dashboard Card Grid (Row 3) */
 .dashboard-grid-cards {
@@ -2410,18 +2403,20 @@ body:has(#view-login:not(.hidden)) .app-top-header {
     background: #ffffff;
     border: 1px solid var(--glass-border);
     border-radius: var(--border-radius-md);
-    padding: 20px;
+    padding: 8px 12px;
     box-shadow: var(--shadow-soft);
     display: flex;
     flex-direction: column;
-    min-height: 380px;
+    flex: 1;
+    min-height: max-content;
+    overflow: visible;
 }
 
 .card-title-row {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 12px;
+    margin-bottom: 6px;
 }
 
 .card-title-row h3 {
@@ -2450,9 +2445,9 @@ body:has(#view-login:not(.hidden)) .app-top-header {
 /* Cycle Dial */
 .cycle-dial-container {
     position: relative;
-    width: 140px;
-    height: 140px;
-    margin: 12px auto;
+    width: 90px;
+    height: 90px;
+    margin: 2px auto;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -2491,7 +2486,7 @@ body:has(#view-login:not(.hidden)) .app-top-header {
 
 .cycle-dial-number {
     font-family: var(--font-heading);
-    font-size: 1.7rem;
+    font-size: 1.3rem;
     font-weight: 800;
     color: var(--text-color);
     line-height: 1;
@@ -2530,13 +2525,13 @@ body:has(#view-login:not(.hidden)) .app-top-header {
 }
 
 .phase-desc-text {
-    font-size: 0.75rem;
+    font-size: 0.72rem;
     color: #475569;
     background: #fdf2f8;
     padding: 6px 10px;
     border-radius: 8px;
-    margin-bottom: 14px;
-    line-height: 1.35;
+    margin-bottom: 8px;
+    line-height: 1.3;
     border-left: 2.5px solid var(--primary-color);
 }
 
@@ -2545,10 +2540,10 @@ body:has(#view-login:not(.hidden)) .app-top-header {
     color: white;
     border: none;
     width: 100%;
-    padding: 8px 14px;
+    padding: 6px 10px;
     border-radius: var(--border-radius-sm);
     font-family: var(--font-body);
-    font-size: 0.82rem;
+    font-size: 0.75rem;
     font-weight: 700;
     cursor: pointer;
     text-align: center;
@@ -2563,9 +2558,9 @@ body:has(#view-login:not(.hidden)) .app-top-header {
 
 /* Quick Mood Check-In card items */
 .card-description-text {
-    font-size: 0.8rem;
+    font-size: 0.72rem;
     color: var(--text-muted);
-    margin-bottom: 10px;
+    margin-bottom: 4px;
 }
 
 .mood-chart-wrapper {
@@ -2575,16 +2570,34 @@ body:has(#view-login:not(.hidden)) .app-top-header {
     border-bottom: 1.5px solid #f1f5f9;
 }
 
-.emoji-selector-pills {
-    display: flex;
-    justify-content: space-between;
-    gap: 8px;
+.emoji-selector-wrapper {
+    position: relative;
+    padding-top: 10px;
     margin-bottom: 14px;
 }
 
+.emoji-slider-track {
+    position: absolute;
+    top: 26px; /* center of emoji buttons assuming 32px height */
+    left: 10px;
+    right: 10px;
+    height: 3px;
+    background: #ffe4e6;
+    z-index: 0;
+}
+
+.emoji-selector-pills {
+    display: flex;
+    justify-content: space-between;
+    position: relative;
+    z-index: 1;
+    gap: 8px;
+}
+
 .emoji-btn-round {
-    background: #f8fafc;
-    border: 1px solid #cbd5e1;
+    background: white;
+    border: none;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
     border-radius: 50%;
     width: 32px;
     height: 32px;
@@ -2607,19 +2620,19 @@ body:has(#view-login:not(.hidden)) .app-top-header {
 .symptom-layout-split {
     display: grid;
     grid-template-columns: 1.1fr 0.9fr;
-    gap: 12px;
-    margin-bottom: 14px;
+    gap: 6px;
+    margin-bottom: 4px;
 }
 
 .symptom-slider-row {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 8px;
+    margin-bottom: 2px;
 }
 
 .symptom-slider-row .label {
-    font-size: 0.78rem;
+    font-size: 0.72rem;
     font-weight: 600;
     color: var(--text-color);
 }
@@ -2630,16 +2643,21 @@ body:has(#view-login:not(.hidden)) .app-top-header {
 }
 
 .symptom-slider-row .rate-pill {
-    padding: 3px 8px;
-    font-size: 0.72rem;
-    border-radius: 8px;
+    width: 20px;
+    height: 20px;
+    padding: 0;
+    font-size: 0.68rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .mini-calendar-wrapper {
     background: #fdfafb;
     border: 1px solid var(--glass-border);
     border-radius: 10px;
-    padding: 8px;
+    padding: 4px;
     display: flex;
     flex-direction: column;
 }
@@ -2666,17 +2684,21 @@ body:has(#view-login:not(.hidden)) .app-top-header {
 .mini-calendar-days {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    gap: 2.5px;
+    gap: 1px;
     text-align: center;
 }
 
 .mini-calendar-days span {
-    font-size: 0.65rem;
+    font-size: 0.6rem;
     font-weight: 600;
-    padding: 2.5px 0;
-    border-radius: 4px;
+    width: 16px;
+    height: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
     color: var(--text-color);
-    display: inline-block;
+    margin: 0 auto;
 }
 
 .mini-calendar-days span.other {
@@ -2693,23 +2715,23 @@ body:has(#view-login:not(.hidden)) .app-top-header {
 .insights-list {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 6px;
 }
 
 .insight-item {
     display: flex;
     align-items: flex-start;
-    gap: 10px;
-    padding: 10px;
+    gap: 8px;
+    padding: 6px 8px;
     border-radius: 10px;
     background: #fbfbfb;
     border: 1px solid #f1f1f1;
 }
 
 .insight-item p {
-    font-size: 0.78rem;
+    font-size: 0.7rem;
     color: #334155;
-    line-height: 1.35;
+    line-height: 1.3;
     margin: 0;
     font-weight: 600;
 }
@@ -2872,81 +2894,120 @@ body:has(#view-login:not(.hidden)) .app-top-header {
 /* Dashboard Fit-to-Screen Adjustments */
 /* ========================================================================= */
 
-body {
-    overflow: hidden; /* Prevent body scroll */
+html, body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden !important;
+    height: 100vh;
+    width: 100vw;
+}
+
+.app-layout {
+    height: 100vh;
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
+}
+
+.app-main-wrapper {
+    height: 100vh;
+    max-height: 100vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
 }
 
 .app-main-content {
-    height: calc(100vh - 75px); /* Header is approx 75px */
-    padding: 10px 20px !important;
+    flex: 1;
+    min-height: 0;
+    padding: 8px 16px 16px 16px !important;
     display: flex;
     flex-direction: column;
 }
 
 .app-view {
-    height: 100%;
-    overflow-y: auto; /* allow other views to scroll internally */
-    padding-bottom: 20px; /* add some padding for other views */
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    padding-bottom: 0; 
 }
 
 #view-dashboard {
-    overflow-y: hidden !important; /* dashboard should not scroll */
+    flex: 1;
+    overflow-y: auto !important;
     display: flex;
     flex-direction: column;
-    height: 100%;
-    gap: 12px;
-    padding-bottom: 0;
+    gap: 8px;
 }
 
 #view-dashboard > div {
     margin-bottom: 0 !important;
 }
 
+/* Let the big cards row take remaining space naturally */
 #view-dashboard .dashboard-grid-cards {
     flex: 1;
-    min-height: 0; 
+    min-height: max-content; 
 }
 
 #view-dashboard .dash-grid-card {
-    min-height: 0;
-    padding: 12px 16px;
+    min-height: max-content;
+    padding: 10px 14px;
     display: flex;
     flex-direction: column;
 }
 
-#view-dashboard .dash-grid-card > div:not(.card-title-row) {
-    flex: 1;
-    overflow-y: auto;
-}
 
-/* Reduce paddings and sizes for top and metric rows to save space */
+/* Scale down top row */
+#view-dashboard .dashboard-row-top {
+    gap: 8px;
+}
 #view-dashboard .ai-synthesis-card, 
 #view-dashboard .wellness-circular-card {
-    padding: 10px 16px;
+    padding: 6px 10px;
 }
 
 #view-dashboard .wellness-gauge-ring {
-    width: 50px;
-    height: 50px;
+    width: 35px;
+    height: 35px;
 }
 
 #view-dashboard .gauge-score-display strong {
-    font-size: 1.8rem;
+    font-size: 1.2rem;
 }
 
+/* Scale down metrics */
+#view-dashboard .dashboard-metrics-grid {
+    gap: 8px;
+}
 #view-dashboard .metric-card {
-    padding: 8px 12px;
+    padding: 4px 8px;
 }
-
-#view-dashboard .metric-value-row strong {
+#view-dashboard .metric-header {
+    margin-bottom: 2px;
+}
+#view-dashboard .metric-icon {
     font-size: 1rem;
 }
-
+#view-dashboard .metric-value-row strong {
+    font-size: 0.9rem;
+}
 #view-dashboard .sparkline {
-    height: 20px;
+    height: 14px;
+}
+
+/* Scale down bottom row */
+#view-dashboard .dashboard-row-bottom {
+    gap: 10px;
+}
+#view-dashboard .wellness-focus-card {
+    padding: 8px 14px !important;
 }
 
 /* Make sure buttons/forms inside cards don't get pushed out */
 .symptom-grid, .mood-grid {
-    gap: 6px !important;
+    gap: 4px !important;
 }
+

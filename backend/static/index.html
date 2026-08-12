@@ -42,6 +42,9 @@
                 <button class="nav-btn" data-view="library" onclick="navigate('library')">
                     <span class="nav-icon">📚</span> Library
                 </button>
+                <button class="nav-btn" data-view="community" onclick="navigate('community')">
+                    <span class="nav-icon">👥</span> Community
+                </button>
             </nav>
 
             <!-- Daily Tip Sidebar Card -->
@@ -61,15 +64,15 @@
             <!-- Top Header (Greeting, bell notification, user actions) -->
             <header class="app-top-header">
                 <div class="greeting-section">
-                    <h1 class="ai-greeting" id="ai-summary-greeting">Good Morning, Shreya! 🌸</h1>
+                    <h1 class="ai-greeting" id="ai-summary-greeting">Good Morning, Priya! ☀️</h1>
                 </div>
                 <div class="top-header-right">
                     <button class="btn-notification" title="Notifications">
                         🔔 <span class="notification-badge">3</span>
                     </button>
                     <div class="user-action-area" id="user-action-area">
-                        <span class="user-badge" id="user-email-display">Guest</span>
-                        <button class="auth-btn" id="auth-action-btn" onclick="handleAuthAction()">Logout</button>
+                        <span class="user-badge" id="user-email-display">priya@gmail.com</span>
+                        <button class="auth-btn btn-pill-pink" id="auth-action-btn" onclick="handleAuthAction()">Logout</button>
                     </div>
                 </div>
             </header>
@@ -152,32 +155,58 @@
                                 <span class="ai-badge-text">✨ AI DAILY SYNTHESIS</span>
                             </div>
                             <div class="ai-synthesis-recommendation">
-                                <strong>Recommendation:</strong>
-                                <span id="ai-recommendation-text">"Entrate with high energy, consider a intense workout, press past 7 days in ovs 1 weeks."</span>
+                                <span class="recommendation-label">Recommendation:</span>
+                                <span id="ai-recommendation-text">"Capitalize on peak energy with a 30-minute cardio session."</span>
                             </div>
-                            <ul class="ai-bullets-list hidden" id="ai-summary-bullets">
-                                <li>• Day 4 Cycle</li>
-                                <li>• Mood +12%</li>
-                            </ul>
                             <!-- Lotus flower outline background -->
-                            <div class="ai-lotus-watermark">🪷</div>
+                            <div class="ai-lotus-watermark">🌸</div>
                         </div>
 
-                        <!-- Wellness circular score widget -->
-                        <div class="wellness-circular-card">
-                            <div class="wellness-gauge-meta">
-                                <span class="gauge-label">WELLNESS SCORE</span>
-                                <div class="gauge-score-display">
-                                    <strong id="ai-wellness-score">87</strong><span class="gauge-denom">/100</span>
+                        <!-- Wellness Score Card (New Layout) -->
+                        <div class="wellness-score-card">
+                            <div class="wellness-score-left">
+                                <div class="wellness-gauge-ring-new">
+                                    <svg viewBox="0 0 100 100">
+                                        <circle cx="50" cy="50" r="40" class="gauge-bg-circle" fill="none" stroke="#f1f5f9" stroke-width="8" />
+                                        <circle cx="50" cy="50" r="40" class="gauge-val-circle" stroke="#f43f5e" stroke-width="8" stroke-dasharray="251.2" stroke-dashoffset="32.6" fill="none" stroke-linecap="round" />
+                                    </svg>
+                                    <div class="gauge-score-display-new">
+                                        <strong id="ai-wellness-score">87</strong>
+                                        <span class="gauge-denom">/100</span>
+                                    </div>
+                                </div>
+                                <div class="wellness-trend">
+                                    <span style="color: #10b981; font-weight: 700; font-size: 0.75rem;">↑ 8 pts</span><br>
+                                    <span style="color: #64748b; font-size: 0.65rem;">vs yesterday</span>
                                 </div>
                             </div>
-                            <div class="wellness-gauge-ring">
-                                <svg viewBox="0 0 100 100">
-                                    <circle cx="50" cy="50" r="40" class="gauge-bg-circle" fill="none" />
-                                    <circle cx="50" cy="50" r="40" class="gauge-val-circle" id="dashboard-wellness-ring" fill="none" />
-                                </svg>
+                            <div class="wellness-score-right">
+                                <div class="wellness-score-header">
+                                    <span class="ai-badge-text" style="color:#64748b; font-weight: 700; font-size: 0.7rem; letter-spacing: 0.5px;">✨ WELLNESS SCORE</span>
+                                    <p style="font-size: 0.7rem; color: #475569; margin: 4px 0 12px 0;">Great job! You're on the right track.</p>
+                                </div>
+                                <div class="wellness-bars">
+                                    <div class="wellness-bar-row">
+                                        <span class="bar-icon" style="color: #f43f5e; font-size: 0.7rem; font-weight: 600; width: 65px;">🌸 Physical</span>
+                                        <div class="bar-track" style="flex: 1; height: 4px; background: #f1f5f9; border-radius: 2px; margin: 0 10px;"><div class="bar-fill" style="width: 88%; background: #f43f5e; height: 100%; border-radius: 2px;"></div></div>
+                                        <span class="bar-val" style="font-size: 0.7rem; font-weight: 700;">88<span style="color:#94a3b8; font-weight: 500;">/100</span></span>
+                                    </div>
+                                    <div class="wellness-bar-row">
+                                        <span class="bar-icon" style="color: #8b5cf6; font-size: 0.7rem; font-weight: 600; width: 65px;">🧠 Mental</span>
+                                        <div class="bar-track" style="flex: 1; height: 4px; background: #f1f5f9; border-radius: 2px; margin: 0 10px;"><div class="bar-fill" style="width: 85%; background: #8b5cf6; height: 100%; border-radius: 2px;"></div></div>
+                                        <span class="bar-val" style="font-size: 0.7rem; font-weight: 700;">85<span style="color:#94a3b8; font-weight: 500;">/100</span></span>
+                                    </div>
+                                    <div class="wellness-bar-row">
+                                        <span class="bar-icon" style="color: #10b981; font-size: 0.7rem; font-weight: 600; width: 65px;">🍃 Lifestyle</span>
+                                        <div class="bar-track" style="flex: 1; height: 4px; background: #f1f5f9; border-radius: 2px; margin: 0 10px;"><div class="bar-fill" style="width: 90%; background: #10b981; height: 100%; border-radius: 2px;"></div></div>
+                                        <span class="bar-val" style="font-size: 0.7rem; font-weight: 700;">90<span style="color:#94a3b8; font-weight: 500;">/100</span></span>
+                                    </div>
+                                </div>
+                                <div class="wellness-score-footer" style="display: flex; justify-content: space-between; align-items: center; margin-top: 12px;">
+                                    <span class="date-badge" style="font-size: 0.65rem; color: #475569; font-weight: 600;">📅 Wed, Aug 12, 2026</span>
+                                    <button class="btn-action-pink" style="padding: 4px 10px; width: auto; font-size: 0.7rem;">View Trends →</button>
+                                </div>
                             </div>
-                            <div class="date-badge" id="current-date-badge">Thu, Aug 6, 2026</div>
                         </div>
                     </div>
 
@@ -189,7 +218,10 @@
                                 <span class="metric-label">WELLNESS</span>
                             </div>
                             <div class="metric-value-row">
-                                <strong id="metric-wellness-score">87/100</strong>
+                                <div class="metric-text-group">
+                                    <strong id="metric-wellness-score">87/100</strong>
+                                    <div style="color: #10b981; font-size: 0.65rem; font-weight: 600;">↑ 8 pts</div>
+                                </div>
                                 <svg class="sparkline" viewBox="0 0 100 30">
                                     <path d="M0,25 Q15,10 30,20 T60,5 T90,15 T100,10" fill="none" stroke="#ff5a8f" stroke-width="2.5" />
                                 </svg>
@@ -201,7 +233,10 @@
                                 <span class="metric-label">AI HEALTH</span>
                             </div>
                             <div class="metric-value-row">
-                                <strong id="metric-ai-score">89/100</strong>
+                                <div class="metric-text-group">
+                                    <strong id="metric-ai-score">89/100</strong>
+                                    <div style="color: #10b981; font-size: 0.65rem; font-weight: 600;">↑ 6 pts</div>
+                                </div>
                                 <svg class="sparkline" viewBox="0 0 100 30">
                                     <path d="M0,20 Q15,5 30,15 T60,8 T90,2 T100,6" fill="none" stroke="#a78bfa" stroke-width="2.5" />
                                 </svg>
@@ -213,7 +248,10 @@
                                 <span class="metric-label">SLEEP QUALITY</span>
                             </div>
                             <div class="metric-value-row">
-                                <strong id="metric-sleep-quality">8.2 hrs • Restorative</strong>
+                                <div class="metric-text-group">
+                                    <strong id="metric-sleep-quality">8.2 hrs</strong>
+                                    <div style="color: #8b5cf6; font-size: 0.65rem; font-weight: 600;">Restorative</div>
+                                </div>
                                 <svg class="sparkline" viewBox="0 0 100 30">
                                     <path d="M0,25 Q15,22 30,18 T60,10 T90,15 T100,8" fill="none" stroke="#6366f1" stroke-width="2.5" />
                                 </svg>
@@ -225,7 +263,10 @@
                                 <span class="metric-label">HYDRATION</span>
                             </div>
                             <div class="metric-value-row">
-                                <strong id="metric-hydration">2.4L / 80% Goal</strong>
+                                <div class="metric-text-group">
+                                    <strong id="metric-hydration">2.4 L / 80%</strong>
+                                    <div style="color: #3b82f6; font-size: 0.65rem; font-weight: 600;">Goal</div>
+                                </div>
                                 <svg class="sparkline" viewBox="0 0 100 30">
                                     <path d="M0,25 Q15,20 30,22 T60,15 T90,8 T100,5" fill="none" stroke="#3b82f6" stroke-width="2.5" />
                                 </svg>
@@ -240,37 +281,29 @@
                         <div class="dash-grid-card">
                             <div class="card-title-row">
                                 <h3>🌸 Cycle Overview</h3>
-                                <span class="phase-badge" id="dash-phase-badge">Menstrual</span>
+                                <span class="phase-badge" style="background: #ffe4e6; color: #f43f5e;">OVULATORY</span>
                             </div>
-                            <div class="cycle-dial-container">
-                                <svg class="cycle-dial-svg" viewBox="0 0 200 200">
-                                    <circle cx="100" cy="100" r="82" fill="none" stroke="#ffe4ef" stroke-width="6" />
-                                    <!-- Dynamic overlay ring -->
-                                    <circle cx="100" cy="100" r="82" fill="none" stroke="#ff5a8f" stroke-width="10" 
-                                            class="cycle-progress-ring" id="dashboard-cycle-ring" />
-                                </svg>
-                                <div class="cycle-dial-text">
-                                    <span class="cycle-dial-label">Cycle Day</span>
-                                    <span class="cycle-dial-number" id="dash-cycle-day">14</span>
-                                    <span class="cycle-dial-phase" id="dash-cycle-phase-center">Menstrual Phase</span>
-                                </div>
-                            </div>
-                            <div class="cycle-details-pills">
+                            
+                            <div class="cycle-details-pills" style="margin-top: 10px; margin-bottom: 16px;">
                                 <div class="cycle-detail-item">
-                                    <span class="label">Predicted Next Period:</span>
-                                    <span class="val" id="dash-next-period">Aug 22, 2026</span>
+                                    <span class="label">Predicted Next</span>
+                                    <span class="val">Aug 26</span>
                                 </div>
                                 <div class="cycle-detail-item">
-                                    <span class="label">Fertile Window:</span>
-                                    <span class="val" id="dash-fertile-window">Aug 4 - 10</span>
+                                    <span class="label">LH Surge Window</span>
+                                    <span class="val">Aug 24 - Aug 27</span>
                                 </div>
-                                <div class="cycle-detail-item hidden">
-                                    <!-- Hidden support for backend avg cycle binding -->
-                                    <span class="val" id="dash-avg-cycle">28 Days</span>
+                                <div class="cycle-detail-item">
+                                    <span class="label">Estrogen Peaks</span>
+                                    <span class="val">Aug 20 - Aug 24</span>
                                 </div>
                             </div>
-                            <p class="phase-desc-text" id="dash-phase-desc">Loading cycle phase details...</p>
-                            <button class="btn-action-pink" onclick="navigate('tracker')">Open Period Tracker →</button>
+
+                            <div class="cycle-info-box" style="border: 1px solid #fbcfe8; background: #fff0f5; padding: 10px; border-radius: 8px; margin-bottom: 16px; border-left: 3px solid #f43f5e;">
+                                <p style="font-size: 0.72rem; color: #475569; margin: 0; line-height: 1.4;">LH surge window, Estrogen peaks, Log ovulation test strip results if tracking conception or LH levels.</p>
+                            </div>
+
+                            <button class="btn-action-pink margin-top-auto" onclick="navigate('tracker')">Open Period Tracker →</button>
                         </div>
 
                         <!-- Quick Mood Check-In -->
@@ -281,17 +314,17 @@
                             </div>
                             <p class="card-description-text">How are you feeling right now?</p>
                             
-                            <!-- Mood Line Trend Chart -->
-                            <div class="mood-chart-wrapper">
-                                <canvas id="mini-mood-chart" height="110"></canvas>
-                            </div>
+                            <!-- (Chart removed to match mockup and save space) -->
 
-                            <div class="emoji-selector-pills" id="dash-emoji-selector">
+                            <div class="emoji-selector-wrapper">
+                                <div class="emoji-slider-track"></div>
+                                <div class="emoji-selector-pills" id="dash-emoji-selector">
                                 <button class="emoji-btn-round" data-mood="1" title="Very Sad">😢</button>
                                 <button class="emoji-btn-round" data-mood="2" title="Sad">😟</button>
                                 <button class="emoji-btn-round" data-mood="3" title="Neutral">😐</button>
                                 <button class="emoji-btn-round" data-mood="4" title="Happy">😊</button>
                                 <button class="emoji-btn-round" data-mood="5" title="Very Happy">😁</button>
+                            </div>
                             </div>
                             <div id="dash-mood-status" class="status-note hidden">Mood logged for today!</div>
                             <button class="btn-action-pink margin-top-auto" onclick="navigate('wellness')">Go to Wellness & Chat →</button>
@@ -332,8 +365,8 @@
                                             <button class="rate-pill" data-val="3">3</button>
                                         </div>
                                     </div>
-                                    <div class="symptom-slider-row" data-symptom="breast_tenderness">
-                                        <span class="label">Tender Breasts</span>
+                                    <div class="symptom-slider-row" data-symptom="bloating">
+                                        <span class="label">Bloating</span>
                                         <div class="rate-pills">
                                             <button class="rate-pill" data-val="1">1</button>
                                             <button class="rate-pill" data-val="2">2</button>
@@ -355,6 +388,8 @@
                                         <span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span>
                                         <span>9</span><span>10</span><span>11</span><span>12</span><span class="active">13</span><span>14</span><span>15</span>
                                         <span>16</span><span>17</span><span>18</span><span>19</span><span>20</span><span>21</span><span>22</span>
+                                        <span>23</span><span>24</span><span>25</span><span>26</span><span>27</span><span>28</span><span>29</span>
+                                        <span>30</span><span>31</span><span class="other">1</span><span class="other">2</span><span class="other">3</span><span class="other">4</span><span class="other">5</span>
                                     </div>
                                 </div>
                             </div>
@@ -378,8 +413,8 @@
                             
                             <div class="insights-list">
                                 <div class="insight-item">
-                                    <span class="insight-icon icon-pink">★</span>
-                                    <p>Estrogen levels correlate with high energy; consider a intense workout.</p>
+                                    <span class="insight-icon icon-yellow">⚡</span>
+                                    <p>High energy days ahead! Perfect time for an intense workout.</p>
                                 </div>
                                 <div class="insight-item">
                                     <span class="insight-icon icon-blue">💧</span>
@@ -390,6 +425,8 @@
                                     <p>Hydration goal reached for 5 of 7 days.</p>
                                 </div>
                             </div>
+
+                            <button class="btn-action-pink btn-block margin-top-auto">View All Insights →</button>
 
                             <!-- Mapped dynamic articles support (hidden elements for system binding) -->
                             <div class="hidden">
@@ -875,12 +912,6 @@
 
     </main>
 
-    <!-- Footer -->
-    <footer class="app-footer">
-        <div class="footer-container">
-            <p> HerWellness Hub &copy; 2026. Hackathon Prototype. Empowering women's health with science & compassion.</p>
-        </div>
-    </footer>
 
     </div> <!-- Close app-main-wrapper -->
 </div> <!-- Close app-layout -->
