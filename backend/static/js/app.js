@@ -627,8 +627,9 @@ function calculateWellnessScoreLocal(sleep, hydration, exercise, stress, mood) {
 async function loadTrackerData() {
     try {
         if (!state.hasSetInitialCal) {
-            state.currentCalYear = 2026;
-            state.currentCalMonth = 8; // September 2026
+            const now = new Date();
+            state.currentCalYear = now.getFullYear();
+            state.currentCalMonth = now.getMonth();
             state.hasSetInitialCal = true;
         }
 
