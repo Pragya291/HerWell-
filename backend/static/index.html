@@ -8,8 +8,8 @@
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/css/style.css?v=101">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css?v=999">
 </head>
 <body>
 
@@ -64,7 +64,8 @@
             <!-- Top Header (Greeting, bell notification, user actions) -->
             <header class="app-top-header">
                 <div class="greeting-section">
-                    <h1 class="ai-greeting" id="ai-summary-greeting">Good Morning, Priya! ☀️</h1>
+                    <h1 class="ai-greeting" id="ai-summary-greeting">Good Morning, Priya! 👋</h1>
+                    <p class="greeting-subtitle">Let's prioritize your well-being today.</p>
                 </div>
                 <div class="top-header-right">
                     <button class="btn-notification" title="Notifications">
@@ -676,173 +677,284 @@
 
         <!-- ================= VIEW 4: MENTAL WELLNESS ================= -->
         <section id="view-wellness" class="app-view hidden">
-            <div class="view-header">
-                <h2><span class="icon">💖</span> Mental Wellness & Companion Support</h2>
-                <p>Track emotional trends with CBT journaling and converse with Vera, your supportive AI wellness companion.</p>
-            </div>
 
-            <!-- Crisis Banner -->
-            <div class="crisis-banner">
-                <div class="crisis-text">
-                    <strong>Need Immediate Support?</strong> If you or someone you know is in crisis, support is available 24/7.
-                </div>
-                <button class="btn btn-sm btn-outline-white" onclick="openHelplineModal()">Crisis Helpline Info</button>
-            </div>
-
-            <div class="wellness-grid">
+            <!-- 3 Column Wellness Layout Grid -->
+            <div class="wellness-grid-3col">
                 
-                <!-- Column 1: Mood Tracker & History -->
+                <!-- Column 1: Daily Wellness & Mood Logger -->
                 <div class="wellness-col">
-                    <div class="wellness-card">
-                        <h3><span class="icon">🌸</span> Daily Wellness & Mood Logger</h3>
-                        
-                        <div class="form-group">
-                            <label>Selected Date:</label>
-                            <input type="date" id="wellness-log-date" class="form-control">
+                    <div class="wellness-card daily-logger-card">
+                        <div class="form-group date-picker-group">
+                            <input type="date" id="wellness-log-date" class="form-control date-input-full" value="2026-08-13">
                         </div>
 
                         <div class="form-group">
-                            <label>Rate Your Mood:</label>
+                            <label class="field-label">Mood Rating:</label>
                             <div class="emoji-selector large" id="wellness-emoji-selector">
-                                <button class="emoji-btn" data-mood="1" title="Very Sad">😢<br><small>1</small></button>
-                                <button class="emoji-btn" data-mood="2" title="Sad">😟<br><small>2</small></button>
-                                <button class="emoji-btn" data-mood="3" title="Neutral">😐<br><small>3</small></button>
-                                <button class="emoji-btn" data-mood="4" title="Happy">😊<br><small>4</small></button>
-                                <button class="emoji-btn" data-mood="5" title="Very Happy">😁<br><small>5</small></button>
+                                <button class="emoji-btn" data-mood="1" title="Very Sad">😢<br><small>Very Sad</small></button>
+                                <button class="emoji-btn" data-mood="2" title="Sad">😟<br><small>Sad</small></button>
+                                <button class="emoji-btn selected" data-mood="3" title="Neutral">😐<br><small>Neutral</small></button>
+                                <button class="emoji-btn" data-mood="4" title="Happy">😊<br><small>Happy</small></button>
+                                <button class="emoji-btn" data-mood="5" title="Elated">😁<br><small>Exited</small></button>
                             </div>
                         </div>
 
                         <div class="form-group">
+                            <label class="field-label">Key Events:</label>
+                            <div class="tags-container">
+                                <span class="tag">#WorkMeeting</span>
+                                <span class="tag">#Exercise</span>
+                                <span class="tag">#FamilyTime</span>
+                                <span class="tag">#DateNight</span>
+                                <button class="tag-add-btn" title="Add Tag">+ Add</button>
+                            </div>
+                        </div>
+
+                        <div class="form-group slider-group">
                             <div class="slider-label-row">
-                                <label for="wellness-sleep-hours">Sleep Duration:</label>
+                                <label for="wellness-sleep-hours">Sleep Duration</label>
                                 <span class="slider-val" id="sleep-hours-val">8.0 hours</span>
                             </div>
-                            <input type="range" id="wellness-sleep-hours" min="0" max="12" step="0.5" value="8.0" class="slider-control">
+                            <input type="range" id="wellness-sleep-hours" min="0" max="12" step="0.5" value="8.0" class="slider-control custom-slider">
                         </div>
 
-                        <div class="form-group">
+                        <div class="form-group slider-group">
                             <div class="slider-label-row">
-                                <label for="wellness-hydration-liters">Water Intake (Hydration):</label>
+                                <label for="wellness-hydration-liters">Water Intake (Hydration)</label>
                                 <span class="slider-val" id="hydration-liters-val">2.5 Liters</span>
                             </div>
-                            <input type="range" id="wellness-hydration-liters" min="0" max="5" step="0.1" value="2.5" class="slider-control">
+                            <input type="range" id="wellness-hydration-liters" min="0" max="5" step="0.1" value="2.5" class="slider-control custom-slider">
                         </div>
 
-                        <div class="form-group">
+                        <div class="form-group slider-group">
                             <div class="slider-label-row">
-                                <label for="wellness-exercise-minutes">Exercise Duration:</label>
+                                <label for="wellness-exercise-minutes">Exercise Duration</label>
                                 <span class="slider-val" id="exercise-minutes-val">30 mins</span>
                             </div>
-                            <input type="range" id="wellness-exercise-minutes" min="0" max="120" step="5" value="30" class="slider-control">
+                            <input type="range" id="wellness-exercise-minutes" min="0" max="120" step="5" value="30" class="slider-control custom-slider">
                         </div>
 
                         <div class="form-group">
-                            <label>Stress Level:</label>
-                            <div class="pill-selector" id="wellness-stress-selector">
+                            <div class="stress-row">
+                                <label>Stress Level</label>
+                                <span class="stress-val" id="wellness-stress-val">Low</span>
+                            </div>
+                            <div class="pill-selector stress-selector" id="wellness-stress-selector">
                                 <button type="button" class="pill-btn selected" data-stress="low">Low</button>
                                 <button type="button" class="pill-btn" data-stress="medium">Medium</button>
                                 <button type="button" class="pill-btn" data-stress="high">High</button>
                             </div>
                         </div>
 
-                        <div class="form-group">
-                            <label for="wellness-journal-text">Journal Entry / Thoughts (CBT Reflection):</label>
-                            <textarea id="wellness-journal-text" rows="3" placeholder="What is on your mind today? Write down any thoughts, triggers, or gratitude..."></textarea>
-                        </div>
-
-                        <!-- Real-Time Score Gauge Container -->
-                        <div class="live-score-preview-box">
-                            <div class="gauge-container">
-                                <svg class="progress-ring" width="100" height="100">
-                                    <circle class="progress-ring__background" stroke="#e2e8f0" stroke-width="8" fill="transparent" r="42" cx="50" cy="50" />
-                                    <circle class="progress-ring__circle" stroke="url(#wellness-grad)" stroke-width="8" stroke-dasharray="263.89" stroke-dashoffset="263.89" fill="transparent" r="42" cx="50" cy="50" />
-                                    <defs>
-                                        <linearGradient id="wellness-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-                                            <stop offset="0%" stop-color="#db2777" />
-                                            <stop offset="100%" stop-color="#f43f5e" />
-                                        </linearGradient>
-                                    </defs>
-                                </svg>
-                                <div class="gauge-value">
-                                    <span id="live-wellness-score-val">87</span>
-                                    <span class="gauge-denom">/100</span>
-                                </div>
-                            </div>
-                            <div class="live-score-details">
-                                <h4>Calculated Score</h4>
-                                <p id="live-wellness-score-desc">Good</p>
-                            </div>
-                        </div>
-
-                        <button class="btn btn-primary btn-block" onclick="submitWellnessLog()">Save Daily Wellness Log</button>
-                    </div>
-
-                    <!-- 30-Day Mood Chart -->
-                    <div class="wellness-card">
-                        <h3><span class="icon">📊</span> Mood Trend (Last 30 Days)</h3>
-                        <div class="canvas-container">
-                            <canvas id="mood-trend-chart" height="200"></canvas>
+                        <div class="action-buttons-row">
+                            <button class="btn btn-primary action-save" onclick="submitWellnessLog()">Save Entry</button>
+                            <button class="btn action-clear" onclick="resetWellnessForm()">Clear All</button>
                         </div>
                     </div>
                 </div>
 
-                <!-- Column 2: Vera Chatbot Companion -->
-                <div class="wellness-col">
-                    <div class="chat-card">
-                        <div class="chat-header" style="display:flex; justify-content:space-between; align-items:center;">
-                            <div style="display:flex; align-items:center; gap:10px;">
-                                <div class="chat-avatar">🌸</div>
-                                <div>
-                                    <h3>Vera AI Companion</h3>
-                                    <span class="chat-status" style="display:flex; align-items:center; gap:6px;">
-                                        <span class="status-dot"></span> Online
-                                        <span style="font-size:0.7rem; background:rgba(219,39,119,0.15); color:#db2777; padding:1px 6px; border-radius:10px; font-weight:700;">⚡ Real-Time Sync</span>
-                                    </span>
+                <!-- Column 2: Overview, Daily Trend & Weekly Summary -->
+                <div class="wellness-col middle-col">
+                    
+                    <!-- Card 1: Wellness Overview -->
+                    <div class="wellness-card overview-card">
+                        <div class="overview-stats-grid">
+                            <div class="overview-stat-box gauge-box">
+                                <div class="mini-gauge-container">
+                                    <svg class="mini-gauge-ring" viewBox="0 0 36 36">
+                                        <path class="gauge-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#ffe4e6" stroke-width="3" />
+                                        <path class="gauge-fill" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#f43f5e" stroke-width="3" stroke-dasharray="72, 100" />
+                                    </svg>
+                                    <div class="gauge-val">72<small>/100</small></div>
+                                </div>
+                                <div class="stat-meta">
+                                    <span class="stat-title">Score</span>
+                                    <strong class="stat-label">Good</strong>
+                                    <span class="stat-sub positive">↑ 8 pts from yesterday</span>
                                 </div>
                             </div>
-                            <div style="display:flex; align-items:center; gap:8px;">
-                                <label style="font-size:0.75rem; cursor:pointer; display:flex; align-items:center; gap:4px; font-weight:600; color:#475569;">
-                                    <input type="checkbox" id="toggle-auto-voice" style="accent-color:#db2777;"> 🔊 Auto-Speak
-                                </label>
-                                <button type="button" class="btn btn-xs btn-secondary" style="font-size:0.75rem;" onclick="openAIConfigModal()" title="Connect Live API Key">⚙️ Key Settings</button>
-                                <button type="button" class="btn btn-xs btn-outline" style="font-size:0.75rem;" onclick="clearChatHistory()" title="Clear Conversation">🧹 Clear</button>
+
+                            <div class="overview-stat-box">
+                                <div class="stat-icon-wrap moon">🌙</div>
+                                <span class="stat-title">Sleep</span>
+                                <strong class="stat-main-val">8.0 <small>hrs</small></strong>
+                                <span class="badge-status green">Good</span>
+                            </div>
+
+                            <div class="overview-stat-box">
+                                <div class="stat-icon-wrap water">💧</div>
+                                <span class="stat-title">Hydration</span>
+                                <strong class="stat-main-val">2.5 <small>L</small></strong>
+                                <span class="badge-status green">Good</span>
+                            </div>
+
+                            <div class="overview-stat-box">
+                                <div class="stat-icon-wrap runner">↔</div>
+                                <span class="stat-title">Activity</span>
+                                <strong class="stat-main-val">30 <small>mins</small></strong>
+                                <span class="badge-status green">Keep going!</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card 2: Daily Trend Chart -->
+                    <div class="wellness-card trend-card">
+                        <div class="card-header-flex">
+                            <h3>Daily Trend</h3>
+                            <select class="trend-select-dropdown">
+                                <option value="mood">Mood ˅</option>
+                                <option value="sleep">Sleep</option>
+                                <option value="stress">Stress</option>
+                            </select>
+                        </div>
+                        <div class="canvas-container trend-chart-wrap">
+                            <canvas id="mood-trend-chart" height="110"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Card 3: Weekly Summary -->
+                    <div class="wellness-card summary-card">
+                        <div class="card-header-flex">
+                            <h3>Weekly Summary</h3>
+                            <a href="#" class="link-insights" onclick="navigate('tracker'); return false;">View Insights →</a>
+                        </div>
+                        <div class="weekly-summary-grid">
+                            <div class="summary-box">
+                                <span class="summary-label">Best Day</span>
+                                <div class="summary-row">
+                                    <span class="day-badge green">Tue</span>
+                                    <span class="day-emoji">😁</span>
+                                </div>
+                                <span class="summary-sub">Wellness Score</span>
+                                <strong class="summary-bold-val">85</strong>
+                            </div>
+
+                            <div class="summary-box">
+                                <span class="summary-label">Average Score</span>
+                                <div class="summary-row">
+                                    <strong class="summary-score-val">71</strong>
+                                    <span class="bar-chart-icon">📊</span>
+                                </div>
+                            </div>
+
+                            <div class="summary-box">
+                                <span class="summary-label">Total Entries</span>
+                                <div class="summary-row">
+                                    <strong class="summary-score-val">12</strong>
+                                    <span class="clipboard-icon">📅</span>
+                                </div>
+                                <span class="summary-sub">This Week</span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Column 3: Vera AI Companion -->
+                <div class="wellness-col">
+                    <div class="chat-card vera-card">
+                        <div class="chat-header simple-header">
+                            <div class="header-left">
+                                <div class="chat-avatar">🌸</div>
+                                <h3>VERA AI</h3>
                             </div>
                         </div>
 
-                        <!-- Chat Messages Container -->
+                        <!-- Chat Messages -->
                         <div class="chat-messages" id="chat-messages-container">
                             <div class="message message-vera">
                                 <div class="message-bubble">
-                                    Hello! I am Vera, your supportive wellness companion. 🌸 I am here to offer real-time health updates, CBT prompts, and cycle insights. How are you feeling right now?
+                                    Hello! I am Vera, your supportive wellness companion. 🌸 I am here to offer realtime health updates, CBT prompts, and cycle insights. How are you feeling right now?
                                 </div>
-                                <span class="message-time">Vera</span>
+                                <span class="message-time">Vera • 9:30 AM</span>
                             </div>
                         </div>
 
-                        <!-- Quick Prompts -->
-                        <div class="quick-prompts" id="vera-quick-prompts">
-                            <button class="prompt-chip" style="border:1px solid #db2777; color:#db2777; font-weight:700;" onclick="sendQuickPrompt('What is my real-time status today?')">⚡ Today's Live Status</button>
-                            <button class="prompt-chip" onclick="sendQuickPrompt('I am feeling anxious and overwhelmed today.')">Feeling Anxious 😰</button>
-                            <button class="prompt-chip" onclick="sendQuickPrompt('Can you guide me through a 4-7-8 breathing exercise?')">Breathing Exercise 🧘‍♀️</button>
-                            <button class="prompt-chip" onclick="sendQuickPrompt('Tell me about PCOS symptoms and evidence-based tips.')">PCOS Tips 🌸</button>
-                            <button class="prompt-chip" onclick="sendQuickPrompt('How does cycle syncing nutrition work?')">Cycle Syncing 📖</button>
+                        <!-- Quick Feeling Pills -->
+                        <div class="quick-feelings-pills">
+                            <button class="feeling-pill" onclick="sendQuickPrompt('I am feeling okay')">😲 I'm feeling okay</button>
+                            <button class="feeling-pill" onclick="sendQuickPrompt('I am stressed')">😫 I'm stressed</button>
+                            <button class="feeling-pill" onclick="sendQuickPrompt('I didn\'t sleep well')">😴 I didn't sleep well</button>
+                            <button class="feeling-pill" onclick="sendQuickPrompt('Write my thoughts')">💬 Write my thoughts</button>
                         </div>
 
-                        <!-- Voice Status Banner -->
-                        <div id="voice-recording-status" class="voice-recording-status hidden" style="font-size:0.8rem; color:#db2777; font-weight:600; padding:4px 10px; background:rgba(219,39,119,0.1); border-radius:6px; margin-bottom:6px; display:flex; align-items:center; gap:6px;">
-                            <span class="status-dot" style="animation: blink 1s infinite;"></span> Listening... Speak now!
+                        <!-- Action Prompt Chips -->
+                        <div class="quick-prompts-grid" id="vera-quick-prompts">
+                            <button class="prompt-chip" onclick="sendQuickPrompt('Suggest CBT Prompt')">
+                                <span class="chip-icon">🌸</span> Suggest CBT Prompt
+                            </button>
+                            <button class="prompt-chip" onclick="sendQuickPrompt('Analyze Mood Correlation')">
+                                <span class="chip-icon">📊</span> Analyze Mood
+                            </button>
+                            <button class="prompt-chip" onclick="sendQuickPrompt('Analyze My Sleep')">
+                                <span class="chip-icon">😴</span> Analyze Sleep
+                            </button>
+                            <button class="prompt-chip" onclick="sendQuickPrompt('Start Guided Breathing')">
+                                <span class="chip-icon">🧘</span> Guided Breathing
+                            </button>
                         </div>
 
-                        <!-- Chat Input Bar -->
-                        <form class="chat-input-form" onsubmit="handleChatSubmit(event)">
-                            <input type="text" id="chat-input" placeholder="Type or speak a message to Vera..." required autocomplete="off">
-                            <button type="button" id="btn-voice-input" class="btn btn-secondary" onclick="toggleVoiceInput()" title="Click to speak (Voice-to-Text)">🎤</button>
-                            <button type="submit" class="btn btn-primary">Send</button>
-                        </form>
+                        <!-- Chat Input Box -->
+                        <div class="chat-input-row">
+                            <input type="text" id="vera-chat-input" placeholder="Type your message here..." class="chat-input-field">
+                            <button class="chat-send-btn" onclick="submitChatMessage()">➢</button>
+                        </div>
+                        
+                        <!-- AI Suggestion Box with Illustration -->
+                        <div class="ai-suggestion-box">
+                            <div class="suggestion-icon">🌸</div>
+                            <div class="suggestion-content">
+                                <div class="sugg-header">VERA AI DAILY SUGGESTION</div>
+                                <div class="sugg-body">
+                                    Self-Care Suggestion:<br>
+                                    <strong>Take a 5-minute deep breathing break ▶</strong>
+                                </div>
+                            </div>
+                            <img src="/assets/meditation_illustration.png" alt="Meditating Woman" class="sugg-illustration">
+                        </div>
                     </div>
                 </div>
 
             </div>
+
+            <!-- Bottom Full-Width Row: Upcoming Reminders -->
+            <div class="wellness-bottom-row">
+                <div class="wellness-card reminders-card">
+                    <div class="reminders-header">
+                        <h3><span class="icon">🚨</span> Upcoming Reminders</h3>
+                        <a href="#" class="link-insights" onclick="navigate('tracker'); return false;">View All</a>
+                    </div>
+                    <div class="reminders-pills-row">
+                        <div class="reminder-pill-item">
+                            <div class="rem-icon water">💧</div>
+                            <div class="rem-info">
+                                <strong>Hydrate</strong>
+                                <span>Drink water</span>
+                            </div>
+                            <div class="rem-time">11:00 AM</div>
+                        </div>
+
+                        <div class="reminder-pill-item">
+                            <div class="rem-icon stretch">🧘</div>
+                            <div class="rem-info">
+                                <strong>Stretch Break</strong>
+                                <span>Move your body</span>
+                            </div>
+                            <div class="rem-time">03:00 PM</div>
+                        </div>
+
+                        <div class="reminder-pill-item">
+                            <div class="rem-icon night">🌙</div>
+                            <div class="rem-info">
+                                <strong>Night Routine</strong>
+                                <span>Wind down</span>
+                            </div>
+                            <div class="rem-time">10:30 PM</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </section>
 
 

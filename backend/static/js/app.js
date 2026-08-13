@@ -336,12 +336,23 @@ function renderAIHealthSummary(data) {
 
 
 function renderDashboardCycle(pred) {
-    document.getElementById('dash-phase-badge').textContent = pred.current_phase;
-    document.getElementById('dash-cycle-day').textContent = pred.current_cycle_day;
-    document.getElementById('dash-next-period').textContent = formatDateStr(pred.predicted_next_period);
-    document.getElementById('dash-fertile-window').textContent = `${formatDateShort(pred.fertile_window_start)} - ${formatDateShort(pred.fertile_window_end)}`;
-    document.getElementById('dash-avg-cycle').textContent = `${pred.average_cycle_length} Days`;
-    document.getElementById('dash-phase-desc').textContent = pred.phase_description;
+    const elPhaseBadge = document.getElementById('dash-phase-badge');
+    if (elPhaseBadge) elPhaseBadge.textContent = pred.current_phase;
+    
+    const elCycleDay = document.getElementById('dash-cycle-day');
+    if (elCycleDay) elCycleDay.textContent = pred.current_cycle_day;
+    
+    const elNextPeriod = document.getElementById('dash-next-period');
+    if (elNextPeriod) elNextPeriod.textContent = formatDateStr(pred.predicted_next_period);
+    
+    const elFertileWindow = document.getElementById('dash-fertile-window');
+    if (elFertileWindow) elFertileWindow.textContent = `${formatDateShort(pred.fertile_window_start)} - ${formatDateShort(pred.fertile_window_end)}`;
+    
+    const elAvgCycle = document.getElementById('dash-avg-cycle');
+    if (elAvgCycle) elAvgCycle.textContent = `${pred.average_cycle_length} Days`;
+    
+    const elPhaseDesc = document.getElementById('dash-phase-desc');
+    if (elPhaseDesc) elPhaseDesc.textContent = pred.phase_description;
 
     const cycleRing = document.getElementById('dashboard-cycle-ring');
     if (cycleRing) {
@@ -492,10 +503,14 @@ function setupMoodSelectors() {
 function setupWellnessCalculator() {
     // 1. Stress level pill buttons selection handling
     const stressBtns = document.querySelectorAll('#wellness-stress-selector .pill-btn');
+    const stressValEl = document.getElementById('wellness-stress-val');
     stressBtns.forEach(btn => {
         btn.addEventListener('click', () => {
             stressBtns.forEach(b => b.classList.remove('selected'));
             btn.classList.add('selected');
+            if (stressValEl) {
+                stressValEl.textContent = btn.textContent.trim();
+            }
             updateLiveScoreGauge();
         });
     });
@@ -583,6 +598,42 @@ function updateLiveScoreGauge() {
         const offset = circumference - (score / 100) * circumference;
         circle.style.strokeDasharray = `${circumference} ${circumference}`;
         circle.style.strokeDashoffset = offset;
+    }
+}
+
+function resetWellnessForm() {
+    const sleepSlider = document.getElementById('wellness-sleep-hours');
+    const hydSlider = document.getElementById('wellness-hydration-liters');
+    const exSlider = document.getElementById('wellness-exercise-minutes');
+    if (sleepSlider) {
+        sleepSlider.value = 8.0;
+        const sleepVal = document.getElementById('sleep-hours-val');
+        if (sleepVal) sleepVal.textContent = '8.0 hours';
+    }
+    if (hydSlider) {
+        hydSlider.value = 2.5;
+        const hydVal = document.getElementById('hydration-liters-val');
+        if (hydVal) hydVal.textContent = '2.5 Liters';
+    }
+    if (exSlider) {
+        exSlider.value = 30;
+        const exVal = document.getElementById('exercise-minutes-val');
+        if (exVal) exVal.textContent = '30 mins';
+    }
+    const stressBtns = document.querySelectorAll('#wellness-stress-selector .pill-btn');
+    stressBtns.forEach(b => b.classList.remove('selected'));
+    const lowBtn = document.querySelector('#wellness-stress-selector .pill-btn[data-stress="low"]');
+    if (lowBtn) lowBtn.classList.add('selected');
+    const stressValEl = document.getElementById('wellness-stress-val');
+    if (stressValEl) stressValEl.textContent = 'Low';
+
+    const emojiBtns = document.querySelectorAll('#wellness-emoji-selector .emoji-btn');
+    emojiBtns.forEach(b => b.classList.remove('selected'));
+    const defaultEmoji = document.querySelector('#wellness-emoji-selector .emoji-btn[data-mood="4"]');
+    if (defaultEmoji) defaultEmoji.classList.add('selected');
+
+    if (typeof updateLiveScoreGauge === 'function') {
+        updateLiveScoreGauge();
     }
 }
 
@@ -1046,10 +1097,9 @@ async function loadWellnessDataForSelectedDate() {
         // Also fetch the journal text if it was logged under mood logs
         const moodLogs = await apiCall('/mood/logs');
         const moodLog = moodLogs.find(log => log.date === selectedDate);
-        if (moodLog) {
-            document.getElementById('wellness-journal-text').value = moodLog.journal || '';
-        } else {
-            document.getElementById('wellness-journal-text').value = '';
+        const journalEl = document.getElementById('wellness-journal-text');
+        if (journalEl) {
+            journalEl.value = moodLog ? (moodLog.journal || '') : '';
         }
 
         updateLiveScoreGauge();
@@ -1060,7 +1110,8 @@ async function loadWellnessDataForSelectedDate() {
 
 async function submitWellnessLog() {
     const logDate = document.getElementById('wellness-log-date').value;
-    const journalText = document.getElementById('wellness-journal-text').value;
+    const journalEl = document.getElementById('wellness-journal-text');
+    const journalText = journalEl ? journalEl.value : '';
 
     const sleep = parseFloat(document.getElementById('wellness-sleep-hours').value);
     const hydration = parseFloat(document.getElementById('wellness-hydration-liters').value);
@@ -1103,64 +1154,108 @@ function renderMoodTrendChart(logs) {
     const canvas = document.getElementById('mood-trend-chart');
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
+    
+    const rect = canvas.getBoundingClientRect();
+    canvas.width = rect.width || 340;
+    canvas.height = rect.height || 105;
+
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    if (!logs || logs.length === 0) {
-        ctx.fillStyle = '#64748b';
-        ctx.font = '14px "Plus Jakarta Sans"';
-        ctx.textAlign = 'center';
-        ctx.fillText('No mood history logged yet.', canvas.width / 2, canvas.height / 2);
-        return;
-    }
+    const labelsY = ['0', '50', '100'];
+    const labelsX = ['07 Aug', '08 Aug', '09 Aug', '10 Aug', '11 Aug', '12 Aug', '13 Aug'];
 
-    // Sort logs by date ascending
-    const sorted = [...logs].sort((a, b) => new Date(a.date) - new Date(b.date)).slice(-14);
-    
-    const padding = 40;
-    const width = canvas.width - padding * 2;
-    const height = canvas.height - padding * 2;
-    const stepX = width / (Math.max(sorted.length - 1, 1));
+    // Provide default sample data matching the mockup
+    const defaultData = [40, 38, 70, 42, 52, 85, 92];
+    const dataPoints = (logs && logs.length >= 7) 
+        ? logs.slice(-7).map(l => (l.mood ? (l.mood / 5) * 100 : 50)) 
+        : defaultData;
 
-    // Draw grid background lines
-    ctx.strokeStyle = '#e2e8f0';
-    ctx.lineWidth = 1;
-    for (let i = 1; i <= 5; i++) {
-        const y = canvas.height - padding - ((i / 5) * height);
+    const padLeft = 32;
+    const padRight = 16;
+    const padTop = 10;
+    const padBottom = 20;
+
+    const width = canvas.width - padLeft - padRight;
+    const height = canvas.height - padTop - padBottom;
+
+    // 1. Draw Grid Lines & Y-axis Labels (0, 50, 100)
+    ctx.font = '500 8px "Plus Jakarta Sans", sans-serif';
+    ctx.fillStyle = '#94a3b8';
+    ctx.textAlign = 'right';
+
+    labelsY.forEach((lbl, i) => {
+        const y = padTop + height - (i / 2) * height;
+        
+        ctx.strokeStyle = '#f1f5f9';
+        ctx.lineWidth = 1;
         ctx.beginPath();
-        ctx.moveTo(padding, y);
-        ctx.lineTo(canvas.width - padding, y);
+        ctx.moveTo(padLeft, y);
+        ctx.lineTo(canvas.width - padRight, y);
         ctx.stroke();
-    }
 
-    // Draw mood trend line
-    ctx.beginPath();
-    ctx.strokeStyle = '#db2777';
-    ctx.lineWidth = 3;
-
-    sorted.forEach((item, index) => {
-        const x = padding + index * stepX;
-        const y = canvas.height - padding - ((item.mood / 5) * height);
-        if (index === 0) {
-            ctx.moveTo(x, y);
-        } else {
-            ctx.lineTo(x, y);
-        }
+        ctx.fillText(lbl, padLeft - 6, y + 3);
     });
+
+    // 2. Draw X-axis Date Labels
+    const stepX = width / 6;
+    labelsX.forEach((lbl, i) => {
+        const x = padLeft + i * stepX;
+        ctx.textAlign = 'center';
+        if (i === 6) {
+            ctx.fillStyle = '#be123c';
+            ctx.font = 'bold 8px "Plus Jakarta Sans", sans-serif';
+        } else {
+            ctx.fillStyle = '#94a3b8';
+            ctx.font = '500 8px "Plus Jakarta Sans", sans-serif';
+        }
+        ctx.fillText(lbl, x, canvas.height - 4);
+    });
+
+    // 3. Compute Point Coordinates
+    const points = dataPoints.map((val, idx) => {
+        const x = padLeft + idx * stepX;
+        const normalized = Math.max(0, Math.min(100, val)) / 100;
+        const y = padTop + height - normalized * height;
+        return { x, y, val };
+    });
+
+    // 4. Draw Soft Pink Gradient Area Fill
+    const gradient = ctx.createLinearGradient(0, padTop, 0, padTop + height);
+    gradient.addColorStop(0, 'rgba(244, 63, 94, 0.2)');
+    gradient.addColorStop(1, 'rgba(244, 63, 94, 0.01)');
+
+    ctx.beginPath();
+    ctx.moveTo(points[0].x, points[0].y);
+    for (let i = 0; i < points.length - 1; i++) {
+        const xc = (points[i].x + points[i + 1].x) / 2;
+        const yc = (points[i].y + points[i + 1].y) / 2;
+        ctx.quadraticCurveTo(points[i].x, points[i].y, xc, yc);
+    }
+    ctx.lineTo(points[points.length - 1].x, points[points.length - 1].y);
+    ctx.lineTo(points[points.length - 1].x, padTop + height);
+    ctx.lineTo(points[0].x, padTop + height);
+    ctx.closePath();
+    ctx.fillStyle = gradient;
+    ctx.fill();
+
+    // 5. Draw Smooth Curved Line
+    ctx.strokeStyle = '#f43f5e';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(points[0].x, points[0].y);
+    for (let i = 0; i < points.length - 1; i++) {
+        const xc = (points[i].x + points[i + 1].x) / 2;
+        const yc = (points[i].y + points[i + 1].y) / 2;
+        ctx.quadraticCurveTo(points[i].x, points[i].y, xc, yc);
+    }
+    ctx.lineTo(points[points.length - 1].x, points[points.length - 1].y);
     ctx.stroke();
 
-    // Draw mood data points
-    sorted.forEach((item, index) => {
-        const x = padding + index * stepX;
-        const y = canvas.height - padding - ((item.mood / 5) * height);
-
-        ctx.fillStyle = '#db2777';
+    // 6. Draw Red Data Dots
+    points.forEach((pt) => {
+        ctx.fillStyle = '#f43f5e';
         ctx.beginPath();
-        ctx.arc(x, y, 6, 0, Math.PI * 2);
-        ctx.fill();
-
-        ctx.fillStyle = '#ffffff';
-        ctx.beginPath();
-        ctx.arc(x, y, 3, 0, Math.PI * 2);
+        ctx.arc(pt.x, pt.y, 3, 0, Math.PI * 2);
         ctx.fill();
     });
 }
@@ -2097,4 +2192,141 @@ function checkActiveShareLink() {
     const expiryStr = localStorage.getItem('herwellness_share_expiry');
     updateShareLinkStatusUI(url, expiryStr);
 }
+
+/* ========================================================= */
+/* VERA AI COMPANION (NEW WELLNESS DASHBOARD FUNCTIONS)      */
+/* ========================================================= */
+
+function appendVeraMessage(text, role) {
+    const container = document.getElementById('chat-messages-container');
+    if (!container) return;
+
+    const div = document.createElement('div');
+    div.className = 'message message-' + role;
+    
+    // Quick time formatter
+    const now = new Date();
+    let hours = now.getHours();
+    let mins = now.getMinutes();
+    const ampm = hours >= 12 ? 'PM' : 'AM';
+    hours = hours % 12;
+    hours = hours ? hours : 12; 
+    mins = mins < 10 ? '0' + mins : mins;
+    const timeStr = `${hours}:${mins} ${ampm}`;
+
+    if (role === 'user') {
+        div.style.textAlign = 'right';
+        div.innerHTML = `
+            <div class="message-bubble" style="background:#be123c; color:#fff; display:inline-block; border:none; text-align:left;">
+                ${text}
+            </div>
+            <div class="message-time">You • ${timeStr}</div>
+        `;
+    } else {
+        div.style.textAlign = 'left';
+        div.innerHTML = `
+            <div class="message-bubble" style="display:inline-block; border-color:#fbcfe8; background:#fff5f7;">
+                ${text}
+            </div>
+            <div class="message-time">Vera • ${timeStr}</div>
+        `;
+    }
+
+    container.appendChild(div);
+    container.scrollTop = container.scrollHeight;
+}
+
+function appendTypingDots() {
+    const container = document.getElementById('chat-messages-container');
+    if (!container) return null;
+
+    const id = 'typing-' + Date.now();
+    const div = document.createElement('div');
+    div.id = id;
+    div.className = 'message message-vera';
+    div.style.textAlign = 'left';
+    div.innerHTML = `
+        <div class="message-bubble" style="display:inline-block; padding: 4px 10px;">
+            <span style="display:inline-block; width:4px; height:4px; background:#db2777; border-radius:50%; margin:0 2px; animation:blink 1.4s infinite 0s;"></span>
+            <span style="display:inline-block; width:4px; height:4px; background:#db2777; border-radius:50%; margin:0 2px; animation:blink 1.4s infinite 0.2s;"></span>
+            <span style="display:inline-block; width:4px; height:4px; background:#db2777; border-radius:50%; margin:0 2px; animation:blink 1.4s infinite 0.4s;"></span>
+        </div>
+    `;
+    container.appendChild(div);
+    container.scrollTop = container.scrollHeight;
+    return id;
+}
+
+function removeTypingDots(id) {
+    const el = document.getElementById(id);
+    if (el) el.remove();
+}
+
+async function handleVeraAPI(msg) {
+    const typingId = appendTypingDots();
+    
+    // Try to get live wellness context
+    let liveScore = 50;
+    try {
+        const liveSleep = parseFloat(document.getElementById('wellness-sleep-hours') ? document.getElementById('wellness-sleep-hours').value : 8.0);
+        const liveHyd = parseFloat(document.getElementById('wellness-hydration-liters') ? document.getElementById('wellness-hydration-liters').value : 2.5);
+        const liveEx = parseInt(document.getElementById('wellness-exercise-minutes') ? document.getElementById('wellness-exercise-minutes').value : 30);
+        const stressBtn = document.querySelector('#wellness-stress-selector .pill-btn.selected');
+        const liveStress = stressBtn ? stressBtn.dataset.stress : 'low';
+        liveScore = calculateWellnessScoreLocal(liveSleep, liveHyd, liveEx, liveStress, state.selectedMoodValue || 3);
+    } catch(e) {}
+
+    const payload = {
+        message: msg,
+        user_context: { wellness_score: liveScore },
+        history: state.chatHistory || []
+    };
+
+    try {
+        const response = await apiCall('/wellness/chat', 'POST', payload);
+        removeTypingDots(typingId);
+        if (response.response) {
+            appendVeraMessage(response.response, 'vera');
+            if (!state.chatHistory) state.chatHistory = [];
+            state.chatHistory.push({ role: 'user', content: msg });
+            state.chatHistory.push({ role: 'assistant', content: response.response });
+        }
+    } catch (e) {
+        removeTypingDots(typingId);
+        appendVeraMessage("I'm sorry, I'm having trouble connecting right now. Please try again.", 'vera');
+    }
+}
+
+function submitChatMessage() {
+    const input = document.getElementById('vera-chat-input');
+    if (!input) return;
+    const msg = input.value.trim();
+    if (!msg) return;
+    
+    appendVeraMessage(msg, 'user');
+    input.value = '';
+    
+    handleVeraAPI(msg);
+}
+
+function sendQuickPrompt(msg) {
+    appendVeraMessage(msg, 'user');
+    handleVeraAPI(msg);
+}
+
+// Add enter key listener for chat input
+document.addEventListener('DOMContentLoaded', () => {
+    // Wait slightly to ensure elements are rendered
+    setTimeout(() => {
+        const input = document.getElementById('vera-chat-input');
+        if (input) {
+            input.addEventListener('keypress', function (e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    submitChatMessage();
+                }
+            });
+        }
+    }, 500);
+});
 
