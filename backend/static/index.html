@@ -517,129 +517,158 @@
 
         <!-- ================= VIEW 3: PERIOD TRACKER ================= -->
         <section id="view-tracker" class="app-view hidden">
-            <div class="view-header">
-                <h2><span class="icon">📅</span> Menstrual & Reproductive Tracker</h2>
-                <p>Log your cycle events, flow intensity, and physical symptoms to get accurate period & ovulation predictions.</p>
-            </div>
-
             <div class="tracker-layout">
-                <!-- Left Column: Calendar & Controls -->
-                <div class="calendar-container-card">
-                    <div class="calendar-header">
-                        <button class="cal-nav-btn" onclick="changeMonth(-1)">◀ Prev</button>
-                        <h3 id="cal-month-year">July 2026</h3>
-                        <button class="cal-nav-btn" onclick="changeMonth(1)">Next ▶</button>
+                <!-- Left Column: Calendar & Today's Overview -->
+                <div class="tracker-main-col">
+                    <!-- Calendar Card -->
+                    <div class="calendar-container-card">
+                        <div class="calendar-header">
+                            <button class="cal-nav-btn" onclick="changeMonth(-1)">‹</button>
+                            <h3 id="cal-month-year">September 2026</h3>
+                            <button class="cal-nav-btn" onclick="changeMonth(1)">›</button>
+                        </div>
+
+                        <!-- Calendar Grid -->
+                        <div class="calendar-weekdays">
+                            <div>SUN</div><div>MON</div><div>TUE</div><div>WED</div><div>THU</div><div>FRI</div><div>SAT</div>
+                        </div>
+                        <div class="calendar-days-grid" id="calendar-days-grid">
+                            <!-- Rendered dynamically -->
+                        </div>
+
+                        <div class="calendar-legend">
+                            <span class="legend-item"><span class="dot dot-period"></span> Period</span>
+                            <span class="legend-item"><span class="box box-fertile"></span> Fertile Window</span>
+                            <span class="legend-item"><span class="dot dot-ovulation"></span> Ovulation</span>
+                            <span class="legend-item"><span class="dot dot-logged"></span> Logged</span>
+                        </div>
                     </div>
 
-                    <div class="calendar-legend">
-                        <span class="legend-item"><span class="dot dot-period"></span> Period Day</span>
-                        <span class="legend-item"><span class="dot dot-predicted"></span> Predicted Period</span>
-                        <span class="legend-item"><span class="dot dot-fertile"></span> Fertile Window</span>
-                        <span class="legend-item"><span class="dot dot-logged"></span> Other Logged</span>
-                    </div>
+                    <!-- Today's Overview Card -->
+                    <div class="todays-overview-card">
+                        <h3 class="overview-title">🌸 Today's Overview</h3>
 
-                    <!-- Calendar Grid -->
-                    <div class="calendar-weekdays">
-                        <div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div>
-                    </div>
-                    <div class="calendar-days-grid" id="calendar-days-grid">
-                        <!-- Rendered dynamically -->
+                        <div class="overview-metrics-grid">
+                            <!-- Metric 1: Wellness Score -->
+                            <div class="overview-metric-item metric-score-box">
+                                <div class="overview-ring-container" style="width:44px; height:44px; min-width:44px; min-height:44px; max-width:44px; max-height:44px; flex-shrink:0;">
+                                    <svg viewBox="0 0 36 36" class="overview-ring-svg" width="44" height="44" style="width:44px; height:44px; max-width:44px; max-height:44px; display:block;">
+                                        <path class="ring-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#f1f5f9" stroke-width="3.5"/>
+                                        <path class="ring-val" id="overview-ring-path" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="url(#score-gradient)" stroke-width="3.5" stroke-dasharray="78, 100" stroke-linecap="round"/>
+                                        <defs>
+                                            <linearGradient id="score-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                                <stop offset="0%" stop-color="#f43f5e"/>
+                                                <stop offset="100%" stop-color="#a855f7"/>
+                                            </linearGradient>
+                                        </defs>
+                                    </svg>
+                                </div>
+                                <div class="overview-metric-text">
+                                    <span class="metric-label">Wellness Score</span>
+                                    <div class="metric-value-wrap">
+                                        <strong class="metric-val-big" id="overview-wellness-score">78</strong>
+                                        <span class="metric-denom">/100</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Metric 2: Cycle Day -->
+                            <div class="overview-metric-item card-sub-pill">
+                                <div class="metric-icon-bubble pink">🌸</div>
+                                <span class="metric-label">Cycle Day</span>
+                                <strong class="metric-val-big" id="overview-cycle-day">5</strong>
+                            </div>
+
+                            <!-- Metric 3: Days to Ovulation -->
+                            <div class="overview-metric-item card-sub-pill">
+                                <div class="metric-icon-bubble purple">📅</div>
+                                <span class="metric-label">Days to Ovulation</span>
+                                <strong class="metric-val-big" id="overview-days-ovulation">8</strong>
+                            </div>
+
+                            <!-- Metric 4: Fertile Window -->
+                            <div class="overview-metric-item card-sub-pill">
+                                <div class="metric-icon-bubble rose">💖</div>
+                                <span class="metric-label">Fertile Window</span>
+                                <strong class="metric-val-mid" id="overview-fertile-window">Aug 16 – Aug 22</strong>
+                            </div>
+
+                            <!-- Metric 5: Current Phase -->
+                            <div class="overview-metric-item card-sub-pill">
+                                <div class="metric-icon-bubble green">🍃</div>
+                                <span class="metric-label">Current Phase</span>
+                                <span class="phase-badge-pill" id="overview-current-phase">Follicular</span>
+                            </div>
+                        </div>
+
+                        <!-- Encouragement Banner -->
+                        <div class="overview-encouragement-banner">
+                            You're doing great! Keep tracking consistently to understand your body better. 🎉
+                        </div>
                     </div>
                 </div>
 
-                <!-- Right Column: Predictions & History -->
+                <!-- Right Column: Predictions & Health Insights -->
                 <div class="tracker-sidebar">
-                    
-                    <!-- Health Profile & Tracking Mode Card -->
-                    <div class="sidebar-card profile-mode-card" style="border-left: 4px solid var(--primary-color);">
-                        <h3><span class="icon">🌸</span> Health Profile Mode</h3>
-                        <p class="card-subtitle">Personalize cycle predictions based on your hormonal profile.</p>
-                        <form id="form-profile-settings" onsubmit="handleProfileSettingsSubmit(event)">
-                            <div class="form-group margin-top-10">
-                                <label for="profile-tracking-mode" style="font-weight:600; font-size:0.85rem;">Tracking Mode:</label>
-                                <select id="profile-tracking-mode" class="form-control">
-                                    <option value="regular">Regular Mode (Standard 28d)</option>
-                                    <option value="pcos_pcod">PCOS / PCOD Mode (Rolling Median)</option>
-                                    <option value="irregular">Irregular Cycle Mode (Weighted Avg)</option>
-                                    <option value="perimenopause">Perimenopause Mode</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label for="profile-custom-length" style="font-weight:600; font-size:0.85rem;">Custom Target Baseline (Days):</label>
-                                <input type="number" id="profile-custom-length" min="15" max="120" placeholder="Auto calculated" class="form-control">
-                            </div>
-                            <button type="submit" class="btn btn-sm btn-outline btn-block">Save Profile Mode</button>
-                        </form>
-                    </div>
-
                     <!-- Prediction Box -->
                     <div class="sidebar-card prediction-box">
-                        <div class="card-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-                            <h3 style="margin:0;"><span class="icon">🔮</span> Cycle Predictions</h3>
-                            <span class="badge badge-accent" id="track-confidence-badge">High Confidence</span>
+                        <div class="card-header-pred">
+                            <h3><span class="icon">🔮</span> Cycle Predictions</h3>
+                            <span class="badge-baseline-estimate" id="track-confidence-badge">Baseline Estimate</span>
                         </div>
+
                         <div class="prediction-list">
                             <div class="pred-item">
                                 <span>Tracking Mode:</span>
-                                <strong id="track-active-mode" class="text-primary">Regular</strong>
+                                <strong id="track-active-mode">PCOS / PCOD Mode</strong>
                             </div>
                             <div class="pred-item">
                                 <span>Average Cycle Length:</span>
-                                <strong id="track-avg-cycle">28 Days</strong>
+                                <strong id="track-avg-cycle">35 Days</strong>
                             </div>
                             <div class="pred-item">
                                 <span>Next Period Start:</span>
-                                <strong id="track-next-period" class="text-accent">Aug 12, 2026</strong>
+                                <strong id="track-next-period" class="text-pink-highlight">Sep 3, 2026</strong>
                             </div>
                             <div class="pred-item">
                                 <span>Estimated Ovulation:</span>
-                                <strong id="track-ovulation">Jul 29, 2026</strong>
+                                <strong id="track-ovulation">Aug 20, 2026</strong>
                             </div>
                             <div class="pred-item">
                                 <span>Fertile Window:</span>
-                                <strong id="track-fertile-window">Jul 26 - Jul 31</strong>
+                                <strong id="track-fertile-window">Aug 16 – Aug 22</strong>
                             </div>
                             <div class="pred-item">
                                 <span>Current Phase:</span>
-                                <span class="badge" id="track-current-phase">Follicular</span>
+                                <span class="phase-badge-pill" id="track-current-phase">Follicular</span>
                             </div>
                         </div>
 
                         <!-- PCOS & Mode Insights Box -->
-                        <div id="pcos-insights-box" class="pcos-insights-box margin-top-15" style="background: rgba(236, 72, 153, 0.08); padding: 12px; border-radius: 8px; border-left: 3px solid #ec4899;">
-                            <h4 style="font-size:0.85rem; color:#be185d; margin-bottom:6px; font-weight:700;">🌸 Health Mode Insights:</h4>
-                            <ul id="pcos-insights-list" style="padding-left:15px; font-size:0.8rem; color:#475569; margin:0;">
-                                <li>• Insights will update based on your selected profile mode.</li>
+                        <div id="pcos-insights-box" class="pcos-insights-box">
+                            <h4 class="insights-title">🌸 Health Mode Insights:</h4>
+                            <ul id="pcos-insights-list" class="insights-bullets">
+                                <li>• 🌸 <strong>PCOS Mode Active</strong>: Calculations use rolling medians to accommodate variable cycle lengths.</li>
+                                <li>• 🥑 <strong>Insulin & Metabolism</strong>: Pair carbohydrates with protein/fiber to keep blood glucose levels stable.</li>
+                                <li>• 🧪 <strong>LH Tracking</strong>: Because LH can stay elevated in PCOS, track multiple positive test days or BBT for true ovulation confirmation.</li>
                             </ul>
                         </div>
                     </div>
 
-                    <!-- Quick Log Today Button -->
-                    <button class="btn btn-primary btn-block btn-lg" onclick="openLogModal(getTodayString())">
-                        ➕ Log Today's Entry
+                    <!-- Full Width Log Entry Button -->
+                    <button class="btn-log-entry-pill" onclick="openLogModal(getTodayString())">
+                        + Log Today's Entry
                     </button>
 
-                    <!-- Partner Sharing Card -->
-                    <div class="sidebar-card partner-share-card">
-                        <h3><span class="icon">🔗</span> Partner Sharing</h3>
-                        <p class="card-subtitle">Generate a secure, time-limited link to share your fertile window & energy levels.</p>
-                        <div id="share-link-status" class="share-status-inactive">
-                            No active sharing link generated.
-                        </div>
-                        <button class="btn btn-secondary btn-block margin-top-10" onclick="openShareModal()">
-                            🔗 Create Share Link
-                        </button>
+                    <!-- Hidden container preserving optional controls & legacy IDs for JS functions -->
+                    <div style="display:none;">
+                        <form id="form-profile-settings" onsubmit="handleProfileSettingsSubmit(event)">
+                            <select id="profile-tracking-mode"><option value="pcos_pcod">PCOS / PCOD Mode</option></select>
+                            <input type="number" id="profile-custom-length">
+                        </form>
+                        <div id="share-link-status"></div>
+                        <div id="cycle-history-list"></div>
                     </div>
-
-                    <!-- Cycle History List -->
-                    <div class="sidebar-card history-card">
-                        <h3><span class="icon">📜</span> Cycle History Log</h3>
-                        <div id="cycle-history-list" class="history-list">
-                            <p class="empty-state">No cycle entries logged yet.</p>
-                        </div>
-                    </div>
-
-
                 </div>
             </div>
         </section>
