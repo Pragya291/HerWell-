@@ -243,7 +243,7 @@ def generate_ai_health_summary(
 ) -> Dict[str, Any]:
     """Generate dynamic AI daily health summary and scores for dashboard header."""
     raw_name = user_email.split('@')[0] if '@' in user_email else user_email
-    name = raw_name.capitalize() if raw_name.lower() != "demo" else "Shreya"
+    name = raw_name.capitalize() if raw_name.lower() != "demo" else "Priya"
 
     pred = calculate_cycle_predictions(cycle_logs)
     cycle_day = pred["current_cycle_day"]

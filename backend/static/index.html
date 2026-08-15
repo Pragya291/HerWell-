@@ -54,7 +54,6 @@
                     <h4>Daily Tip</h4>
                 </div>
                 <p class="tip-content">Small steps every day lead to big changes. You've got this! 💜</p>
-                <img src="/assets/meditation_illustration.png" alt="Meditating Woman" class="tip-illustration">
             </div>
         </aside>
 
@@ -64,13 +63,53 @@
             <!-- Top Header (Greeting, bell notification, user actions) -->
             <header class="app-top-header">
                 <div class="greeting-section">
-                    <h1 class="ai-greeting" id="ai-summary-greeting">Good Morning, Priya! 👋</h1>
+                    <h1 class="ai-greeting" id="ai-summary-greeting">🌸 Good Morning, Priya!</h1>
                     <p class="greeting-subtitle">Let's prioritize your well-being today.</p>
                 </div>
                 <div class="top-header-right">
-                    <button class="btn-notification" title="Notifications">
-                        🔔 <span class="notification-badge">3</span>
-                    </button>
+                    <div class="notif-wrapper" style="position: relative;">
+                        <button class="btn-notification" title="Notifications" onclick="toggleNotificationsDropdown(event)">
+                            🔔 <span class="notification-badge" id="notif-badge-count">3</span>
+                        </button>
+                        <!-- Notification Dropdown Panel -->
+                        <div id="notification-dropdown" class="notification-dropdown-panel hidden">
+                            <div class="notif-header">
+                                <h4>Notifications & Reminders</h4>
+                                <span class="notif-mark-read" onclick="markNotificationsRead()">Mark all read</span>
+                            </div>
+                            <div class="notif-list" id="notif-list-container">
+                                <div class="notif-item unread">
+                                    <span class="notif-icon">💧</span>
+                                    <div class="notif-text">
+                                        <strong>Hydration Reminder</strong>
+                                        <p>Drink a glass of water! You're 80% toward today's goal.</p>
+                                    </div>
+                                    <span class="notif-time">10m ago</span>
+                                </div>
+                                <div class="notif-item unread">
+                                    <span class="notif-icon">🌸</span>
+                                    <div class="notif-text">
+                                        <strong>Ovulatory Phase Peak</strong>
+                                        <p>High energy day! Perfect time for strength or cardio.</p>
+                                    </div>
+                                    <span class="notif-time">1h ago</span>
+                                </div>
+                                <div class="notif-item">
+                                    <span class="notif-icon">🧘‍♀️</span>
+                                    <div class="notif-text">
+                                        <strong>Vera AI Suggestion</strong>
+                                        <p>Take a 5-minute deep breathing break using the guided timer.</p>
+                                    </div>
+                                    <span class="notif-time">3h ago</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="btn-header-action" title="Partner Share Link" onclick="openShareModal()">🔗 Share</button>
+                    <button class="btn-header-action" title="AI Settings" onclick="openAIConfigModal()">⚙️ AI</button>
+                    <button class="btn-header-action btn-helpline-action" title="Crisis Helpline" onclick="openHelplineModal()">🆘 Helpline</button>
+
                     <div class="user-action-area" id="user-action-area">
                         <span class="user-badge" id="user-email-display">priya@gmail.com</span>
                         <button class="auth-btn btn-pill-pink" id="auth-action-btn" onclick="handleAuthAction()">Logout</button>
@@ -135,157 +174,124 @@
                         </button>
                     </div>
                 </section>
-
-
+                
                 <!-- ================= VIEW 2: DASHBOARD ================= -->
                 <section id="view-dashboard" class="app-view hidden">
-                    <!-- Cycle Deviation Alert Banner -->
+
+                    <!-- Cycle Deviation Alert Banner (hidden by default) -->
                     <div id="cycle-deviation-banner" class="deviation-alert-banner hidden">
                         <div class="deviation-alert-content">
                             <span class="alert-icon">⚠️</span>
-                            <span class="alert-text" id="deviation-alert-text">Your cycle is 2 days later than usual. High stress detected? Let's log how you're feeling.</span>
+                            <span class="alert-text" id="deviation-alert-text">Your cycle is 2 days later than usual.</span>
                         </div>
-                        <button class="btn btn-sm btn-secondary alert-action-btn" onclick="navigate('wellness')">Log Feelings & Stress</button>
+                        <button class="btn btn-sm btn-secondary alert-action-btn" onclick="navigate('wellness')">Log Feelings</button>
                     </div>
 
-                    <!-- Row 1: AI Recommendation & Wellness Score circular widget -->
-                    <div class="dashboard-row-top">
-                        <!-- AI Synthesis -->
-                        <div class="ai-synthesis-card">
-                            <div class="ai-synthesis-header">
-                                <span class="ai-badge-text">✨ AI DAILY SYNTHESIS</span>
+                    <!-- ── ROW 1: Six Top Metric Cards ── -->
+                    <div class="db-stats-bar">
+
+                        <!-- 1. Date Card -->
+                        <div class="db-stat-card db-stat-date">
+                            <div class="db-stat-icon-wrap icon-bg-blue">🗓️</div>
+                            <div class="db-stat-date-text">
+                                <span class="db-stat-date-label" id="db-date-label">Wed, Aug 13, 2026</span>
+                                <span class="db-stat-date-sub">Today</span>
                             </div>
-                            <div class="ai-synthesis-recommendation">
-                                <span class="recommendation-label">Recommendation:</span>
-                                <span id="ai-recommendation-text">"Capitalize on peak energy with a 30-minute cardio session."</span>
-                            </div>
-                            <!-- Lotus flower outline background -->
-                            <div class="ai-lotus-watermark">🌸</div>
                         </div>
 
-                        <!-- Wellness Score Card (New Layout) -->
-                        <div class="wellness-score-card">
-                            <div class="wellness-score-left">
-                                <div class="wellness-gauge-ring-new">
-                                    <svg viewBox="0 0 100 100">
-                                        <circle cx="50" cy="50" r="40" class="gauge-bg-circle" fill="none" stroke="#f1f5f9" stroke-width="8" />
-                                        <circle cx="50" cy="50" r="40" class="gauge-val-circle" stroke="#f43f5e" stroke-width="8" stroke-dasharray="251.2" stroke-dashoffset="32.6" fill="none" stroke-linecap="round" />
-                                    </svg>
-                                    <div class="gauge-score-display-new">
-                                        <strong id="ai-wellness-score">87</strong>
-                                        <span class="gauge-denom">/100</span>
-                                    </div>
-                                </div>
-                                <div class="wellness-trend">
-                                    <span style="color: #10b981; font-weight: 700; font-size: 0.75rem;">↑ 8 pts</span><br>
-                                    <span style="color: #64748b; font-size: 0.65rem;">vs yesterday</span>
+                        <!-- 2. Wellness Score SVG Ring Card -->
+                        <div class="db-stat-card db-stat-score">
+                            <div class="db-score-ring-wrap">
+                                <svg viewBox="0 0 60 60" class="db-score-ring-svg">
+                                    <circle cx="30" cy="30" r="24" fill="none" stroke="#ffe4e6" stroke-width="5"/>
+                                    <circle cx="30" cy="30" r="24" fill="none" stroke="url(#score-grad-dash)" stroke-width="5"
+                                        id="dashboard-wellness-ring"
+                                        stroke-dasharray="150.8" stroke-dashoffset="19.6"
+                                        stroke-linecap="round" transform="rotate(-90 30 30)"/>
+                                    <defs>
+                                        <linearGradient id="score-grad-dash" x1="0%" y1="0%" x2="100%" y2="100%">
+                                            <stop offset="0%" stop-color="#f43f5e"/>
+                                            <stop offset="100%" stop-color="#a855f7"/>
+                                        </linearGradient>
+                                    </defs>
+                                </svg>
+                                <div class="db-score-num">
+                                    <strong id="ai-wellness-score">87</strong>
+                                    <span class="db-score-denom">/100</span>
                                 </div>
                             </div>
-                            <div class="wellness-score-right">
-                                <div class="wellness-score-header">
-                                    <span class="ai-badge-text" style="color:#64748b; font-weight: 700; font-size: 0.7rem; letter-spacing: 0.5px;">✨ WELLNESS SCORE</span>
-                                    <p style="font-size: 0.7rem; color: #475569; margin: 4px 0 12px 0;">Great job! You're on the right track.</p>
-                                </div>
-                                <div class="wellness-bars">
-                                    <div class="wellness-bar-row">
-                                        <span class="bar-icon" style="color: #f43f5e; font-size: 0.7rem; font-weight: 600; width: 65px;">🌸 Physical</span>
-                                        <div class="bar-track" style="flex: 1; height: 4px; background: #f1f5f9; border-radius: 2px; margin: 0 10px;"><div class="bar-fill" style="width: 88%; background: #f43f5e; height: 100%; border-radius: 2px;"></div></div>
-                                        <span class="bar-val" style="font-size: 0.7rem; font-weight: 700;">88<span style="color:#94a3b8; font-weight: 500;">/100</span></span>
-                                    </div>
-                                    <div class="wellness-bar-row">
-                                        <span class="bar-icon" style="color: #8b5cf6; font-size: 0.7rem; font-weight: 600; width: 65px;">🧠 Mental</span>
-                                        <div class="bar-track" style="flex: 1; height: 4px; background: #f1f5f9; border-radius: 2px; margin: 0 10px;"><div class="bar-fill" style="width: 85%; background: #8b5cf6; height: 100%; border-radius: 2px;"></div></div>
-                                        <span class="bar-val" style="font-size: 0.7rem; font-weight: 700;">85<span style="color:#94a3b8; font-weight: 500;">/100</span></span>
-                                    </div>
-                                    <div class="wellness-bar-row">
-                                        <span class="bar-icon" style="color: #10b981; font-size: 0.7rem; font-weight: 600; width: 65px;">🍃 Lifestyle</span>
-                                        <div class="bar-track" style="flex: 1; height: 4px; background: #f1f5f9; border-radius: 2px; margin: 0 10px;"><div class="bar-fill" style="width: 90%; background: #10b981; height: 100%; border-radius: 2px;"></div></div>
-                                        <span class="bar-val" style="font-size: 0.7rem; font-weight: 700;">90<span style="color:#94a3b8; font-weight: 500;">/100</span></span>
-                                    </div>
-                                </div>
-                                <div class="wellness-score-footer" style="display: flex; justify-content: space-between; align-items: center; margin-top: 12px;">
-                                    <span class="date-badge" style="font-size: 0.65rem; color: #475569; font-weight: 600;">📅 Wed, Aug 12, 2026</span>
-                                    <button class="btn-action-pink" style="padding: 4px 10px; width: auto; font-size: 0.7rem;">View Trends →</button>
-                                </div>
+                            <div class="db-score-meta">
+                                <span class="db-stat-title">Wellness Score</span>
+                                <span class="db-score-trend">↑ 8 pts from yesterday</span>
                             </div>
                         </div>
-                    </div>
 
-                    <!-- Row 2: 4 Metrics Cards -->
-                    <div class="dashboard-metrics-grid">
-                        <div class="metric-card pink">
-                            <div class="metric-header">
-                                <span class="metric-icon">🌸</span>
-                                <span class="metric-label">WELLNESS</span>
-                            </div>
-                            <div class="metric-value-row">
-                                <div class="metric-text-group">
-                                    <strong id="metric-wellness-score">87/100</strong>
-                                    <div style="color: #10b981; font-size: 0.65rem; font-weight: 600;">↑ 8 pts</div>
+                        <!-- 3. Sleep Card -->
+                        <div class="db-stat-card">
+                            <div class="db-stat-icon-wrap icon-bg-yellow">🌙</div>
+                            <div class="db-stat-body">
+                                <span class="db-stat-title">Sleep</span>
+                                <strong class="db-stat-value" id="metric-sleep-quality">8.2 hrs</strong>
+                                <div class="db-badge-row">
+                                    <span class="db-sub-label">Restorative</span>
+                                    <span class="db-stat-badge db-badge-green">Good</span>
                                 </div>
-                                <svg class="sparkline" viewBox="0 0 100 30">
-                                    <path d="M0,25 Q15,10 30,20 T60,5 T90,15 T100,10" fill="none" stroke="#ff5a8f" stroke-width="2.5" />
-                                </svg>
                             </div>
                         </div>
-                        <div class="metric-card purple">
-                            <div class="metric-header">
-                                <span class="metric-icon">🧠</span>
-                                <span class="metric-label">AI HEALTH</span>
-                            </div>
-                            <div class="metric-value-row">
-                                <div class="metric-text-group">
-                                    <strong id="metric-ai-score">89/100</strong>
-                                    <div style="color: #10b981; font-size: 0.65rem; font-weight: 600;">↑ 6 pts</div>
-                                </div>
-                                <svg class="sparkline" viewBox="0 0 100 30">
-                                    <path d="M0,20 Q15,5 30,15 T60,8 T90,2 T100,6" fill="none" stroke="#a78bfa" stroke-width="2.5" />
-                                </svg>
-                            </div>
-                        </div>
-                        <div class="metric-card indigo">
-                            <div class="metric-header">
-                                <span class="metric-icon">🌙</span>
-                                <span class="metric-label">SLEEP QUALITY</span>
-                            </div>
-                            <div class="metric-value-row">
-                                <div class="metric-text-group">
-                                    <strong id="metric-sleep-quality">8.2 hrs</strong>
-                                    <div style="color: #8b5cf6; font-size: 0.65rem; font-weight: 600;">Restorative</div>
-                                </div>
-                                <svg class="sparkline" viewBox="0 0 100 30">
-                                    <path d="M0,25 Q15,22 30,18 T60,10 T90,15 T100,8" fill="none" stroke="#6366f1" stroke-width="2.5" />
-                                </svg>
-                            </div>
-                        </div>
-                        <div class="metric-card blue">
-                            <div class="metric-header">
-                                <span class="metric-icon">💧</span>
-                                <span class="metric-label">HYDRATION</span>
-                            </div>
-                            <div class="metric-value-row">
-                                <div class="metric-text-group">
-                                    <strong id="metric-hydration">2.4 L / 80%</strong>
-                                    <div style="color: #3b82f6; font-size: 0.65rem; font-weight: 600;">Goal</div>
-                                </div>
-                                <svg class="sparkline" viewBox="0 0 100 30">
-                                    <path d="M0,25 Q15,20 30,22 T60,15 T90,8 T100,5" fill="none" stroke="#3b82f6" stroke-width="2.5" />
-                                </svg>
-                            </div>
-                        </div>
-                    </div>
 
-                    <!-- Row 3: Main dashboard grid cards (4-column layout) -->
-                    <div class="dashboard-grid-cards">
-                        
-                        <!-- Cycle Overview -->
-                        <div class="dash-grid-card">
+                        <!-- 4. Hydration Card -->
+                        <div class="db-stat-card">
+                            <div class="db-stat-icon-wrap icon-bg-blue">💧</div>
+                            <div class="db-stat-body">
+                                <span class="db-stat-title">Hydration</span>
+                                <strong class="db-stat-value" id="metric-hydration">2.4L / 80%</strong>
+                                <div class="db-badge-row">
+                                    <span class="db-sub-label">Goal</span>
+                                    <span class="db-stat-badge db-badge-green">Good</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 5. Activity Card -->
+                        <div class="db-stat-card">
+                            <div class="db-stat-icon-wrap icon-bg-pink">🏃‍♀️</div>
+                            <div class="db-stat-body">
+                                <span class="db-stat-title">Activity</span>
+                                <strong class="db-stat-value">30 mins</strong>
+                                <span class="db-stat-badge db-badge-pink">Keep going!</span>
+                            </div>
+                        </div>
+
+                        <!-- 6. Lifestyle Card -->
+                        <div class="db-stat-card db-stat-lifestyle">
+                            <div class="db-stat-icon-wrap icon-bg-mint">🍃</div>
+                            <div class="db-stat-body db-lifestyle-body">
+                                <div class="db-lifestyle-header">
+                                    <span class="db-stat-title">Lifestyle</span>
+                                    <span class="db-lifestyle-score">90/100</span>
+                                </div>
+                                <div class="db-lifestyle-bar-track">
+                                    <div class="db-lifestyle-bar-fill" style="width:90%;"></div>
+                                </div>
+                                <div class="db-lifestyle-footer">
+                                    <span class="db-score-trend">↑ 8 pts vs yesterday</span>
+                                    <button class="db-view-trends-btn" onclick="navigate('wellness')">View Trends →</button>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div><!-- /db-stats-bar -->
+
+                    <!-- ── ROW 2: 4 Main Cards ── -->
+                    <div class="db-cards-row">
+
+                        <!-- Card 1: Cycle Overview -->
+                        <div class="db-card">
                             <div class="card-title-row">
                                 <h3>🌸 Cycle Overview</h3>
-                                <span class="phase-badge" style="background: #ffe4e6; color: #f43f5e;">OVULATORY</span>
+                                <span class="phase-badge badge-ovulatory">OVULATORY</span>
                             </div>
-                            
-                            <div class="cycle-details-pills" style="margin-top: 10px; margin-bottom: 16px;">
+                            <div class="cycle-details-pills">
                                 <div class="cycle-detail-item">
                                     <span class="label">Predicted Next</span>
                                     <span class="val">Aug 26</span>
@@ -299,155 +305,98 @@
                                     <span class="val">Aug 20 - Aug 24</span>
                                 </div>
                             </div>
-
-                            <div class="cycle-info-box" style="border: 1px solid #fbcfe8; background: #fff0f5; padding: 10px; border-radius: 8px; margin-bottom: 16px; border-left: 3px solid #f43f5e;">
-                                <p style="font-size: 0.72rem; color: #475569; margin: 0; line-height: 1.4;">LH surge window, Estrogen peaks, Log ovulation test strip results if tracking conception or LH levels.</p>
+                            <div class="cycle-info-box">
+                                <p>LH surge window, Estrogen peaks, Log ovulation test strip results if tracking conception or LH levels.</p>
                             </div>
-
                             <button class="btn-action-pink margin-top-auto" onclick="navigate('tracker')">Open Period Tracker →</button>
                         </div>
 
-                        <!-- Quick Mood Check-In -->
-                        <div class="dash-grid-card">
+                        <!-- Card 2: Quick Mood Check-In -->
+                        <div class="db-card">
                             <div class="card-title-row">
                                 <h3>💖 Quick Mood Check-In</h3>
                                 <span class="sub-tag">Today</span>
                             </div>
                             <p class="card-description-text">How are you feeling right now?</p>
-                            
-                            <!-- (Chart removed to match mockup and save space) -->
-
                             <div class="emoji-selector-wrapper">
                                 <div class="emoji-slider-track"></div>
                                 <div class="emoji-selector-pills" id="dash-emoji-selector">
-                                <button class="emoji-btn-round" data-mood="1" title="Very Sad">😢</button>
-                                <button class="emoji-btn-round" data-mood="2" title="Sad">😟</button>
-                                <button class="emoji-btn-round" data-mood="3" title="Neutral">😐</button>
-                                <button class="emoji-btn-round" data-mood="4" title="Happy">😊</button>
-                                <button class="emoji-btn-round" data-mood="5" title="Very Happy">😁</button>
-                            </div>
+                                    <button class="emoji-btn-round" data-mood="1" title="Very Sad">😟</button>
+                                    <button class="emoji-btn-round" data-mood="2" title="Sad">😕</button>
+                                    <button class="emoji-btn-round" data-mood="3" title="Neutral">😐</button>
+                                    <button class="emoji-btn-round" data-mood="4" title="Happy">🙂</button>
+                                    <button class="emoji-btn-round" data-mood="5" title="Very Happy">😄</button>
+                                </div>
                             </div>
                             <div id="dash-mood-status" class="status-note hidden">Mood logged for today!</div>
-                            <button class="btn-action-pink margin-top-auto" onclick="navigate('wellness')">Go to Wellness & Chat →</button>
+                            <button class="btn-action-pink margin-top-auto" onclick="navigate('wellness')">Go to Wellness &amp; Chat →</button>
                         </div>
 
-                        <!-- Symptom Severity Logger -->
-                        <div class="dash-grid-card">
+                        <!-- Card 3: Symptom Severity Log -->
+                        <div class="db-card">
                             <div class="card-title-row">
-                                <h3>⚡ Symptom Severity Logger</h3>
-                                <span class="phase-badge badge-lavender" id="symptom-phase-tag">Ovulatory Phase Focus</span>
+                                <h3>⚡ Symptom Severity Log</h3>
+                                <span class="phase-badge badge-lavender" id="symptom-phase-tag">Follicular Phase Focus</span>
                             </div>
-                            <p class="card-description-text" id="symptom-logger-subtitle">Estrogen peaks. You might experience light mid-cycle cramping.</p>
-                            
-                            <div class="symptom-layout-split">
-                                <!-- Sliders -->
-                                <div class="symptom-rate-sliders" id="dash-symptom-rate-rows">
-                                    <div class="symptom-slider-row" data-symptom="cramps">
-                                        <span class="label">Cramps</span>
-                                        <div class="rate-pills">
-                                            <button class="rate-pill" data-val="1">1</button>
-                                            <button class="rate-pill" data-val="2">2</button>
-                                            <button class="rate-pill" data-val="3">3</button>
-                                        </div>
-                                    </div>
-                                    <div class="symptom-slider-row" data-symptom="headache">
-                                        <span class="label">Headache</span>
-                                        <div class="rate-pills">
-                                            <button class="rate-pill" data-val="1">1</button>
-                                            <button class="rate-pill" data-val="2">2</button>
-                                            <button class="rate-pill" data-val="3">3</button>
-                                        </div>
-                                    </div>
-                                    <div class="symptom-slider-row" data-symptom="acne">
-                                        <span class="label">Acne</span>
-                                        <div class="rate-pills">
-                                            <button class="rate-pill" data-val="1">1</button>
-                                            <button class="rate-pill" data-val="2">2</button>
-                                            <button class="rate-pill" data-val="3">3</button>
-                                        </div>
-                                    </div>
-                                    <div class="symptom-slider-row" data-symptom="bloating">
-                                        <span class="label">Bloating</span>
-                                        <div class="rate-pills">
-                                            <button class="rate-pill" data-val="1">1</button>
-                                            <button class="rate-pill" data-val="2">2</button>
-                                            <button class="rate-pill" data-val="3">3</button>
-                                        </div>
+                            <p class="card-description-text" id="symptom-logger-subtitle">Estrogen is rising. Energy is high. Physical symptoms are typically minimal.</p>
+                            <div class="symptom-rate-sliders" id="dash-symptom-rate-rows">
+                                <div class="symptom-slider-row" data-symptom="cramps">
+                                    <span class="label">Cramps</span>
+                                    <div class="rate-pills">
+                                        <button class="rate-pill" data-val="1">1</button>
+                                        <button class="rate-pill" data-val="2">2</button>
+                                        <button class="rate-pill" data-val="3">3</button>
                                     </div>
                                 </div>
-
-                                <!-- Mini Calendar -->
-                                <div class="mini-calendar-wrapper">
-                                    <div class="mini-calendar-header">
-                                        <span>Calendar</span>
+                                <div class="symptom-slider-row" data-symptom="headache">
+                                    <span class="label">Headache</span>
+                                    <div class="rate-pills">
+                                        <button class="rate-pill" data-val="1">1</button>
+                                        <button class="rate-pill" data-val="2">2</button>
+                                        <button class="rate-pill" data-val="3">3</button>
                                     </div>
-                                    <div class="mini-calendar-weekdays">
-                                        <span>S</span><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span>
+                                </div>
+                                <div class="symptom-slider-row" data-symptom="acne">
+                                    <span class="label">Acne</span>
+                                    <div class="rate-pills">
+                                        <button class="rate-pill" data-val="1">1</button>
+                                        <button class="rate-pill" data-val="2">2</button>
+                                        <button class="rate-pill" data-val="3">3</button>
                                     </div>
-                                    <div class="mini-calendar-days">
-                                        <span class="other">26</span><span class="other">27</span><span class="other">28</span><span class="other">29</span><span class="other">30</span><span class="other">31</span><span>1</span>
-                                        <span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span>
-                                        <span>9</span><span>10</span><span>11</span><span>12</span><span class="active">13</span><span>14</span><span>15</span>
-                                        <span>16</span><span>17</span><span>18</span><span>19</span><span>20</span><span>21</span><span>22</span>
-                                        <span>23</span><span>24</span><span>25</span><span>26</span><span>27</span><span>28</span><span>29</span>
-                                        <span>30</span><span>31</span><span class="other">1</span><span class="other">2</span><span class="other">3</span><span class="other">4</span><span class="other">5</span>
+                                </div>
+                                <div class="symptom-slider-row" data-symptom="bloating">
+                                    <span class="label">Bloating</span>
+                                    <div class="rate-pills">
+                                        <button class="rate-pill" data-val="1">1</button>
+                                        <button class="rate-pill" data-val="2">2</button>
+                                        <button class="rate-pill" data-val="3">3</button>
                                     </div>
                                 </div>
                             </div>
-
-                            <div class="severity-quick-select hidden">
-                                <span class="label">Level:</span>
-                                <button class="level-btn active">1</button>
-                                <button class="level-btn">2</button>
-                                <button class="level-btn">3</button>
-                            </div>
-                            
                             <div id="symptom-log-status" class="status-note hidden">Symptoms logged successfully!</div>
                             <button class="btn-action-pink btn-block margin-top-auto" id="btn-save-dashboard-symptoms" onclick="saveDashboardSymptoms()">Save Symptoms →</button>
                         </div>
 
-                        <!-- Personalized Insights & Article (Mapped to mockup) -->
-                        <div class="dash-grid-card">
-                            <div class="card-title-row">
-                                <h3>✨ Personalized Insights</h3>
-                            </div>
-                            
-                            <div class="insights-list">
-                                <div class="insight-item">
-                                    <span class="insight-icon icon-yellow">⚡</span>
-                                    <p>High energy days ahead! Perfect time for an intense workout.</p>
-                                </div>
-                                <div class="insight-item">
-                                    <span class="insight-icon icon-blue">💧</span>
-                                    <p>Hydration goal correlate with high energy.</p>
-                                </div>
-                                <div class="insight-item">
-                                    <span class="insight-icon icon-purple">✿</span>
-                                    <p>Hydration goal reached for 5 of 7 days.</p>
-                                </div>
-                            </div>
-
-                            <button class="btn-action-pink btn-block margin-top-auto">View All Insights →</button>
-
-                            <!-- Mapped dynamic articles support (hidden elements for system binding) -->
+                            <!-- Hidden dynamic elements for JS binding -->
                             <div class="hidden">
                                 <span id="dash-art-category">Wellness</span>
-                                <span id="dash-art-title">Demystifying PCOS & Daily Hormonal Balance</span>
+                                <span id="dash-art-title">Demystifying PCOS &amp; Daily Hormonal Balance</span>
                                 <p id="dash-art-summary">Discover how daily movement, nutrition, and stress regulation support your reproductive wellness.</p>
                                 <span id="dash-rec-phase-tag">Follicular</span>
                                 <span id="dash-workout-title">Gentle Restorative Yoga</span>
                                 <p id="dash-workout-desc">Slow, grounding postures designed to support your body's energy levels.</p>
                                 <span id="dash-workout-duration">25 mins</span>
                                 <span id="dash-workout-intensity">Low Intensity</span>
+                                <span id="metric-wellness-score">87/100</span>
+                                <span id="metric-ai-score">89/100</span>
                             </div>
                         </div>
 
-                    </div>
+                    <!-- ── ROW 3: Wellness Focus + Achievements ── -->
+                    <div class="db-bottom-row">
 
-                    <!-- Row 4: Today's Wellness Focus & Achievements -->
-                    <div class="dashboard-row-bottom">
-                        <!-- Wellness Focus -->
-                        <div class="wellness-focus-card">
+                        <!-- Today's Wellness Focus -->
+                        <div class="db-card db-focus-card">
                             <div class="card-title-row">
                                 <h3>🌸 Today's Wellness Focus</h3>
                             </div>
@@ -487,31 +436,33 @@
                         </div>
 
                         <!-- Achievements -->
-                        <div class="achievements-card">
+                        <div class="db-card db-achievements-card">
                             <div class="card-title-row">
                                 <h3>🏆 Achievements</h3>
                                 <a href="#" onclick="navigate('library'); return false;" class="view-all-link">View All</a>
                             </div>
                             <div class="achievements-shields">
                                 <div class="achievement-shield-item pink">
-                                    <div class="shield-icon">🛡️</div>
+                                    <div class="shield-circle icon-bg-blue">🛡️</div>
                                     <span class="shield-label">7 Days Active</span>
                                 </div>
                                 <div class="achievement-shield-item blue">
-                                    <div class="shield-icon">💧</div>
+                                    <div class="shield-circle icon-bg-cyan">💧</div>
                                     <span class="shield-label">Hydration Hero</span>
                                 </div>
                                 <div class="achievement-shield-item purple">
-                                    <div class="shield-icon">🧘‍♀️</div>
+                                    <div class="shield-circle icon-bg-purple">🧘‍♀️</div>
                                     <span class="shield-label">Wellness Warrior</span>
                                 </div>
                                 <div class="achievement-shield-item pink-light">
-                                    <div class="shield-icon">🌸</div>
+                                    <div class="shield-circle icon-bg-pink">🌸</div>
                                     <span class="shield-label">Cycle Master</span>
                                 </div>
                             </div>
                         </div>
-                    </div>
+
+                    </div><!-- /db-bottom-row -->
+
                 </section>
 
 
@@ -850,70 +801,7 @@
 
                 </div>
 
-                <!-- Column 3: Vera AI Companion -->
-                <div class="wellness-col">
-                    <div class="chat-card vera-card">
-                        <div class="chat-header simple-header">
-                            <div class="header-left">
-                                <div class="chat-avatar">🌸</div>
-                                <h3>VERA AI</h3>
-                            </div>
-                        </div>
-
-                        <!-- Chat Messages -->
-                        <div class="chat-messages" id="chat-messages-container">
-                            <div class="message message-vera">
-                                <div class="message-bubble">
-                                    Hello! I am Vera, your supportive wellness companion. 🌸 I am here to offer realtime health updates, CBT prompts, and cycle insights. How are you feeling right now?
-                                </div>
-                                <span class="message-time">Vera • 9:30 AM</span>
-                            </div>
-                        </div>
-
-                        <!-- Quick Feeling Pills -->
-                        <div class="quick-feelings-pills">
-                            <button class="feeling-pill" onclick="sendQuickPrompt('I am feeling okay')">😲 I'm feeling okay</button>
-                            <button class="feeling-pill" onclick="sendQuickPrompt('I am stressed')">😫 I'm stressed</button>
-                            <button class="feeling-pill" onclick="sendQuickPrompt('I didn\'t sleep well')">😴 I didn't sleep well</button>
-                            <button class="feeling-pill" onclick="sendQuickPrompt('Write my thoughts')">💬 Write my thoughts</button>
-                        </div>
-
-                        <!-- Action Prompt Chips -->
-                        <div class="quick-prompts-grid" id="vera-quick-prompts">
-                            <button class="prompt-chip" onclick="sendQuickPrompt('Suggest CBT Prompt')">
-                                <span class="chip-icon">🌸</span> Suggest CBT Prompt
-                            </button>
-                            <button class="prompt-chip" onclick="sendQuickPrompt('Analyze Mood Correlation')">
-                                <span class="chip-icon">📊</span> Analyze Mood
-                            </button>
-                            <button class="prompt-chip" onclick="sendQuickPrompt('Analyze My Sleep')">
-                                <span class="chip-icon">😴</span> Analyze Sleep
-                            </button>
-                            <button class="prompt-chip" onclick="sendQuickPrompt('Start Guided Breathing')">
-                                <span class="chip-icon">🧘</span> Guided Breathing
-                            </button>
-                        </div>
-
-                        <!-- Chat Input Box -->
-                        <div class="chat-input-row">
-                            <input type="text" id="vera-chat-input" placeholder="Type your message here..." class="chat-input-field">
-                            <button class="chat-send-btn" onclick="submitChatMessage()">➢</button>
-                        </div>
-                        
-                        <!-- AI Suggestion Box with Illustration -->
-                        <div class="ai-suggestion-box">
-                            <div class="suggestion-icon">🌸</div>
-                            <div class="suggestion-content">
-                                <div class="sugg-header">VERA AI DAILY SUGGESTION</div>
-                                <div class="sugg-body">
-                                    Self-Care Suggestion:<br>
-                                    <strong>Take a 5-minute deep breathing break ▶</strong>
-                                </div>
-                            </div>
-                            <img src="/assets/meditation_illustration.png" alt="Meditating Woman" class="sugg-illustration">
-                        </div>
-                    </div>
-                </div>
+                <!-- Column 3: Vera AI Companion (moved to floating widget) -->
 
             </div>
 
@@ -1049,13 +937,11 @@
                     <!-- 3D Flip cards dynamically populated -->
                 </div>
             </div>
-        </section>
-
     </main>
-
 
     </div> <!-- Close app-main-wrapper -->
 </div> <!-- Close app-layout -->
+
 
 
     <!-- ================= MODALS ================= -->
@@ -1386,6 +1272,80 @@
         </div>
     </div>
 
+
+    <!-- ================= FLOATING VERA AI WIDGET ================= -->
+    <div id="vera-float-widget" class="vera-float-widget">
+
+        <!-- Pink "Ask Vera" Pill above avatar -->
+        <button class="vera-fab-pill" id="vera-fab-btn" onclick="toggleVeraFloat()" aria-label="Open Vera AI">
+            Ask Vera
+        </button>
+
+        <!-- Circular Female AI Avatar with Glowing Ring and Green Online Indicator -->
+        <div class="vera-avatar-wrap" onclick="toggleVeraFloat()" title="Need help? Ask Vera">
+            <img src="/assets/vera_avatar.png" alt="Vera AI" class="vera-avatar-img">
+            <span class="vera-online-dot"></span>
+            <span class="vera-glow-ring"></span>
+        </div>
+
+        <!-- Expandable Chat Panel -->
+        <div class="vera-float-panel" id="vera-float-panel">
+            <!-- Panel Header -->
+            <div class="vera-panel-header">
+                <div class="vera-panel-title-group">
+                    <div class="vera-panel-avatar">🌸</div>
+                    <div>
+                        <div class="vera-panel-name">VERA AI</div>
+                        <div class="vera-panel-status"><span class="vera-online-dot"></span> Your Wellness Companion</div>
+                    </div>
+                </div>
+                <div class="vera-panel-actions">
+                    <button class="vera-panel-btn" onclick="clearChatHistory()" title="Clear chat">🗑</button>
+                    <button class="vera-panel-btn" onclick="toggleVeraFloat()" title="Close">✕</button>
+                </div>
+            </div>
+
+            <!-- Chat Messages -->
+            <div class="chat-messages" id="chat-messages-container">
+                <div class="message message-vera">
+                    <div class="message-bubble">
+                        Hello! I am Vera, your supportive wellness companion. 🌸 I am here to offer realtime health updates, CBT prompts, and cycle insights. How are you feeling right now?
+                    </div>
+                    <span class="message-time">Vera • Now</span>
+                </div>
+            </div>
+
+            <!-- Quick Feeling Pills -->
+            <div class="quick-feelings-pills vera-float-pills">
+                <button class="feeling-pill" onclick="sendQuickPrompt('I am feeling okay')">😊 Feeling okay</button>
+                <button class="feeling-pill" onclick="sendQuickPrompt('I am stressed')">😫 Stressed</button>
+                <button class="feeling-pill" onclick="sendQuickPrompt('I didn\'t sleep well')">😴 Bad sleep</button>
+                <button class="feeling-pill" onclick="sendQuickPrompt('Give me a CBT prompt')">🌸 CBT prompt</button>
+            </div>
+
+            <!-- Action Prompt Chips -->
+            <div class="quick-prompts-grid vera-float-chips" id="vera-quick-prompts">
+                <button class="prompt-chip" onclick="sendQuickPrompt('Analyze Mood Correlation')">
+                    <span class="chip-icon">📊</span> Analyze Mood
+                </button>
+                <button class="prompt-chip" onclick="sendQuickPrompt('Analyze My Sleep')">
+                    <span class="chip-icon">😴</span> Analyze Sleep
+                </button>
+                <button class="prompt-chip" onclick="sendQuickPrompt('Start Guided Breathing')">
+                    <span class="chip-icon">🧘</span> Breathing
+                </button>
+                <button class="prompt-chip" onclick="sendQuickPrompt('What phase is my cycle in?')">
+                    <span class="chip-icon">🌙</span> Cycle Phase
+                </button>
+            </div>
+
+            <!-- Chat Input Box -->
+            <div class="chat-input-row vera-float-input">
+                <input type="text" id="vera-chat-input" placeholder="Ask Vera anything..." class="chat-input-field">
+                <button class="chat-send-btn" onclick="submitChatMessage()">➢</button>
+            </div>
+        </div>
+    </div>
 
     <!-- JS Application Script -->
     <script src="/js/app.js?v=101"></script>

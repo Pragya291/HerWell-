@@ -21,7 +21,7 @@ class User(Base):
     fitness_logs = relationship("FitnessLog", back_populates="user", cascade="all, delete-orphan")
     wellness_logs = relationship("WellnessLog", back_populates="user", cascade="all, delete-orphan")
     share_links = relationship("ShareLink", back_populates="user", cascade="all, delete-orphan")
-
+    community_posts = relationship("CommunityPost", back_populates="user", cascade="all, delete-orphan")
 
 
 class CycleLog(Base):
@@ -112,4 +112,22 @@ class ShareLink(Base):
 
     # Relationship
     user = relationship("User", back_populates="share_links")
+
+
+class CommunityPost(Base):
+    """Peer support community post model."""
+    __tablename__ = "community_posts"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    author_name = Column(String, nullable=False, default="Anonymous Member")
+    category = Column(String, nullable=False, default="General Q&A")  # "PCOS Support", "Fitness & Nutrition", "Mindfulness", "General Q&A"
+    title = Column(String, nullable=False)
+    content = Column(Text, nullable=False)
+    likes_count = Column(Integer, default=0)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+    # Relationship
+    user = relationship("User", back_populates="community_posts")
+
 

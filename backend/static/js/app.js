@@ -197,7 +197,7 @@ async function handleSignupSubmit(e) {
 
 function enableDemoMode() {
     state.token = 'demo-token';
-    state.user = { email: 'demo@herwellness.hub', id: 1 };
+    state.user = { email: 'priya@gmail.com', id: 1 };
     localStorage.setItem('herwellness_token', 'demo-token');
     updateUserUI();
     navigate('dashboard');
@@ -2314,6 +2314,33 @@ function sendQuickPrompt(msg) {
     handleVeraAPI(msg);
 }
 
+/* ==========================================================================
+   FLOATING VERA AI WIDGET
+   ========================================================================== */
+
+function toggleVeraFloat() {
+    const widget = document.getElementById('vera-float-widget');
+    const panel  = document.getElementById('vera-float-panel');
+    if (!widget || !panel) return;
+
+    const isOpen = panel.classList.contains('open');
+
+    if (isOpen) {
+        // Close
+        panel.classList.remove('open');
+        widget.classList.remove('panel-open');
+    } else {
+        // Open
+        panel.classList.add('open');
+        widget.classList.add('panel-open');
+        // Auto-focus input after animation settles
+        setTimeout(() => {
+            const input = document.getElementById('vera-chat-input');
+            if (input) input.focus();
+        }, 350);
+    }
+}
+
 // Add enter key listener for chat input
 document.addEventListener('DOMContentLoaded', () => {
     // Wait slightly to ensure elements are rendered
@@ -2329,4 +2356,3 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }, 500);
 });
-
