@@ -6713,7 +6713,7 @@ body:has(#view-tracker:not(.hidden)) {
     gap: 12px !important;
 }
 
-#view-dashboard {
+#view-dashboard:not(.hidden) {
     display: flex !important;
     flex-direction: column !important;
     height: 100% !important;

@@ -119,6 +119,16 @@ function navigate(viewId) {
         }
     });
 
+    // Toggle Vera AI widget visibility
+    const veraWidget = document.getElementById('vera-float-widget');
+    if (veraWidget) {
+        if (viewId === 'login') {
+            veraWidget.style.display = 'none';
+        } else {
+            veraWidget.style.display = 'block';
+        }
+    }
+
     // View specific initializations
     if (viewId === 'dashboard') {
         loadDashboardData();
