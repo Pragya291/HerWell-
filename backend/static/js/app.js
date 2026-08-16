@@ -2356,3 +2356,13 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }, 500);
 });
+
+// Date Fix
+document.addEventListener('DOMContentLoaded', () => {
+    const dateLabel = document.getElementById('db-date-label');
+    if (dateLabel) {
+        const now = new Date();
+        const options = { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' };
+        dateLabel.textContent = now.toLocaleDateString('en-US', options);
+    }
+});

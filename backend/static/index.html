@@ -9,7 +9,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/css/style.css?v=999">
+    <link rel="stylesheet" href="/css/style.css?v=1000">
 </head>
 <body>
 
@@ -194,7 +194,7 @@
                         <div class="db-stat-card db-stat-date">
                             <div class="db-stat-icon-wrap icon-bg-blue">🗓️</div>
                             <div class="db-stat-date-text">
-                                <span class="db-stat-date-label" id="db-date-label">Wed, Aug 13, 2026</span>
+                                <span class="db-stat-date-label" id="db-date-label">Sun, Aug 16, 2026</span>
                                 <span class="db-stat-date-sub">Today</span>
                             </div>
                         </div>
@@ -291,24 +291,44 @@
                                 <h3>🌸 Cycle Overview</h3>
                                 <span class="phase-badge badge-ovulatory">OVULATORY</span>
                             </div>
-                            <div class="cycle-details-pills">
-                                <div class="cycle-detail-item">
-                                    <span class="label">Predicted Next</span>
-                                    <span class="val">Aug 26</span>
+                            <!-- Mini Cycle Phase Bar -->
+                            <div class="cycle-phase-bar-wrap">
+                                <div class="cycle-phase-segment seg-menstrual">Menstrual</div>
+                                <div class="cycle-phase-segment seg-follicular">Follicular</div>
+                                <div class="cycle-phase-segment seg-ovulatory seg-active">Ovulatory ◆</div>
+                                <div class="cycle-phase-segment seg-luteal">Luteal</div>
+                            </div>
+                            <!-- Card Body (fills available space) -->
+                            <div class="card-body-fill">
+                                <div class="cycle-details-pills">
+                                    <div class="cycle-detail-item">
+                                        <span class="label">Predicted Next</span>
+                                        <span class="val">Aug 26</span>
+                                    </div>
+                                    <div class="cycle-detail-item">
+                                        <span class="label">LH Surge Window</span>
+                                        <span class="val">Aug 24 - Aug 27</span>
+                                    </div>
+                                    <div class="cycle-detail-item">
+                                        <span class="label">Estrogen Peaks</span>
+                                        <span class="val">Aug 20 - Aug 24</span>
+                                    </div>
                                 </div>
-                                <div class="cycle-detail-item">
-                                    <span class="label">LH Surge Window</span>
-                                    <span class="val">Aug 24 - Aug 27</span>
+                                <!-- Ovulation Progress -->  
+                                <div class="cycle-ovulation-progress">
+                                    <div class="ov-prog-header">
+                                        <span class="ov-prog-label">🔬 Ovulation Likelihood</span>
+                                        <span class="ov-prog-pct">High • Day 14</span>
+                                    </div>
+                                    <div class="ov-prog-bar-track">
+                                        <div class="ov-prog-bar-fill" style="width: 78%;"></div>
+                                    </div>
                                 </div>
-                                <div class="cycle-detail-item">
-                                    <span class="label">Estrogen Peaks</span>
-                                    <span class="val">Aug 20 - Aug 24</span>
+                                <div class="cycle-info-box">
+                                    <p>ℹ️ LH surge window, Estrogen peaks, Log ovulation test strip results if tracking conception or LH levels.</p>
                                 </div>
                             </div>
-                            <div class="cycle-info-box">
-                                <p>LH surge window, Estrogen peaks, Log ovulation test strip results if tracking conception or LH levels.</p>
-                            </div>
-                            <button class="btn-action-pink margin-top-auto" onclick="navigate('tracker')">Open Period Tracker →</button>
+                            <button class="btn-action-pink" onclick="navigate('tracker')">Open Period Tracker →</button>
                         </div>
 
                         <!-- Card 2: Quick Mood Check-In -->
@@ -328,8 +348,36 @@
                                     <button class="emoji-btn-round" data-mood="5" title="Very Happy">😄</button>
                                 </div>
                             </div>
+                            <!-- Mini mood label strip -->
+                            <div class="mood-label-strip">
+                                <span>Very Sad</span><span>Sad</span><span>Neutral</span><span>Happy</span><span>Very Happy</span>
+                            </div>
+                            <!-- Card body fill -->
+                            <div class="card-body-fill">
+                                <!-- Mini 7-day mood sparkline -->
+                                <div class="mood-sparkline-wrap">
+                                    <div class="mood-sparkline-label">7-Day Mood Trend</div>
+                                    <div class="mood-history-mini" title="7-day mood history">
+                                        <div class="mood-bar-mini" style="height:40%" title="Mon"></div>
+                                        <div class="mood-bar-mini" style="height:60%" title="Tue"></div>
+                                        <div class="mood-bar-mini" style="height:70%" title="Wed"></div>
+                                        <div class="mood-bar-mini active" style="height:80%" title="Thu"></div>
+                                        <div class="mood-bar-mini" style="height:55%" title="Fri"></div>
+                                        <div class="mood-bar-mini" style="height:75%" title="Sat"></div>
+                                        <div class="mood-bar-mini active" style="height:90%" title="Sun"></div>
+                                    </div>
+                                    <div class="mood-days-strip">
+                                        <span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span><span>S</span>
+                                    </div>
+                                </div>
+                                <!-- Mood insight -->
+                                <div class="mood-insight-box">
+                                    <span class="mood-insight-icon">💡</span>
+                                    <span class="mood-insight-text">Your mood trend is improving! Ovulatory phase energy boost detected.</span>
+                                </div>
+                            </div>
                             <div id="dash-mood-status" class="status-note hidden">Mood logged for today!</div>
-                            <button class="btn-action-pink margin-top-auto" onclick="navigate('wellness')">Go to Wellness &amp; Chat →</button>
+                            <button class="btn-action-pink" onclick="navigate('wellness')">Go to Wellness &amp; Chat →</button>
                         </div>
 
                         <!-- Card 3: Symptom Severity Log -->
@@ -339,42 +387,53 @@
                                 <span class="phase-badge badge-lavender" id="symptom-phase-tag">Follicular Phase Focus</span>
                             </div>
                             <p class="card-description-text" id="symptom-logger-subtitle">Estrogen is rising. Energy is high. Physical symptoms are typically minimal.</p>
-                            <div class="symptom-rate-sliders" id="dash-symptom-rate-rows">
-                                <div class="symptom-slider-row" data-symptom="cramps">
-                                    <span class="label">Cramps</span>
-                                    <div class="rate-pills">
-                                        <button class="rate-pill" data-val="1">1</button>
-                                        <button class="rate-pill" data-val="2">2</button>
-                                        <button class="rate-pill" data-val="3">3</button>
+                            <!-- Card body fill -->
+                            <div class="card-body-fill">
+                                <div class="symptom-rate-sliders" id="dash-symptom-rate-rows">
+                                    <div class="symptom-slider-row" data-symptom="cramps">
+                                        <span class="label">Cramps</span>
+                                        <div class="rate-pills">
+                                            <button class="rate-pill" data-val="1">1</button>
+                                            <button class="rate-pill" data-val="2">2</button>
+                                            <button class="rate-pill" data-val="3">3</button>
+                                        </div>
+                                    </div>
+                                    <div class="symptom-slider-row" data-symptom="headache">
+                                        <span class="label">Headache</span>
+                                        <div class="rate-pills">
+                                            <button class="rate-pill" data-val="1">1</button>
+                                            <button class="rate-pill" data-val="2">2</button>
+                                            <button class="rate-pill" data-val="3">3</button>
+                                        </div>
+                                    </div>
+                                    <div class="symptom-slider-row" data-symptom="acne">
+                                        <span class="label">Acne</span>
+                                        <div class="rate-pills">
+                                            <button class="rate-pill" data-val="1">1</button>
+                                            <button class="rate-pill" data-val="2">2</button>
+                                            <button class="rate-pill" data-val="3">3</button>
+                                        </div>
+                                    </div>
+                                    <div class="symptom-slider-row" data-symptom="bloating">
+                                        <span class="label">Bloating</span>
+                                        <div class="rate-pills">
+                                            <button class="rate-pill" data-val="1">1</button>
+                                            <button class="rate-pill" data-val="2">2</button>
+                                            <button class="rate-pill" data-val="3">3</button>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="symptom-slider-row" data-symptom="headache">
-                                    <span class="label">Headache</span>
-                                    <div class="rate-pills">
-                                        <button class="rate-pill" data-val="1">1</button>
-                                        <button class="rate-pill" data-val="2">2</button>
-                                        <button class="rate-pill" data-val="3">3</button>
-                                    </div>
-                                </div>
-                                <div class="symptom-slider-row" data-symptom="acne">
-                                    <span class="label">Acne</span>
-                                    <div class="rate-pills">
-                                        <button class="rate-pill" data-val="1">1</button>
-                                        <button class="rate-pill" data-val="2">2</button>
-                                        <button class="rate-pill" data-val="3">3</button>
-                                    </div>
-                                </div>
-                                <div class="symptom-slider-row" data-symptom="bloating">
-                                    <span class="label">Bloating</span>
-                                    <div class="rate-pills">
-                                        <button class="rate-pill" data-val="1">1</button>
-                                        <button class="rate-pill" data-val="2">2</button>
-                                        <button class="rate-pill" data-val="3">3</button>
-                                    </div>
+                                <!-- Symptom severity insight -->
+                                <div class="symptom-insight-box">
+                                    <span class="symptom-ins-bar" style="width:15%;"></span>
+                                    <span class="symptom-ins-bar" style="width:25%;"></span>
+                                    <span class="symptom-ins-bar" style="width:10%;"></span>
+                                    <span class="symptom-ins-bar" style="width:20%;"></span>
+                                    <span class="symptom-ins-label">📊 Typical severity for this phase: Low</span>
                                 </div>
                             </div>
                             <div id="symptom-log-status" class="status-note hidden">Symptoms logged successfully!</div>
-                            <button class="btn-action-pink btn-block margin-top-auto" id="btn-save-dashboard-symptoms" onclick="saveDashboardSymptoms()">Save Symptoms →</button>
+                            <button class="btn-action-pink" id="btn-save-dashboard-symptoms" onclick="saveDashboardSymptoms()">Save Symptoms →</button>
                         </div>
 
                             <!-- Hidden dynamic elements for JS binding -->

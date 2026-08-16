@@ -2223,7 +2223,7 @@ a:hover {
 }
 
 .app-sidebar {
-    width: 260px;
+    width: 250px;
     background: #ffffff;
     border-right: 1px solid var(--glass-border);
     position: fixed;
@@ -2238,7 +2238,7 @@ a:hover {
 
 .app-main-wrapper {
     flex: 1;
-    margin-left: 260px; /* Offset sidebar */
+    margin-left: 250px; /* Offset sidebar */
     display: flex;
     flex-direction: column;
     height: 100vh;
@@ -2247,7 +2247,8 @@ a:hover {
 
 .app-top-header {
     background: transparent;
-    padding: 12px 30px;
+    padding: 8px 24px;
+    height: 60px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -3238,9 +3239,11 @@ html, body {
 .app-main-content {
     flex: 1;
     min-height: 0;
-    padding: 8px 16px 16px 16px !important;
+    padding: 8px 20px !important;
     display: flex;
     flex-direction: column;
+    height: calc(100vh - 60px);
+    overflow: hidden;
 }
 
 .app-view {
@@ -3259,15 +3262,15 @@ html, body {
 #view-dashboard {
     display: grid;
     grid-template-rows: auto minmax(0, 1fr) auto;
-    height: auto;
+    height: 100%;
     min-height: 0;
-    max-height: calc(100vh - 56px);
-    overflow-y: auto;
-    gap: 12px;
-    padding: 8px 20px 12px 20px;
+    max-height: 100%;
+    overflow: hidden;
+    gap: 8px;
+    padding: 0;
 }
 
-/* ── ROW 1: Six Top Metric Cards ── */
+/* â”€â”€ ROW 1: Six Top Metric Cards â”€â”€ */
 .db-stats-bar {
     display: grid;
     grid-template-columns: repeat(6, minmax(0, 1fr));
@@ -3281,15 +3284,15 @@ html, body {
     background: #ffffff;
     border: 1px solid #f1f5f9;
     border-radius: 14px;
-    padding: 10px 12px;
+    padding: 8px 10px;
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
     box-shadow: 0 2px 6px rgba(0,0,0,0.03);
     transition: transform 0.2s ease, box-shadow 0.2s ease;
     overflow: hidden;
-    height: 100%;
-    min-height: 84px;
+    height: 95px;
+    min-height: 95px;
 }
 .db-stat-card:hover {
     transform: translateY(-2px);
@@ -3410,11 +3413,11 @@ html, body {
 }
 .db-view-trends-btn:hover { text-decoration: underline; }
 
-/* ── ROW 2: 3 Main Cards ── */
+/* â”€â”€ ROW 2: 3 Main Cards â”€â”€ */
 .db-cards-row {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 16px;
+    gap: 14px;
     flex: 1;
     min-height: 0;
     align-items: stretch;
@@ -3423,15 +3426,15 @@ html, body {
 .db-card {
     background: #ffffff;
     border: 1px solid #fae8ff;
-    border-radius: 20px;
-    padding: 18px 18px 16px;
+    border-radius: 16px;
+    padding: 14px;
     box-shadow: 0 4px 15px rgba(244, 63, 94, 0.04), 0 1px 3px rgba(0,0,0,0.02);
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
     overflow: hidden;
-    height: 100%;
-    gap: 10px;
+    height: 400px;
+    gap: 8px;
 }
 
 .db-card .card-title-row {
@@ -3501,9 +3504,9 @@ html, body {
     background: linear-gradient(135deg, #f43f5e 0%, #e11d48 100%);
     color: white;
     border: none;
-    height: 38px;
-    padding: 0 14px;
-    border-radius: 10px;
+    height: 42px;
+    padding: 0 16px;
+    border-radius: 12px;
     font-size: 0.78rem;
     font-weight: 700;
     cursor: pointer;
@@ -3664,13 +3667,14 @@ html, body {
 .icon-blue { background: #eff6ff; color: #3b82f6; }
 .icon-purple { background: #faf5ff; color: #a855f7; }
 
-/* ── ROW 3: Wellness Focus & Achievements ── */
+/* â”€â”€ ROW 3: Wellness Focus & Achievements â”€â”€ */
 .db-bottom-row {
     display: grid;
     grid-template-columns: 1.6fr 1fr;
     gap: 10px;
     flex-shrink: 0;
-    height: 120px;
+    flex: 1;
+    min-height: 95px;
 }
 
 .db-focus-card .wellness-focus-pills {
@@ -3750,7 +3754,7 @@ html, body {
     color: #475569;
 }
 
-/* ── ROW 4: Horizontal Personalized Insights Banner ── */
+/* â”€â”€ ROW 4: Horizontal Personalized Insights Banner â”€â”€ */
 .db-insights-banner-card {
     background: #ffffff;
     border: 1px solid #fae8ff;
@@ -5187,7 +5191,7 @@ body:has(#view-tracker:not(.hidden)) {
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    /* Hidden by default — shown via JS class toggle */
+    /* Hidden by default â€” shown via JS class toggle */
     opacity: 0;
     transform: translateY(20px) scale(0.96);
     pointer-events: none;
@@ -5369,7 +5373,7 @@ body:has(#view-tracker:not(.hidden)) {
     display: none;
 }
 
-/* Responsive – shrink panel on small screens */
+/* Responsive â€“ shrink panel on small screens */
 @media (max-width: 480px) {
     .vera-float-widget {
         bottom: 16px;
@@ -5380,6 +5384,7 @@ body:has(#view-tracker:not(.hidden)) {
         max-height: 80vh;
     }
 }
+
 
 /* ==========================================================================
    HERWELLNESS HUB - HIGH-FIDELITY DESKTOP DASHBOARD LAYOUT & DESIGN SYSTEM
@@ -5498,7 +5503,7 @@ body:has(#view-tracker:not(.hidden)) {
     background: linear-gradient(135deg, #FFF5F8 0%, #FAF2F7 100%);
     border: 1px solid #F3DDE5;
     border-radius: 16px;
-    padding: 12px 14px;
+    padding: 10px 12px;
     margin-top: auto;
 }
 
@@ -5515,13 +5520,13 @@ body:has(#view-tracker:not(.hidden)) {
 
 .tip-header-row h4 {
     margin: 0;
-    font-size: 0.85rem;
+    font-size: 0.82rem;
     font-weight: 700;
     color: #172033;
 }
 
 .tip-content {
-    font-size: 0.76rem;
+    font-size: 0.72rem;
     color: #667085;
     line-height: 1.35;
     margin: 0;
@@ -5545,7 +5550,7 @@ body:has(#view-tracker:not(.hidden)) {
     justify-content: space-between;
     padding: 2px 0 6px 0;
     flex-shrink: 0;
-    height: 40px;
+    height: 44px;
 }
 
 .greeting-section .ai-greeting {
@@ -5560,7 +5565,7 @@ body:has(#view-tracker:not(.hidden)) {
 }
 
 .greeting-subtitle {
-    font-size: 0.72rem;
+    font-size: 0.7rem;
     color: #667085;
     margin: 1px 0 0 0;
 }
@@ -5584,6 +5589,12 @@ body:has(#view-tracker:not(.hidden)) {
     font-size: 0.9rem;
     cursor: pointer;
     box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+    transition: all 0.15s ease;
+}
+
+.btn-notification:hover {
+    background: #FFF0F4;
+    border-color: #F42F5B;
 }
 
 .notification-badge {
@@ -5690,19 +5701,53 @@ body:has(#view-tracker:not(.hidden)) {
 #view-dashboard {
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: flex-start;
     gap: 8px;
     height: 100%;
     min-height: 0;
+    overflow: hidden;
 }
 
-/* ── ROW 1: Statistics Bar (6 cards) ── */
+/* â”€â”€ Deviation Alert Banner â”€â”€ */
+.deviation-alert-banner {
+    background: linear-gradient(135deg, #FFF0F4 0%, #FFF5F8 100%);
+    border: 1px solid #FCA5A5;
+    border-left: 3px solid #F42F5B;
+    border-radius: 10px;
+    padding: 7px 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+    gap: 10px;
+}
+.deviation-alert-content {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.deviation-alert-content .alert-icon {
+    font-size: 0.9rem;
+    flex-shrink: 0;
+}
+.deviation-alert-content .alert-text {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #be185d;
+}
+.alert-action-btn {
+    flex-shrink: 0;
+    font-size: 0.7rem !important;
+    padding: 4px 10px !important;
+}
+
+/* â”€â”€ ROW 1: Statistics Bar (6 cards) â”€â”€ */
 .db-stats-bar {
     display: grid;
     grid-template-columns: repeat(6, 1fr);
     gap: 8px;
     flex-shrink: 0;
-    height: 60px;
+    height: 72px;
 }
 
 .db-stat-card {
@@ -5717,6 +5762,11 @@ body:has(#view-tracker:not(.hidden)) {
     box-sizing: border-box;
     height: 100%;
     overflow: hidden;
+    transition: box-shadow 0.15s ease;
+}
+
+.db-stat-card:hover {
+    box-shadow: 0 3px 10px rgba(244, 47, 91, 0.06);
 }
 
 .db-stat-icon-wrap {
@@ -5918,25 +5968,34 @@ body:has(#view-tracker:not(.hidden)) {
     padding: 0;
 }
 
-/* ── ROW 2: Main Dashboard 3 Cards ── */
+/* â”€â”€ ROW 2: Main Dashboard 3 Cards â”€â”€ */
 .db-cards-row {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 10px;
-    flex: 1;
-    min-height: 0;
+    flex-shrink: 0;
+    height: 320px;
 }
 
 .db-card {
     background: #FFFFFF;
     border: 1px solid #F3DDE5;
     border-radius: 14px;
-    padding: 10px 12px;
+    padding: 12px 14px;
     display: flex;
     flex-direction: column;
+    justify-content: space-between;
     box-shadow: 0 2px 8px rgba(0,0,0,0.02);
     box-sizing: border-box;
     overflow: hidden;
+    height: 100%;
+    gap: 0;
+    transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.db-card:hover {
+    box-shadow: 0 4px 16px rgba(244, 47, 91, 0.08);
+    transform: translateY(-1px);
 }
 
 .card-title-row {
@@ -5962,6 +6021,7 @@ body:has(#view-tracker:not(.hidden)) {
     padding: 2px 6px;
     border-radius: 8px;
     letter-spacing: 0.02em;
+    white-space: nowrap;
 }
 
 .badge-ovulatory {
@@ -5978,6 +6038,61 @@ body:has(#view-tracker:not(.hidden)) {
     font-size: 0.68rem;
     color: #667085;
     font-weight: 600;
+}
+
+/* â”€â”€ Card 1: Cycle Overview â”€â”€ */
+.cycle-phase-bar-wrap {
+    display: flex;
+    gap: 3px;
+    margin: 2px 0 6px 0;
+    height: 20px;
+    border-radius: 8px;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.cycle-phase-segment {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.5rem;
+    font-weight: 700;
+    border-radius: 5px;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    opacity: 0.65;
+    cursor: default;
+    user-select: none;
+    transition: opacity 0.2s;
+}
+
+.cycle-phase-segment:hover { opacity: 1; }
+
+.seg-menstrual {
+    background: #FEE2E2;
+    color: #be123c;
+}
+
+.seg-follicular {
+    background: #FEF3C7;
+    color: #92400e;
+}
+
+.seg-ovulatory {
+    background: #FCE7F3;
+    color: #9d174d;
+}
+
+.seg-luteal {
+    background: #EDE9FE;
+    color: #5b21b6;
+}
+
+.seg-active {
+    opacity: 1;
+    box-shadow: inset 0 0 0 2px #F42F5B;
+    font-weight: 800;
 }
 
 .cycle-details-pills {
@@ -6011,41 +6126,22 @@ body:has(#view-tracker:not(.hidden)) {
     border: 1px solid #F3DDE5;
     border-radius: 8px;
     padding: 6px 8px;
-    margin-bottom: 6px;
+    margin-bottom: 4px;
+    flex-shrink: 0;
 }
 
 .cycle-info-box p {
     margin: 0;
-    font-size: 0.68rem;
+    font-size: 0.67rem;
     color: #667085;
-    line-height: 1.3;
+    line-height: 1.35;
 }
 
-.btn-action-pink {
-    background: #F42F5B;
-    color: #FFFFFF;
-    border: none;
-    border-radius: 10px;
-    padding: 6px 12px;
-    font-size: 0.78rem;
-    font-weight: 700;
-    cursor: pointer;
-    width: 100%;
-    margin-top: auto;
-    box-shadow: 0 3px 8px rgba(244, 47, 91, 0.2);
-    transition: all 0.15s ease;
-}
-
-.btn-action-pink:hover {
-    background: #e0244d;
-    transform: translateY(-1px);
-}
-
-/* Card 2: Quick Mood */
+/* â”€â”€ Card 2: Mood Check-In â”€â”€ */
 .card-description-text {
     font-size: 0.72rem;
     color: #667085;
-    margin-bottom: 6px;
+    margin-bottom: 4px;
 }
 
 .emoji-selector-wrapper {
@@ -6053,8 +6149,9 @@ body:has(#view-tracker:not(.hidden)) {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 10px 0;
-    margin-bottom: 6px;
+    padding: 8px 0;
+    margin-bottom: 2px;
+    flex-shrink: 0;
 }
 
 .emoji-slider-track {
@@ -6099,6 +6196,49 @@ body:has(#view-tracker:not(.hidden)) {
     transform: scale(1.15);
 }
 
+.mood-label-strip {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 6px;
+    margin: 0 0 5px 0;
+}
+
+.mood-label-strip span {
+    font-size: 0.52rem;
+    color: #94a3b8;
+    font-weight: 500;
+    text-align: center;
+    width: 20%;
+}
+
+.mood-history-mini {
+    display: flex;
+    align-items: flex-end;
+    gap: 4px;
+    height: 30px;
+    margin: 2px 0 4px 0;
+    padding: 0 2px;
+    flex-shrink: 0;
+}
+
+.mood-bar-mini {
+    flex: 1;
+    border-radius: 3px 3px 0 0;
+    background: linear-gradient(180deg, #F42F5B 0%, #fda4af 100%);
+    opacity: 0.4;
+    transition: opacity 0.2s;
+    min-width: 8px;
+}
+
+.mood-bar-mini:hover {
+    opacity: 0.85;
+}
+
+.mood-bar-mini.active {
+    opacity: 1;
+    background: linear-gradient(180deg, #F42F5B 0%, #e11d48 100%);
+}
+
 .status-note {
     font-size: 0.68rem;
     color: #20B77A;
@@ -6107,18 +6247,23 @@ body:has(#view-tracker:not(.hidden)) {
     margin-bottom: 4px;
 }
 
-/* Card 3: Symptoms */
+/* â”€â”€ Card 3: Symptoms â”€â”€ */
 .symptom-rate-sliders {
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 6px;
     margin-bottom: 6px;
+    flex: 1;
 }
 
 .symptom-slider-row {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    padding: 4px 6px;
+    border-radius: 8px;
+    background: #FAFAFA;
+    border: 1px solid #F9F0F3;
 }
 
 .symptom-slider-row .label {
@@ -6155,13 +6300,40 @@ body:has(#view-tracker:not(.hidden)) {
     border-color: #F42F5B;
 }
 
-/* ── ROW 3: Bottom Wellness & Achievements ── */
+/* â”€â”€ Shared: Action Button â”€â”€ */
+.btn-action-pink {
+    background: #F42F5B;
+    color: #FFFFFF;
+    border: none;
+    border-radius: 10px;
+    padding: 8px 12px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 0;
+    box-shadow: 0 3px 8px rgba(244, 47, 91, 0.2);
+    transition: all 0.15s ease;
+    flex-shrink: 0;
+}
+
+.btn-action-pink:hover {
+    background: #e0244d;
+    transform: translateY(-1px);
+    box-shadow: 0 5px 12px rgba(244, 47, 91, 0.3);
+}
+
+.margin-top-auto {
+    margin-top: auto;
+}
+
+/* â”€â”€ ROW 3: Bottom Wellness & Achievements â”€â”€ */
 .db-bottom-row {
     display: grid;
     grid-template-columns: 1.4fr 1fr;
     gap: 10px;
     flex-shrink: 0;
-    height: 96px;
+    height: 110px;
 }
 
 .wellness-focus-pills {
@@ -6181,9 +6353,14 @@ body:has(#view-tracker:not(.hidden)) {
     display: flex;
     align-items: center;
     gap: 6px;
-    padding: 4px 8px;
+    padding: 5px 8px;
     border-radius: 10px;
     flex-shrink: 0;
+    transition: transform 0.15s ease;
+}
+
+.focus-pill:hover {
+    transform: translateY(-1px);
 }
 
 .pill-blue { background: #EBF5FF; border: 1px solid #D0E7FF; }
@@ -6209,6 +6386,11 @@ body:has(#view-tracker:not(.hidden)) {
     align-items: center;
     gap: 4px;
     flex-shrink: 0;
+    transition: background 0.15s;
+}
+
+.btn-focus-add:hover {
+    background: #FFF5F8;
 }
 
 /* Achievements */
@@ -6223,7 +6405,7 @@ body:has(#view-tracker:not(.hidden)) {
     display: flex;
     align-items: center;
     justify-content: space-around;
-    margin-top: 2px;
+    margin-top: 4px;
 }
 
 .achievement-shield-item {
@@ -6231,6 +6413,12 @@ body:has(#view-tracker:not(.hidden)) {
     flex-direction: column;
     align-items: center;
     gap: 2px;
+    cursor: pointer;
+    transition: transform 0.15s ease;
+}
+
+.achievement-shield-item:hover {
+    transform: translateY(-2px);
 }
 
 .shield-circle {
@@ -6245,8 +6433,633 @@ body:has(#view-tracker:not(.hidden)) {
 }
 
 .shield-label {
-    font-size: 0.62rem;
+    font-size: 0.58rem;
     font-weight: 700;
     color: #172033;
     text-align: center;
+}
+
+/* â”€â”€ Notification Dropdown Panel â”€â”€ */
+.notification-dropdown-panel {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    width: 300px;
+    background: #FFFFFF;
+    border: 1px solid #F3DDE5;
+    border-radius: 14px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.10);
+    z-index: 9000;
+    overflow: hidden;
+}
+
+.notif-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 14px;
+    border-bottom: 1px solid #F3DDE5;
+}
+
+.notif-header h4 {
+    margin: 0;
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: #172033;
+}
+
+.notif-mark-read {
+    font-size: 0.68rem;
+    color: #F42F5B;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.notif-list {
+    max-height: 240px;
+    overflow-y: auto;
+}
+
+.notif-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px 14px;
+    border-bottom: 1px solid #FFF0F4;
+    transition: background 0.15s;
+}
+
+.notif-item:hover {
+    background: #FFF8FA;
+}
+
+.notif-item.unread {
+    background: #FFF5F8;
+}
+
+.notif-icon {
+    font-size: 1rem;
+    flex-shrink: 0;
+    margin-top: 1px;
+}
+
+.notif-text strong {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #172033;
+    display: block;
+}
+
+.notif-text p {
+    font-size: 0.7rem;
+    color: #667085;
+    margin: 2px 0 0 0;
+    line-height: 1.3;
+}
+
+.notif-time {
+    font-size: 0.62rem;
+    color: #94a3b8;
+    white-space: nowrap;
+    margin-left: auto;
+    margin-top: 1px;
+}
+
+/* â”€â”€ Responsive Dashboard â”€â”€ */
+@media (max-width: 1200px) {
+    .db-cards-row {
+        grid-template-columns: 1fr 1fr;
+        height: auto;
+    }
+    .db-stats-bar {
+        grid-template-columns: repeat(3, 1fr);
+        height: auto;
+    }
+}
+
+@media (max-width: 900px) {
+    .app-sidebar {
+        display: none;
+    }
+    .app-main-wrapper {
+        padding: 8px 12px;
+    }
+    .db-cards-row {
+        grid-template-columns: 1fr;
+        height: auto;
+    }
+    .db-stats-bar {
+        grid-template-columns: repeat(2, 1fr);
+        height: auto;
+    }
+    .db-bottom-row {
+        grid-template-columns: 1fr;
+        height: auto;
+    }
+    #view-dashboard {
+        overflow-y: auto;
+    }
+}
+
+/* ── Card Body Fill Wrapper ── */
+.card-body-fill {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-height: 0;
+    overflow: hidden;
+}
+
+/* ── Cycle: Ovulation Progress Bar ── */
+.cycle-ovulation-progress {
+    background: linear-gradient(135deg, #FFF0F4 0%, #FFF8FB 100%);
+    border: 1px solid #F3DDE5;
+    border-radius: 9px;
+    padding: 7px 10px;
+    flex-shrink: 0;
+}
+
+.ov-prog-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+.ov-prog-label {
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: #667085;
+}
+
+.ov-prog-pct {
+    font-size: 0.65rem;
+    font-weight: 800;
+    color: #F42F5B;
+}
+
+.ov-prog-bar-track {
+    width: 100%;
+    height: 5px;
+    background: #F3DDE5;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.ov-prog-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #f43f5e 0%, #e11d48 100%);
+    border-radius: 4px;
+    transition: width 0.4s ease;
+}
+
+/* ── Mood: Sparkline Wrapper ── */
+.mood-sparkline-wrap {
+    background: #FAFAFA;
+    border: 1px solid #F3DDE5;
+    border-radius: 9px;
+    padding: 7px 9px;
+    flex-shrink: 0;
+}
+
+.mood-sparkline-label {
+    font-size: 0.6rem;
+    font-weight: 700;
+    color: #667085;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    margin-bottom: 4px;
+}
+
+.mood-days-strip {
+    display: flex;
+    justify-content: space-between;
+    padding: 2px 2px 0;
+}
+
+.mood-days-strip span {
+    font-size: 0.52rem;
+    color: #94a3b8;
+    font-weight: 600;
+    width: 14.28%;
+    text-align: center;
+}
+
+/* ── Mood: Insight Box ── */
+.mood-insight-box {
+    background: linear-gradient(135deg, #F3E8FF 0%, #FFF0F4 100%);
+    border: 1px solid #E9D5FF;
+    border-radius: 9px;
+    padding: 7px 10px;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    flex-shrink: 0;
+}
+
+.mood-insight-icon {
+    font-size: 0.9rem;
+    flex-shrink: 0;
+}
+
+.mood-insight-text {
+    font-size: 0.65rem;
+    color: #5b21b6;
+    font-weight: 600;
+    line-height: 1.3;
+}
+
+/* ── Symptom: Insight Box ── */
+.symptom-insight-box {
+    background: #FAFAFA;
+    border: 1px solid #F3DDE5;
+    border-radius: 9px;
+    padding: 7px 10px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex-wrap: wrap;
+    flex-shrink: 0;
+}
+
+.symptom-ins-bar {
+    display: inline-block;
+    height: 6px;
+    background: linear-gradient(90deg, #fda4af 0%, #f43f5e 100%);
+    border-radius: 3px;
+    opacity: 0.7;
+    min-width: 8px;
+}
+
+.symptom-ins-label {
+    font-size: 0.62rem;
+    color: #667085;
+    font-weight: 600;
+    width: 100%;
+    margin-top: 3px;
+}
+/* ==========================================================================
+   DASHBOARD REDESIGN OVERRIDES
+   ========================================================================== */
+
+/* 12. EXACT SPACING SYSTEM & 1. MOST IMPORTANT VIEWPORT REQUIREMENT */
+.app-main-content {
+    padding: 16px 20px 16px 20px !important;
+    height: calc(100vh - 64px) !important;
+    overflow: hidden !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 12px !important;
+}
+
+#view-dashboard {
+    display: flex !important;
+    flex-direction: column !important;
+    height: 100% !important;
+    gap: 12px !important;
+    overflow: hidden !important;
+}
+
+/* 9. HEADER */
+.app-header {
+    padding: 8px 20px !important;
+    height: 64px !important;
+    display: flex !important;
+    align-items: center !important;
+}
+.header-container {
+    height: 100% !important;
+}
+.greeting-section h1 {
+    font-size: 1.2rem !important;
+    margin-bottom: 2px !important;
+}
+.greeting-subtitle {
+    font-size: 0.85rem !important;
+    margin: 0 !important;
+}
+.view-header {
+    margin-bottom: 12px !important;
+    display: none !important; /* Hide view header if redundant, or reduce margin */
+}
+
+/* 10. SIDEBAR */
+.app-sidebar {
+    width: 280px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    padding: 16px !important;
+}
+.sidebar-nav {
+    flex: 1 !important;
+}
+.sidebar-tip-card {
+    margin-top: auto !important;
+    margin-bottom: 0 !important;
+    padding: 12px !important;
+}
+
+/* 8. KPI ROW */
+.db-stats-bar {
+    display: grid !important;
+    grid-template-columns: repeat(6, 1fr) !important;
+    gap: 10px !important;
+    height: 105px !important;
+    min-height: 105px !important;
+    flex-shrink: 0 !important;
+    margin-bottom: 0 !important;
+}
+.db-stat-card {
+    height: 100% !important;
+    padding: 10px 12px !important;
+    border-radius: 16px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    gap: 6px !important;
+}
+.db-stat-icon-wrap {
+    width: 32px !important;
+    height: 32px !important;
+    font-size: 1rem !important;
+}
+.db-stat-body {
+    gap: 4px !important;
+}
+.db-stat-title {
+    font-size: 0.75rem !important;
+}
+.db-stat-value {
+    font-size: 1rem !important;
+}
+
+/* 3. MAIN 3-COLUMN CARDS */
+.db-cards-row {
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 12px !important;
+    height: 330px !important;
+    min-height: 330px !important;
+    flex-shrink: 0 !important;
+    margin-bottom: 0 !important;
+}
+.db-card {
+    padding: 16px !important;
+    border-radius: 16px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    height: 100% !important;
+    justify-content: flex-start !important;
+}
+.card-title-row {
+    margin-bottom: 12px !important;
+}
+.card-title-row h3 {
+    font-size: 1rem !important;
+}
+.card-description-text {
+    font-size: 0.8rem !important;
+    margin-bottom: 8px !important;
+}
+.card-body-fill {
+    flex: 1 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: flex-start !important;
+    gap: 8px !important;
+    min-height: 0 !important;
+    overflow: hidden !important;
+}
+.db-card .btn-action-pink {
+    height: 44px !important;
+    margin-top: auto !important;
+    border-radius: 14px !important;
+}
+
+/* 4. QUICK MOOD CHECK-IN */
+.emoji-selector-wrapper {
+    margin: 8px 0 !important;
+}
+.emoji-selector-pills {
+    justify-content: space-between !important;
+}
+.emoji-btn-round {
+    width: 40px !important;
+    height: 40px !important;
+    font-size: 1.2rem !important;
+}
+.mood-label-strip {
+    margin-bottom: 8px !important;
+    font-size: 0.65rem !important;
+}
+.mood-sparkline-wrap {
+    margin: 4px 0 !important;
+}
+.mood-history-mini {
+    height: 40px !important;
+}
+.mood-insight-box {
+    padding: 8px !important;
+    margin-top: 4px !important;
+    font-size: 0.75rem !important;
+}
+
+/* 5. CYCLE OVERVIEW */
+.cycle-phase-bar-wrap {
+    margin-bottom: 12px !important;
+}
+.cycle-details-pills {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 6px !important;
+}
+.cycle-detail-item {
+    padding: 6px 10px !important;
+}
+.cycle-ovulation-progress {
+    margin-top: 8px !important;
+    margin-bottom: 8px !important;
+}
+.cycle-info-box {
+    padding: 8px !important;
+    font-size: 0.75rem !important;
+    margin-top: 0 !important;
+}
+
+/* 6. SYMPTOM SEVERITY LOG */
+.symptom-rate-sliders {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 8px !important;
+}
+.symptom-slider-row {
+    margin-bottom: 0 !important;
+}
+.symptom-insight-box {
+    margin-top: 8px !important;
+}
+
+/* 7. BOTTOM SECTION (WELLNESS FOCUS & ACHIEVEMENTS) */
+.db-bottom-row {
+    display: grid !important;
+    grid-template-columns: 65% calc(35% - 12px) !important;
+    gap: 12px !important;
+    height: 130px !important;
+    min-height: 130px !important;
+    flex-shrink: 0 !important;
+    margin-top: auto !important;
+}
+.db-focus-card, .db-achievements-card {
+    height: 100% !important;
+    padding: 16px !important;
+    display: flex !important;
+    flex-direction: column !important;
+}
+.wellness-focus-pills {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 10px !important;
+    height: 100% !important;
+}
+.focus-pill {
+    flex: 1 !important;
+    margin-bottom: 0 !important;
+    padding: 8px !important;
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 8px !important;
+}
+.focus-pill .icon {
+    font-size: 1.2rem !important;
+}
+.focus-pill .text-wrap {
+    display: flex !important;
+    flex-direction: column !important;
+}
+.focus-pill .title {
+    font-size: 0.75rem !important;
+}
+.focus-pill .desc {
+    font-size: 0.65rem !important;
+}
+.btn-focus-add {
+    height: 44px !important;
+    padding: 0 12px !important;
+    border-radius: 14px !important;
+    white-space: nowrap !important;
+    font-size: 0.8rem !important;
+    align-self: center !important;
+}
+.achievements-shields {
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    height: 100% !important;
+}
+.achievement-shield-item {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 6px !important;
+}
+.shield-circle {
+    width: 40px !important;
+    height: 40px !important;
+    font-size: 1.2rem !important;
+}
+.shield-label {
+    font-size: 0.7rem !important;
+    text-align: center !important;
+    white-space: nowrap !important;
+}
+
+/* 11. VERA AI */
+.ai-fab {
+    bottom: 20px !important;
+    right: 20px !important;
+    transform: scale(0.85) !important;
+    transform-origin: bottom right !important;
+}
+
+/* Score Ring & Date Fixes */
+.db-stat-score {
+    align-items: center !important;
+    text-align: center !important;
+}
+.db-score-ring-wrap {
+    margin: 0 auto !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+.db-score-num {
+    position: absolute !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 100% !important;
+    height: 100% !important;
+    margin: 0 !important;
+    inset: auto !important;
+}
+.db-score-num strong {
+    line-height: 1 !important;
+    margin-bottom: 2px !important;
+}
+.db-stat-date {
+    align-items: center !important;
+    text-align: center !important;
+}
+.db-stat-icon-wrap {
+    margin: 0 auto !important;
+}
+.db-stat-date-text {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+}
+
+/* FINAL FIX for SCORE RING */
+.db-stat-score {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+}
+.db-score-ring-wrap {
+    position: relative !important;
+    width: 48px !important;
+    height: 48px !important;
+    margin: 0 auto !important;
+    display: block !important; /* NOT flex, let absolute positioning work natively */
+}
+.db-score-ring-svg {
+    width: 48px !important;
+    height: 48px !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+}
+.db-score-num {
+    position: absolute !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    width: 100% !important;
+    height: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    margin: 0 !important;
+    padding: 0 !important;
 }
