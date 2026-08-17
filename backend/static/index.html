@@ -54,6 +54,35 @@
                     <h4>Daily Tip</h4>
                 </div>
                 <p class="tip-content">Small steps every day lead to big changes. You've got this! 💜</p>
+                <div class="sidebar-tip-illustration">
+                    <svg viewBox="0 0 200 120" xmlns="http://www.w3.org/2000/svg" class="tip-meditate-svg">
+                        <!-- Left Plant -->
+                        <path d="M25 110 L35 110 L33 90 L27 90 Z" fill="#E2E8F0" />
+                        <path d="M30 90 Q15 65 10 50 Q25 60 30 90 Z" fill="#86EFAC" />
+                        <path d="M30 90 Q35 55 45 45 Q40 65 30 90 Z" fill="#4ADE80" />
+                        <ellipse cx="30" cy="90" rx="6" ry="2" fill="#CBD5E1" />
+                        <path d="M22 90 L38 90 L35 110 L25 110 Z" fill="#F87171" />
+                        <!-- Right Plant -->
+                        <path d="M165 110 L175 110 L173 90 L167 90 Z" fill="#E2E8F0" />
+                        <path d="M170 90 Q155 65 150 50 Q165 60 170 90 Z" fill="#4ADE80" />
+                        <path d="M170 90 Q175 55 185 45 Q180 65 170 90 Z" fill="#86EFAC" />
+                        <ellipse cx="170" cy="90" rx="6" ry="2" fill="#CBD5E1" />
+                        <path d="M162 90 L178 90 L175 110 L165 110 Z" fill="#F87171" />
+                        <!-- Meditating Woman -->
+                        <path d="M85 105 Q100 108 115 105 Q125 100 110 92 Q100 90 90 92 Q75 100 85 105 Z" fill="#334155" />
+                        <path d="M92 62 Q100 60 108 62 L112 88 Q100 92 88 88 Z" fill="#E11D48" />
+                        <circle cx="100" cy="46" r="10" fill="#FCA5A5" />
+                        <!-- Hair -->
+                        <path d="M90 44 Q100 34 110 44 Q114 54 108 56 Q100 58 92 56 Z" fill="#475569" />
+                        <!-- Arms -->
+                        <path d="M88 66 Q72 75 80 84 Q88 82 92 72 Z" fill="#FCA5A5" />
+                        <path d="M112 66 Q128 75 120 84 Q112 82 108 72 Z" fill="#FCA5A5" />
+                        <!-- Sparkles -->
+                        <circle cx="65" cy="35" r="2" fill="#F43F5E" opacity="0.6"/>
+                        <circle cx="135" cy="40" r="2" fill="#A855F7" opacity="0.6"/>
+                        <circle cx="100" cy="25" r="1.5" fill="#F59E0B" opacity="0.8"/>
+                    </svg>
+                </div>
             </div>
         </aside>
 
@@ -63,13 +92,13 @@
             <!-- Top Header (Greeting, bell notification, user actions) -->
             <header class="app-top-header">
                 <div class="greeting-section">
-                    <h1 class="ai-greeting" id="ai-summary-greeting">🌸 Good Morning, Priya!</h1>
+                    <h1 class="ai-greeting" id="ai-summary-greeting">Good Morning, Priya! 🌸</h1>
                     <p class="greeting-subtitle">Let's prioritize your well-being today.</p>
                 </div>
                 <div class="top-header-right">
                     <div class="notif-wrapper" style="position: relative;">
                         <button class="btn-notification" title="Notifications" onclick="toggleNotificationsDropdown(event)">
-                            🔔 <span class="notification-badge" id="notif-badge-count">3</span>
+                            🔔<span class="notification-badge" id="notif-badge-count">3</span>
                         </button>
                         <!-- Notification Dropdown Panel -->
                         <div id="notification-dropdown" class="notification-dropdown-panel hidden">
@@ -106,9 +135,9 @@
                         </div>
                     </div>
 
-                    <button class="btn-header-action" title="Partner Share Link" onclick="openShareModal()">🔗 Share</button>
-                    <button class="btn-header-action" title="AI Settings" onclick="openAIConfigModal()">⚙️ AI</button>
-                    <button class="btn-header-action btn-helpline-action" title="Crisis Helpline" onclick="openHelplineModal()">🆘 Helpline</button>
+                    <button class="btn-header-action" title="Partner Share Link" onclick="openShareModal()"><span class="action-icon">🔗</span> Share</button>
+                    <button class="btn-header-action" title="AI Settings" onclick="openAIConfigModal()"><span class="action-icon">✨</span> AI</button>
+                    <button class="btn-header-action btn-helpline-action" title="Crisis Helpline" onclick="openHelplineModal()"><span class="action-icon">📋</span> Helpline</button>
 
                     <div class="user-action-area" id="user-action-area">
                         <span class="user-badge" id="user-email-display">priya@gmail.com</span>
@@ -673,8 +702,6 @@
 
                     <!-- Hidden container preserving optional controls & legacy IDs for JS functions -->
                     <div style="display:none;">
-                        <form id="form-profile-settings" onsubmit="handleProfileSettingsSubmit(event)">
-                            <select id="profile-tracking-mode"><option value="pcos_pcod">PCOS / PCOD Mode</option></select>
                             <input type="number" id="profile-custom-length">
                         </form>
                         <div id="share-link-status"></div>
@@ -687,216 +714,286 @@
 
         <!-- ================= VIEW 4: MENTAL WELLNESS ================= -->
         <section id="view-wellness" class="app-view hidden">
-
-            <!-- 3 Column Wellness Layout Grid -->
-            <div class="wellness-grid-3col">
+            <div class="wellness-dashboard-container">
                 
-                <!-- Column 1: Daily Wellness & Mood Logger -->
-                <div class="wellness-col">
-                    <div class="wellness-card daily-logger-card">
-                        <div class="form-group date-picker-group">
-                            <input type="date" id="wellness-log-date" class="form-control date-input-full" value="2026-08-13">
+                <!-- LEFT COLUMN: Main Wellness Entry Card -->
+                <div class="wellness-entry-card">
+                    
+                    <!-- Date Selector -->
+                    <div class="form-group date-picker-group">
+                        <div class="date-input-wrapper">
+                            <input type="text" id="wellness-log-date-text" class="date-input-custom" value="13-08-2026" readonly>
+                            <input type="date" id="wellness-log-date" class="date-input-hidden" value="2026-08-13" onchange="document.getElementById('wellness-log-date-text').value=this.value.split('-').reverse().join('-'); loadWellnessDataForSelectedDate();">
+                            <span class="date-calendar-icon" onclick="document.getElementById('wellness-log-date').showPicker()">📅</span>
                         </div>
+                    </div>
 
-                        <div class="form-group">
-                            <label class="field-label">Mood Rating:</label>
-                            <div class="emoji-selector large" id="wellness-emoji-selector">
-                                <button class="emoji-btn" data-mood="1" title="Very Sad">😢<br><small>Very Sad</small></button>
-                                <button class="emoji-btn" data-mood="2" title="Sad">😟<br><small>Sad</small></button>
-                                <button class="emoji-btn selected" data-mood="3" title="Neutral">😐<br><small>Neutral</small></button>
-                                <button class="emoji-btn" data-mood="4" title="Happy">😊<br><small>Happy</small></button>
-                                <button class="emoji-btn" data-mood="5" title="Elated">😁<br><small>Exited</small></button>
-                            </div>
+                    <!-- Mood Rating -->
+                    <div class="form-group mood-section">
+                        <label class="field-label">Mood Rating</label>
+                        <div class="mood-options-grid" id="wellness-emoji-selector">
+                            <button class="mood-option-btn" data-mood="1" title="Very Sad">
+                                <span class="mood-emoji">😭</span>
+                                <span class="mood-label">Very Sad</span>
+                            </button>
+                            <button class="mood-option-btn" data-mood="2" title="Sad">
+                                <span class="mood-emoji">😟</span>
+                                <span class="mood-label">Sad</span>
+                            </button>
+                            <button class="mood-option-btn selected" data-mood="3" title="Neutral">
+                                <span class="mood-emoji">😐</span>
+                                <span class="mood-label">Neutral</span>
+                            </button>
+                            <button class="mood-option-btn" data-mood="4" title="Happy">
+                                <span class="mood-emoji">🙂</span>
+                                <span class="mood-label">Happy</span>
+                            </button>
+                            <button class="mood-option-btn" data-mood="5" title="Excited">
+                                <span class="mood-emoji">🤩</span>
+                                <span class="mood-label">Excited</span>
+                            </button>
                         </div>
+                    </div>
 
-                        <div class="form-group">
-                            <label class="field-label">Key Events:</label>
-                            <div class="tags-container">
-                                <span class="tag">#WorkMeeting</span>
-                                <span class="tag">#Exercise</span>
-                                <span class="tag">#FamilyTime</span>
-                                <span class="tag">#DateNight</span>
-                                <button class="tag-add-btn" title="Add Tag">+ Add</button>
-                            </div>
+                    <!-- Key Events -->
+                    <div class="form-group events-section">
+                        <label class="field-label">Key Events</label>
+                        <div class="tags-container">
+                            <span class="event-tag">#WorkMeeting</span>
+                            <span class="event-tag">#Exercise</span>
+                            <span class="event-tag">#FamilyTime</span>
+                            <span class="event-tag">#DateNight</span>
+                            <button class="tag-add-btn" type="button" title="Add Tag">+ Add</button>
                         </div>
+                    </div>
 
-                        <div class="form-group slider-group">
-                            <div class="slider-label-row">
-                                <label for="wellness-sleep-hours">Sleep Duration</label>
-                                <span class="slider-val" id="sleep-hours-val">8.0 hours</span>
-                            </div>
-                            <input type="range" id="wellness-sleep-hours" min="0" max="12" step="0.5" value="8.0" class="slider-control custom-slider">
+                    <!-- Sleep Duration Slider -->
+                    <div class="form-group slider-group">
+                        <div class="slider-label-row">
+                            <label for="wellness-sleep-hours">Sleep Duration</label>
+                            <span class="slider-val" id="sleep-hours-val">8.0 hours</span>
                         </div>
+                        <input type="range" id="wellness-sleep-hours" min="0" max="12" step="0.5" value="8.0" class="custom-range-slider" oninput="updateSliderFill(this)">
+                    </div>
 
-                        <div class="form-group slider-group">
-                            <div class="slider-label-row">
-                                <label for="wellness-hydration-liters">Water Intake (Hydration)</label>
-                                <span class="slider-val" id="hydration-liters-val">2.5 Liters</span>
-                            </div>
-                            <input type="range" id="wellness-hydration-liters" min="0" max="5" step="0.1" value="2.5" class="slider-control custom-slider">
+                    <!-- Water Intake Slider -->
+                    <div class="form-group slider-group">
+                        <div class="slider-label-row">
+                            <label for="wellness-hydration-liters">Water Intake (Hydration)</label>
+                            <span class="slider-val" id="hydration-liters-val">2.5 Liters</span>
                         </div>
+                        <input type="range" id="wellness-hydration-liters" min="0" max="5" step="0.1" value="2.5" class="custom-range-slider" oninput="updateSliderFill(this)">
+                    </div>
 
-                        <div class="form-group slider-group">
-                            <div class="slider-label-row">
-                                <label for="wellness-exercise-minutes">Exercise Duration</label>
-                                <span class="slider-val" id="exercise-minutes-val">30 mins</span>
-                            </div>
-                            <input type="range" id="wellness-exercise-minutes" min="0" max="120" step="5" value="30" class="slider-control custom-slider">
+                    <!-- Exercise Duration Slider -->
+                    <div class="form-group slider-group">
+                        <div class="slider-label-row">
+                            <label for="wellness-exercise-minutes">Exercise Duration</label>
+                            <span class="slider-val" id="exercise-minutes-val">30 mins</span>
                         </div>
+                        <input type="range" id="wellness-exercise-minutes" min="0" max="120" step="5" value="30" class="custom-range-slider" oninput="updateSliderFill(this)">
+                    </div>
 
-                        <div class="form-group">
-                            <div class="stress-row">
-                                <label>Stress Level</label>
-                                <span class="stress-val" id="wellness-stress-val">Low</span>
-                            </div>
-                            <div class="pill-selector stress-selector" id="wellness-stress-selector">
-                                <button type="button" class="pill-btn selected" data-stress="low">Low</button>
-                                <button type="button" class="pill-btn" data-stress="medium">Medium</button>
-                                <button type="button" class="pill-btn" data-stress="high">High</button>
-                            </div>
+                    <!-- Stress Level -->
+                    <div class="form-group stress-section">
+                        <div class="stress-header-row">
+                            <label>Stress Level <span class="stress-wave-icon">📈</span></label>
+                            <span class="stress-val hidden" id="wellness-stress-val">Low</span>
                         </div>
+                        <div class="stress-pills-row" id="wellness-stress-selector">
+                            <button type="button" class="stress-pill-btn selected" data-stress="low">Low</button>
+                            <button type="button" class="stress-pill-btn" data-stress="medium">Medium</button>
+                            <button type="button" class="stress-pill-btn" data-stress="high">High</button>
+                        </div>
+                    </div>
 
-                        <div class="action-buttons-row">
-                            <button class="btn btn-primary action-save" onclick="submitWellnessLog()">Save Entry</button>
-                            <button class="btn action-clear" onclick="resetWellnessForm()">Clear All</button>
-                        </div>
+                    <!-- Action Buttons -->
+                    <div class="entry-actions-row">
+                        <button type="button" class="btn-save-entry" onclick="submitWellnessLog()">Save Entry</button>
+                        <button type="button" class="btn-clear-entry" onclick="resetWellnessForm()">Clear All</button>
                     </div>
                 </div>
 
-                <!-- Column 2: Overview, Daily Trend & Weekly Summary -->
-                <div class="wellness-col middle-col">
-                    
-                    <!-- Card 1: Wellness Overview -->
-                    <div class="wellness-card overview-card">
-                        <div class="overview-stats-grid">
-                            <div class="overview-stat-box gauge-box">
-                                <div class="mini-gauge-container">
-                                    <svg class="mini-gauge-ring" viewBox="0 0 36 36">
-                                        <path class="gauge-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#ffe4e6" stroke-width="3" />
-                                        <path class="gauge-fill" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#f43f5e" stroke-width="3" stroke-dasharray="72, 100" />
-                                    </svg>
-                                    <div class="gauge-val">72<small>/100</small></div>
+                <!-- RIGHT COLUMN: Dashboard Metrics & Charts -->
+                <div class="wellness-main-panel">
+
+                    <!-- Top Row: 4 Metric Cards -->
+                    <div class="wellness-metrics-row">
+                        
+                        <!-- 1. Total Score -->
+                        <div class="metric-summary-card score-card">
+                            <div class="score-ring-wrapper">
+                                <svg class="score-ring-svg" viewBox="0 0 36 36">
+                                    <path class="ring-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#ffe4e6" stroke-width="3"/>
+                                    <path class="ring-fill" id="wellness-score-ring-fill" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#f43f5e" stroke-width="3" stroke-dasharray="72, 100"/>
+                                </svg>
+                                <span class="ring-score-num" id="metric-score-num">72</span>
+                            </div>
+                            <div class="metric-card-details">
+                                <div class="metric-card-header">
+                                    <span class="metric-label-title">Total</span>
+                                    <span class="metric-card-title">Score</span>
                                 </div>
-                                <div class="stat-meta">
-                                    <span class="stat-title">Score</span>
-                                    <strong class="stat-label">Good</strong>
-                                    <span class="stat-sub positive">↑ 8 pts from yesterday</span>
-                                </div>
-                            </div>
-
-                            <div class="overview-stat-box">
-                                <div class="stat-icon-wrap moon">🌙</div>
-                                <span class="stat-title">Sleep</span>
-                                <strong class="stat-main-val">8.0 <small>hrs</small></strong>
-                                <span class="badge-status green">Good</span>
-                            </div>
-
-                            <div class="overview-stat-box">
-                                <div class="stat-icon-wrap water">💧</div>
-                                <span class="stat-title">Hydration</span>
-                                <strong class="stat-main-val">2.5 <small>L</small></strong>
-                                <span class="badge-status green">Good</span>
-                            </div>
-
-                            <div class="overview-stat-box">
-                                <div class="stat-icon-wrap runner">↔</div>
-                                <span class="stat-title">Activity</span>
-                                <strong class="stat-main-val">30 <small>mins</small></strong>
-                                <span class="badge-status green">Keep going!</span>
+                                <span class="metric-card-delta positive">↑ 6 pts from yesterday</span>
                             </div>
                         </div>
+
+                        <!-- 2. Sleep -->
+                        <div class="metric-summary-card">
+                            <div class="metric-icon-circle bg-yellow-light">🌙</div>
+                            <div class="metric-card-details">
+                                <span class="metric-card-title">Sleep</span>
+                                <div class="metric-val-row">
+                                    <strong class="metric-main-value" id="metric-sleep-num">8.0</strong>
+                                    <span class="metric-unit">hrs</span>
+                                </div>
+                                <span class="status-pill green">Good</span>
+                            </div>
+                        </div>
+
+                        <!-- 3. Hydration -->
+                        <div class="metric-summary-card">
+                            <div class="metric-icon-circle bg-blue-light">💧</div>
+                            <div class="metric-card-details">
+                                <span class="metric-card-title">Hydration</span>
+                                <div class="metric-val-row">
+                                    <strong class="metric-main-value" id="metric-hydration-num">2.5</strong>
+                                    <span class="metric-unit">L</span>
+                                </div>
+                                <span class="status-pill green">Good</span>
+                            </div>
+                        </div>
+
+                        <!-- 4. Activity -->
+                        <div class="metric-summary-card">
+                            <div class="metric-icon-circle bg-green-light">🏃‍♀️</div>
+                            <div class="metric-card-details">
+                                <span class="metric-card-title">Activity</span>
+                                <div class="metric-val-row">
+                                    <strong class="metric-main-value" id="metric-activity-num">30</strong>
+                                    <span class="metric-unit">mins</span>
+                                </div>
+                                <span class="status-pill green">Keep going!</span>
+                            </div>
+                        </div>
+
                     </div>
 
-                    <!-- Card 2: Daily Trend Chart -->
-                    <div class="wellness-card trend-card">
-                        <div class="card-header-flex">
+                    <!-- Middle Row: Daily Trend Chart -->
+                    <div class="wellness-card daily-trend-card">
+                        <div class="card-header-row">
                             <h3>Daily Trend</h3>
-                            <select class="trend-select-dropdown">
+                            <select class="trend-metric-dropdown" id="trend-metric-select" onchange="renderMoodTrendChart(state.moodLogs)">
                                 <option value="mood">Mood ˅</option>
                                 <option value="sleep">Sleep</option>
                                 <option value="stress">Stress</option>
                             </select>
                         </div>
-                        <div class="canvas-container trend-chart-wrap">
-                            <canvas id="mood-trend-chart" height="110"></canvas>
+                        <div class="trend-chart-container">
+                            <canvas id="mood-trend-chart" height="130"></canvas>
+                            <!-- Hover / Highlighted callout box -->
+                            <div class="trend-data-callout">
+                                <span class="callout-date">13 Aug</span>
+                                <strong class="callout-score">72</strong>
+                                <span class="callout-tag">Good Day 🌸</span>
+                            </div>
                         </div>
                     </div>
 
-                    <!-- Card 3: Weekly Summary -->
-                    <div class="wellness-card summary-card">
-                        <div class="card-header-flex">
-                            <h3>Weekly Summary</h3>
-                            <a href="#" class="link-insights" onclick="navigate('tracker'); return false;">View Insights →</a>
+                    <!-- Row 3: Weekly Summary + Streak Cards -->
+                    <div class="wellness-two-cards-row">
+                        
+                        <!-- Weekly Summary Card -->
+                        <div class="wellness-card weekly-summary-card">
+                            <div class="card-header-row">
+                                <h3>Weekly Summary</h3>
+                                <a href="#" class="link-view-insights" onclick="navigate('tracker'); return false;">View Insights →</a>
+                            </div>
+                            <div class="weekly-metrics-grid">
+                                <div class="weekly-sub-box">
+                                    <span class="weekly-sub-label">Best Day</span>
+                                    <div class="best-day-row">
+                                        <span class="best-day-pill">Tue</span>
+                                        <span class="best-day-emoji">🟢</span>
+                                    </div>
+                                    <span class="sub-small-label">Wellness Score</span>
+                                    <strong class="sub-bold-value">85</strong>
+                                </div>
+                                <div class="weekly-sub-box">
+                                    <span class="weekly-sub-label">Average Score</span>
+                                    <div class="avg-score-row">
+                                        <strong class="sub-bold-large">71</strong>
+                                        <span class="chart-small-icon">📊</span>
+                                    </div>
+                                </div>
+                                <div class="weekly-sub-box">
+                                    <span class="weekly-sub-label">Total Entries</span>
+                                    <div class="total-entries-row">
+                                        <strong class="sub-bold-large">12</strong>
+                                        <span class="calendar-small-icon">📅</span>
+                                    </div>
+                                    <span class="sub-small-label">This Week</span>
+                                </div>
+                            </div>
                         </div>
-                        <div class="weekly-summary-grid">
-                            <div class="summary-box">
-                                <span class="summary-label">Best Day</span>
-                                <div class="summary-row">
-                                    <span class="day-badge green">Tue</span>
-                                    <span class="day-emoji">😁</span>
-                                </div>
-                                <span class="summary-sub">Wellness Score</span>
-                                <strong class="summary-bold-val">85</strong>
-                            </div>
 
-                            <div class="summary-box">
-                                <span class="summary-label">Average Score</span>
-                                <div class="summary-row">
-                                    <strong class="summary-score-val">71</strong>
-                                    <span class="bar-chart-icon">📊</span>
-                                </div>
+                        <!-- Wellness Streak Card -->
+                        <div class="wellness-card wellness-streak-card">
+                            <div class="streak-header-row">
+                                <span class="streak-flame-icon">🔥</span>
+                                <h4>Wellness Streak</h4>
                             </div>
-
-                            <div class="summary-box">
-                                <span class="summary-label">Total Entries</span>
-                                <div class="summary-row">
-                                    <strong class="summary-score-val">12</strong>
-                                    <span class="clipboard-icon">📅</span>
-                                </div>
-                                <span class="summary-sub">This Week</span>
+                            <div class="streak-value-display">
+                                <span class="streak-count-num">7</span>
+                                <span class="streak-count-unit">days</span>
                             </div>
+                            <p class="streak-motivational-text">Keep the momentum!</p>
+                            <div class="streak-wave-bg"></div>
                         </div>
+
                     </div>
 
                 </div>
 
-                <!-- Column 3: Vera AI Companion (moved to floating widget) -->
-
             </div>
 
-            <!-- Bottom Full-Width Row: Upcoming Reminders -->
-            <div class="wellness-bottom-row">
-                <div class="wellness-card reminders-card">
-                    <div class="reminders-header">
-                        <h3><span class="icon">🚨</span> Upcoming Reminders</h3>
-                        <a href="#" class="link-insights" onclick="navigate('tracker'); return false;">View All</a>
+            <!-- Bottom Full Width Row: Upcoming Reminders -->
+            <div class="wellness-reminders-wrapper">
+                <div class="wellness-card reminders-container-card">
+                    <div class="card-header-row">
+                        <div class="reminders-title-wrap">
+                            <span class="reminders-bell-icon">🔔</span>
+                            <h3>Upcoming Reminders</h3>
+                        </div>
+                        <a href="#" class="link-view-insights" onclick="openRemindersModal(); return false;">Manage Reminders →</a>
                     </div>
-                    <div class="reminders-pills-row">
-                        <div class="reminder-pill-item">
-                            <div class="rem-icon water">💧</div>
-                            <div class="rem-info">
+                    <div class="reminders-cards-grid">
+                        <div class="reminder-item-card">
+                            <div class="rem-icon-bubble bg-blue-light">💧</div>
+                            <div class="rem-text-content">
                                 <strong>Hydrate</strong>
                                 <span>Drink water</span>
                             </div>
-                            <div class="rem-time">11:00 AM</div>
+                            <span class="rem-time-badge">11:00 AM</span>
+                            <span class="rem-check-icon">✓</span>
                         </div>
-
-                        <div class="reminder-pill-item">
-                            <div class="rem-icon stretch">🧘</div>
-                            <div class="rem-info">
+                        <div class="reminder-item-card">
+                            <div class="rem-icon-bubble bg-pink-light">🧘</div>
+                            <div class="rem-text-content">
                                 <strong>Stretch Break</strong>
                                 <span>Move your body</span>
                             </div>
-                            <div class="rem-time">03:00 PM</div>
+                            <span class="rem-time-badge">03:00 PM</span>
+                            <span class="rem-check-icon">✓</span>
                         </div>
-
-                        <div class="reminder-pill-item">
-                            <div class="rem-icon night">🌙</div>
-                            <div class="rem-info">
+                        <div class="reminder-item-card">
+                            <div class="rem-icon-bubble bg-yellow-light">🌙</div>
+                            <div class="rem-text-content">
                                 <strong>Night Routine</strong>
                                 <span>Wind down</span>
                             </div>
-                            <div class="rem-time">10:30 PM</div>
+                            <span class="rem-time-badge">10:00 PM</span>
+                            <span class="rem-check-icon">✓</span>
                         </div>
                     </div>
                 </div>

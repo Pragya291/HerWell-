@@ -1050,17 +1050,29 @@ async function loadWellnessDataForSelectedDate() {
 
         if (dayLog) {
             // Pre-populate values
-            document.getElementById('wellness-sleep-hours').value = dayLog.sleep_hours;
+            const sleepInput = document.getElementById('wellness-sleep-hours');
+            if (sleepInput) {
+                sleepInput.value = dayLog.sleep_hours;
+                updateSliderFill(sleepInput);
+            }
             document.getElementById('sleep-hours-val').textContent = dayLog.sleep_hours.toFixed(1) + ' hours';
 
-            document.getElementById('wellness-hydration-liters').value = dayLog.hydration_liters;
+            const hydInput = document.getElementById('wellness-hydration-liters');
+            if (hydInput) {
+                hydInput.value = dayLog.hydration_liters;
+                updateSliderFill(hydInput);
+            }
             document.getElementById('hydration-liters-val').textContent = dayLog.hydration_liters.toFixed(1) + ' Liters';
 
-            document.getElementById('wellness-exercise-minutes').value = dayLog.exercise_minutes;
+            const exInput = document.getElementById('wellness-exercise-minutes');
+            if (exInput) {
+                exInput.value = dayLog.exercise_minutes;
+                updateSliderFill(exInput);
+            }
             document.getElementById('exercise-minutes-val').textContent = dayLog.exercise_minutes + ' mins';
 
             // Select stress pill
-            const stressBtns = document.querySelectorAll('#wellness-stress-selector .pill-btn');
+            const stressBtns = document.querySelectorAll('#wellness-stress-selector .stress-pill-btn, #wellness-stress-selector .pill-btn');
             stressBtns.forEach(btn => {
                 if (btn.dataset.stress === dayLog.stress_level.toLowerCase()) {
                     btn.classList.add('selected');
@@ -1070,7 +1082,7 @@ async function loadWellnessDataForSelectedDate() {
             });
 
             // Select mood emoji
-            document.querySelectorAll('#wellness-emoji-selector .emoji-btn').forEach(b => {
+            document.querySelectorAll('#wellness-emoji-selector .mood-option-btn, #wellness-emoji-selector .emoji-btn').forEach(b => {
                 if (parseInt(b.dataset.mood) === dayLog.mood_score) {
                     b.classList.add('selected');
                 } else {
@@ -1080,24 +1092,36 @@ async function loadWellnessDataForSelectedDate() {
             state.selectedMoodValue = dayLog.mood_score;
         } else {
             // Reset to defaults
-            document.getElementById('wellness-sleep-hours').value = 8.0;
+            const sleepInput = document.getElementById('wellness-sleep-hours');
+            if (sleepInput) {
+                sleepInput.value = 8.0;
+                updateSliderFill(sleepInput);
+            }
             document.getElementById('sleep-hours-val').textContent = '8.0 hours';
 
-            document.getElementById('wellness-hydration-liters').value = 2.5;
+            const hydInput = document.getElementById('wellness-hydration-liters');
+            if (hydInput) {
+                hydInput.value = 2.5;
+                updateSliderFill(hydInput);
+            }
             document.getElementById('hydration-liters-val').textContent = '2.5 Liters';
 
-            document.getElementById('wellness-exercise-minutes').value = 30;
+            const exInput = document.getElementById('wellness-exercise-minutes');
+            if (exInput) {
+                exInput.value = 30;
+                updateSliderFill(exInput);
+            }
             document.getElementById('exercise-minutes-val').textContent = '30 mins';
 
             // Default stress low
-            const stressBtns = document.querySelectorAll('#wellness-stress-selector .pill-btn');
+            const stressBtns = document.querySelectorAll('#wellness-stress-selector .stress-pill-btn, #wellness-stress-selector .pill-btn');
             stressBtns.forEach(btn => {
                 if (btn.dataset.stress === 'low') btn.classList.add('selected');
                 else btn.classList.remove('selected');
             });
 
             // Default mood neutral (3)
-            document.querySelectorAll('#wellness-emoji-selector .emoji-btn').forEach(b => {
+            document.querySelectorAll('#wellness-emoji-selector .mood-option-btn, #wellness-emoji-selector .emoji-btn').forEach(b => {
                 if (parseInt(b.dataset.mood) === 3) b.classList.add('selected');
                 else b.classList.remove('selected');
             });
@@ -1117,6 +1141,79 @@ async function loadWellnessDataForSelectedDate() {
         console.error('Error pre-populating wellness form:', err);
     }
 }
+
+function updateSliderFill(slider) {
+    if (!slider) return;
+    const min = parseFloat(slider.min) || 0;
+    const max = parseFloat(slider.max) || 100;
+    const val = parseFloat(slider.value) || 0;
+    const pct = ((val - min) / (max - min)) * 100;
+    slider.style.background = `linear-gradient(to right, #f43f5e 0%, #f43f5e ${pct}%, #ffe4e6 ${pct}%, #ffe4e6 100%)`;
+}
+
+function resetWellnessForm() {
+    const sleepInput = document.getElementById('wellness-sleep-hours');
+    if (sleepInput) {
+        sleepInput.value = 8.0;
+        updateSliderFill(sleepInput);
+    }
+    document.getElementById('sleep-hours-val').textContent = '8.0 hours';
+
+    const hydInput = document.getElementById('wellness-hydration-liters');
+    if (hydInput) {
+        hydInput.value = 2.5;
+        updateSliderFill(hydInput);
+    }
+    document.getElementById('hydration-liters-val').textContent = '2.5 Liters';
+
+    const exInput = document.getElementById('wellness-exercise-minutes');
+    if (exInput) {
+        exInput.value = 30;
+        updateSliderFill(exInput);
+    }
+    document.getElementById('exercise-minutes-val').textContent = '30 mins';
+
+    const stressBtns = document.querySelectorAll('#wellness-stress-selector .stress-pill-btn, #wellness-stress-selector .pill-btn');
+    stressBtns.forEach(btn => {
+        if (btn.dataset.stress === 'low') btn.classList.add('selected');
+        else btn.classList.remove('selected');
+    });
+
+    document.querySelectorAll('#wellness-emoji-selector .mood-option-btn, #wellness-emoji-selector .emoji-btn').forEach(b => {
+        if (parseInt(b.dataset.mood) === 3) b.classList.add('selected');
+        else b.classList.remove('selected');
+    });
+    state.selectedMoodValue = 3;
+}
+
+function setupWellnessControls() {
+    const stressContainer = document.getElementById('wellness-stress-selector');
+    if (stressContainer) {
+        stressContainer.addEventListener('click', (e) => {
+            const btn = e.target.closest('.stress-pill-btn, .pill-btn');
+            if (!btn) return;
+            stressContainer.querySelectorAll('.stress-pill-btn, .pill-btn').forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+        });
+    }
+
+    const moodContainer = document.getElementById('wellness-emoji-selector');
+    if (moodContainer) {
+        moodContainer.addEventListener('click', (e) => {
+            const btn = e.target.closest('.mood-option-btn, .emoji-btn');
+            if (!btn) return;
+            moodContainer.querySelectorAll('.mood-option-btn, .emoji-btn').forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+            state.selectedMoodValue = parseInt(btn.dataset.mood);
+        });
+    }
+
+    document.querySelectorAll('.custom-range-slider, .slider-control').forEach(s => updateSliderFill(s));
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    setTimeout(setupWellnessControls, 300);
+});
 
 async function submitWellnessLog() {
     const logDate = document.getElementById('wellness-log-date').value;
