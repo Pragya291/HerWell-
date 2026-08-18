@@ -1773,7 +1773,6 @@ function removeTypingIndicator(id) {
     if (el) el.remove();
 }
 
-
 /* ==========================================================================
    VIEW 4: FITNESS
    ========================================================================== */
@@ -1781,11 +1780,16 @@ function removeTypingIndicator(id) {
 async function loadFitnessData() {
     try {
         const recsData = await apiCall('/fitness/recommendations');
-        renderFitnessRecommendations(recsData);
+        // renderFitnessRecommendations(recsData);
 
         const logs = await apiCall('/fitness/logs');
         state.fitnessLogs = logs;
-        renderFitnessStatsAndHistory(logs);
+        // renderFitnessStatsAndHistory(logs);
+
+        // Initialize Fitness Chart natively
+        setTimeout(() => {
+            renderFitnessProgressChart();
+        }, 50);
     } catch (err) {
         console.error('Error loading fitness data:', err);
     }
@@ -2480,3 +2484,135 @@ document.addEventListener('DOMContentLoaded', () => {
         dateLabel.textContent = now.toLocaleDateString('en-US', options);
     }
 });
+
+
+// Initialize Fitness Progress Chart (Mock)
+document.addEventListener('DOMContentLoaded', () => {
+    setTimeout(() => {
+        const ctx = document.getElementById('fitness-progress-chart-new');
+        if (ctx && window.Chart) {
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['May 1', 'May 8', 'May 15', 'May 22', 'May 29'],
+                    datasets: [{
+                        label: 'Fitness Score',
+                        data: [20, 50, 90, 30, 85, 90],
+                        borderColor: '#db2777',
+                        backgroundColor: 'rgba(219, 39, 119, 0.1)',
+                        borderWidth: 2,
+                        pointBackgroundColor: '#db2777',
+                        pointBorderColor: '#fff',
+                        pointRadius: 4,
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: { font: { size: 10 }, color: '#94a3b8', stepSize: 50 },
+                            border: { display: false },
+                            grid: { color: '#f1f5f9' }
+                        },
+                        x: {
+                            ticks: { font: { size: 10 }, color: '#94a3b8' },
+                            border: { display: false },
+                            grid: { display: false }
+                        }
+                    }
+                }
+            });
+        }
+    }, 1000);
+});
+
+
+function renderFitnessProgressChart() {
+    const canvas = document.getElementById('fitness-progress-chart-new');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    
+    const rect = canvas.getBoundingClientRect();
+    // Default fallback sizes if not rendered yet
+    canvas.width = rect.width || 200;
+    canvas.height = rect.height || 90;
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    const labelsY = ['0', '50', '100'];
+    const labelsX = ['May 1', 'May 8', 'May 15', 'May 22', 'May 29'];
+    const dataPoints = [20, 50, 90, 30, 85, 90];
+
+    const padLeft = 24;
+    const padRight = 10;
+    const padTop = 10;
+    const padBottom = 20;
+
+    const width = canvas.width - padLeft - padRight;
+    const height = canvas.height - padTop - padBottom;
+
+    // 1. Draw Grid Lines
+    ctx.font = '500 8px sans-serif';
+    ctx.fillStyle = '#94a3b8';
+    ctx.textAlign = 'right';
+
+    labelsY.forEach((lbl, i) => {
+        const y = padTop + height - (i / 2) * height;
+        ctx.strokeStyle = '#f1f5f9';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(padLeft, y);
+        ctx.lineTo(canvas.width - padRight, y);
+        ctx.stroke();
+        ctx.fillText(lbl, padLeft - 6, y + 3);
+    });
+
+    // 2. Draw X-axis
+    const stepX = width / 4;
+    labelsX.forEach((lbl, i) => {
+        const x = padLeft + i * stepX;
+        ctx.textAlign = 'center';
+        ctx.fillStyle = '#94a3b8';
+        ctx.fillText(lbl, x, canvas.height - 4);
+    });
+
+    // 3. Draw Chart Line
+    ctx.beginPath();
+    const points = [];
+    dataPoints.forEach((val, i) => {
+        if(i > 4) return; // Only 5 labels
+        const x = padLeft + i * stepX;
+        const y = padTop + height - (val / 100) * height;
+        points.push({x, y});
+    });
+
+    ctx.moveTo(points[0].x, points[0].y);
+    for (let i = 0; i < points.length - 1; i++) {
+        const xc = (points[i].x + points[i + 1].x) / 2;
+        const yc = (points[i].y + points[i + 1].y) / 2;
+        ctx.quadraticCurveTo(points[i].x, points[i].y, xc, yc);
+    }
+    // curve through the last point
+    ctx.quadraticCurveTo(points[points.length - 2].x, points[points.length - 2].y, points[points.length - 1].x, points[points.length - 1].y);
+
+    ctx.strokeStyle = '#db2777';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    // 4. Draw Points
+    points.forEach(p => {
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, 3, 0, 2 * Math.PI);
+        ctx.fillStyle = '#db2777';
+        ctx.fill();
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 1;
+        ctx.stroke();
+    });
+}

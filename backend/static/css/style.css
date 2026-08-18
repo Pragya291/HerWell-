@@ -8364,3 +8364,609 @@ body:has(#view-login:not(.hidden)) .app-main-content {
     max-height: 90vh !important;
     overflow-y: auto !important;
 }
+
+/* ==========================================================================
+   FITNESS DASHBOARD REDESIGN STYLES
+   ========================================================================== */
+
+#view-fitness:not(.hidden) {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 16px !important;
+    height: 100% !important;
+    overflow-y: auto !important; /* Allow scrolling inside fitness view if needed */
+    padding-bottom: 20px !important;
+}
+
+/* Hero Banner */
+.fitness-hero-banner {
+    display: flex;
+    justify-content: space-between;
+    align-items: stretch;
+    background: linear-gradient(135deg, #7c3aed 0%, #db2777 100%);
+    border-radius: 20px;
+    padding: 24px 32px;
+    color: white;
+    position: relative;
+    overflow: hidden;
+    min-height: 200px;
+    box-shadow: 0 10px 25px rgba(219, 39, 119, 0.2);
+}
+
+.fitness-hero-left {
+    flex: 1;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    max-width: 45%;
+}
+
+.hero-subtitle {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    opacity: 0.9;
+    margin-bottom: 8px;
+}
+
+.hero-title {
+    font-size: 1.8rem;
+    font-weight: 800;
+    margin-bottom: 12px;
+    line-height: 1.2;
+}
+
+.hero-desc {
+    font-size: 0.95rem;
+    opacity: 0.9;
+    line-height: 1.5;
+    margin-bottom: 20px;
+}
+
+.btn-log-workout-hero {
+    align-self: flex-start;
+    background: white;
+    color: #db2777;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    transition: all 0.2s ease;
+}
+
+.btn-log-workout-hero:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+}
+
+.icon-plus {
+    font-size: 1.1rem;
+    color: #db2777;
+}
+
+.fitness-hero-center {
+    position: absolute;
+    left: 45%;
+    bottom: -10px;
+    height: 110%;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.hero-illustration-img {
+    height: 100%;
+    object-fit: contain;
+}
+
+.fitness-hero-right {
+    z-index: 2;
+    display: flex;
+    gap: 24px;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 16px 24px;
+    border-radius: 16px;
+}
+
+.hero-stats-col {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.hero-stat-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.stat-icon-circle {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+}
+
+.bg-yellow-transparent { background: rgba(250, 204, 21, 0.2); color: #fde047; }
+.bg-green-transparent { background: rgba(34, 197, 94, 0.2); color: #86efac; }
+.bg-pink-transparent { background: rgba(236, 72, 153, 0.2); color: #f9a8d4; }
+
+.stat-text {
+    display: flex;
+    flex-direction: column;
+}
+
+.stat-label {
+    font-size: 0.65rem;
+    opacity: 0.9;
+}
+
+.stat-val {
+    font-size: 0.85rem;
+    font-weight: 700;
+}
+
+.text-green { color: #86efac; }
+.text-pink { color: #f9a8d4; }
+
+.hero-progress-ring-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+.phase-progress-circle {
+    position: relative;
+    width: 90px;
+    height: 90px;
+}
+
+.circular-chart-fit {
+    display: block;
+    margin: 0 auto;
+    max-width: 100%;
+    max-height: 100%;
+}
+
+.circle-bg-fit {
+    fill: none;
+    stroke: rgba(255, 255, 255, 0.2);
+    stroke-width: 2.5;
+}
+
+.circle-fit {
+    fill: none;
+    stroke-width: 2.5;
+    stroke-linecap: round;
+    stroke: white;
+}
+
+.ring-text-fit {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.ring-label-small {
+    font-size: 0.55rem;
+    opacity: 0.9;
+}
+
+.ring-day {
+    font-size: 1.1rem;
+    font-weight: 800;
+    line-height: 1.1;
+}
+
+.ring-of {
+    font-size: 0.6rem;
+    opacity: 0.9;
+}
+
+.ring-bottom-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+/* Recommendations Grid */
+.section-header-row-fit {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 8px;
+    margin-bottom: 8px;
+}
+
+.section-subtitle-fit {
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: #1e293b;
+    margin: 0;
+}
+
+.link-why-workouts {
+    font-size: 0.85rem;
+    color: #64748b;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.workouts-3-col-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+}
+
+.workout-rec-card {
+    background: white;
+    border-radius: 16px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+    border: 1px solid #f1f5f9;
+}
+
+.workout-tags {
+    display: flex;
+    gap: 6px;
+}
+
+.tag-pill {
+    padding: 4px 8px;
+    border-radius: 8px;
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.tag-red { background: #fee2e2; color: #ef4444; }
+.tag-red-light { background: #fef2f2; color: #ef4444; }
+.tag-gray { background: #f1f5f9; color: #64748b; }
+.tag-purple { background: #f3e8ff; color: #a855f7; }
+.tag-purple-light { background: #faf5ff; color: #a855f7; }
+.tag-orange { background: #ffedd5; color: #f97316; }
+.tag-orange-light { background: #fff7ed; color: #f97316; }
+
+.workout-card-body {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+}
+
+.workout-icon-wrap {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+}
+
+.bg-red-lightest { background: #fef2f2; }
+.bg-purple-lightest { background: #faf5ff; }
+.bg-orange-lightest { background: #fff7ed; }
+.bg-green-lightest { background: #f0fdf4; }
+
+.text-red { color: #ef4444 !important; }
+.text-purple { color: #a855f7 !important; }
+.text-orange { color: #f97316 !important; }
+
+.workout-text-content h4 {
+    font-size: 0.95rem;
+    font-weight: 800;
+    color: #1e293b;
+    margin: 0 0 4px 0;
+}
+
+.workout-text-content p {
+    font-size: 0.8rem;
+    color: #64748b;
+    margin: 0;
+    line-height: 1.4;
+}
+
+.workout-benefits {
+    display: flex;
+    gap: 8px;
+    background: #f8fafc;
+    padding: 10px;
+    border-radius: 10px;
+    align-items: flex-start;
+}
+
+.star-icon {
+    font-size: 0.85rem;
+}
+
+.workout-benefits p {
+    font-size: 0.75rem;
+    color: #475569;
+    margin: 0;
+    line-height: 1.4;
+}
+
+.btn-log-this {
+    background: transparent;
+    border: 1px solid currentColor;
+    padding: 8px;
+    border-radius: 10px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    margin-top: auto;
+    transition: all 0.2s ease;
+}
+
+.btn-log-this:hover {
+    background: currentColor;
+    color: white !important;
+}
+
+.arrow-icon {
+    font-size: 1rem;
+}
+
+/* Bottom Stats Row */
+.fitness-stats-3-col {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+}
+
+.fitness-stat-card {
+    background: white;
+    border-radius: 16px;
+    padding: 16px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+    border: 1px solid #f1f5f9;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.card-header-row-fit {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.card-header-row-fit h3 {
+    font-size: 0.95rem;
+    font-weight: 800;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.link-btn-small {
+    font-size: 0.75rem;
+    color: #1e293b;
+    text-decoration: none;
+    font-weight: 600;
+    border: 1px solid #e2e8f0;
+    padding: 2px 8px;
+    border-radius: 6px;
+}
+
+.activity-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+}
+
+.activity-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: #f8fafc;
+    border-radius: 12px;
+    padding: 10px 4px;
+    text-align: center;
+    border: 1px solid #f1f5f9;
+}
+
+.activity-box .icon {
+    font-size: 1.1rem;
+    margin-bottom: 4px;
+}
+
+.stat-number-fit {
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: #1e293b;
+}
+
+.stat-label-fit {
+    font-size: 0.65rem;
+    color: #64748b;
+    margin-top: 2px;
+}
+
+.progress-bar-container-fit {
+    margin-top: auto;
+}
+
+.progress-bar-bg-fit {
+    height: 6px;
+    background: #f1f5f9;
+    border-radius: 3px;
+    overflow: hidden;
+    margin-bottom: 6px;
+}
+
+.progress-bar-fill-fit {
+    height: 100%;
+    border-radius: 3px;
+}
+
+.bg-red-bar { background: #db2777; }
+
+.progress-text-fit {
+    font-size: 0.75rem;
+    color: #64748b;
+    margin: 0;
+}
+
+.history-list-fit {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.history-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: #f8fafc;
+    padding: 10px 12px;
+    border-radius: 12px;
+}
+
+.hist-icon-wrap {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    flex-shrink: 0;
+}
+
+.hist-details {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.hist-details strong {
+    font-size: 0.85rem;
+    color: #1e293b;
+}
+
+.hist-details span {
+    font-size: 0.7rem;
+    color: #64748b;
+}
+
+.hist-meta {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.hist-meta span {
+    font-size: 0.7rem;
+    color: #64748b;
+}
+
+.select-month-fit {
+    font-size: 0.75rem;
+    border: 1px solid #e2e8f0;
+    padding: 2px 8px;
+    border-radius: 6px;
+    background: white;
+    color: #1e293b;
+    outline: none;
+}
+
+.progress-chart-layout {
+    display: flex;
+    gap: 12px;
+    align-items: stretch;
+    flex: 1;
+}
+
+.chart-area-fit {
+    flex: 1;
+    min-width: 0;
+}
+
+.score-area-fit {
+    width: 100px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    justify-content: space-between;
+}
+
+.green-score-box {
+    background: #f8fafc;
+    border-radius: 12px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    flex: 1;
+    justify-content: center;
+}
+
+.score-lbl {
+    font-size: 0.65rem;
+    color: #64748b;
+    font-weight: 600;
+}
+
+.score-val {
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: #1e293b;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.leaf-icon {
+    font-size: 1rem;
+}
+
+.score-delta {
+    font-size: 0.65rem;
+    font-weight: 700;
+}
+
+.btn-view-insights {
+    background: white;
+    border: 1px solid #ef4444;
+    border-radius: 8px;
+    padding: 6px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-view-insights:hover {
+    background: #fef2f2;
+}
