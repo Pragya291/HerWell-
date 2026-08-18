@@ -9,7 +9,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/css/style.css?v=1000">
+    <link rel="stylesheet" href="/css/style.css?v=1005">
 </head>
 <body>
 
@@ -192,15 +192,6 @@
                             </div>
                             <button type="submit" class="btn btn-primary btn-block">Create Account</button>
                         </form>
-
-                        <div class="auth-divider">
-                            <span>OR</span>
-                        </div>
-
-                        <!-- Quick Hackathon Demo Mode -->
-                        <button class="btn btn-secondary btn-block demo-btn" onclick="enableDemoMode()">
-                            ✨ Instant Demo Mode (No Login Required)
-                        </button>
                     </div>
                 </section>
                 
@@ -947,8 +938,17 @@
                                 <span class="streak-count-num">7</span>
                                 <span class="streak-count-unit">days</span>
                             </div>
+                            <!-- 7-Day Progress Visualization -->
+                            <div class="streak-7day-tracker" title="7-day streak progress">
+                                <div class="streak-day-dot active" title="Mon: Completed"><span class="day-lbl">M</span><span class="dot-icon">✓</span></div>
+                                <div class="streak-day-dot active" title="Tue: Completed"><span class="day-lbl">T</span><span class="dot-icon">✓</span></div>
+                                <div class="streak-day-dot active" title="Wed: Completed"><span class="day-lbl">W</span><span class="dot-icon">✓</span></div>
+                                <div class="streak-day-dot active" title="Thu: Completed"><span class="day-lbl">T</span><span class="dot-icon">✓</span></div>
+                                <div class="streak-day-dot active" title="Fri: Completed"><span class="day-lbl">F</span><span class="dot-icon">✓</span></div>
+                                <div class="streak-day-dot active" title="Sat: Completed"><span class="day-lbl">S</span><span class="dot-icon">✓</span></div>
+                                <div class="streak-day-dot active flame-today" title="Sun: Today"><span class="day-lbl">S</span><span class="dot-icon">🔥</span></div>
+                            </div>
                             <p class="streak-motivational-text">Keep the momentum!</p>
-                            <div class="streak-wave-bg"></div>
                         </div>
 
                     </div>

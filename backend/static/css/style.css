@@ -2367,15 +2367,42 @@ a:hover {
 }
 
 /* Hide sidebar and top header on login view using :has selector */
+body:has(#view-login:not(.hidden)) {
+    overflow: hidden !important;
+}
 body:has(#view-login:not(.hidden)) .app-sidebar {
     display: none !important;
 }
 body:has(#view-login:not(.hidden)) .app-main-wrapper {
     margin-left: 0 !important;
     width: 100% !important;
+    height: 100vh !important;
+    overflow: hidden !important;
 }
 body:has(#view-login:not(.hidden)) .app-top-header {
     display: none !important;
+}
+body:has(#view-login:not(.hidden)) .app-main-content {
+    height: 100vh !important;
+    max-height: 100vh !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    justify-content: center !important;
+    align-items: center !important;
+}
+body:has(#view-login:not(.hidden)) .app-view:not(#view-login) {
+    display: none !important;
+}
+
+#view-login:not(.hidden) {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    height: 100vh !important;
+    min-height: 100vh !important;
+    width: 100% !important;
+    overflow: hidden !important;
+    margin: 0 !important;
 }
 
 /* Sidebar Brand Logo */
@@ -7835,3 +7862,494 @@ body:has(#view-tracker:not(.hidden)) {
     border: 2px solid white;
     border-radius: 50%;
 }
+
+/* ==========================================================================
+   STRICT 100VH ZERO-SCROLLBAR DESKTOP VIEWPORT FIT STYLES
+   ========================================================================== */
+
+html, body {
+    height: 100vh !important;
+    max-height: 100vh !important;
+    overflow: hidden !important;
+    margin: 0;
+    padding: 0;
+}
+
+.app-layout {
+    height: 100vh !important;
+    display: flex !important;
+    overflow: hidden !important;
+}
+
+.app-main-wrapper {
+    flex: 1 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    height: 100vh !important;
+    overflow: hidden !important;
+}
+
+.app-top-header {
+    padding: 6px 24px !important;
+    min-height: 48px !important;
+    max-height: 52px !important;
+}
+
+.app-main-content {
+    flex: 1 !important;
+    padding: 8px 24px 8px 24px !important;
+    height: calc(100vh - 52px) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    overflow: hidden !important;
+}
+
+#view-wellness:not(.hidden) {
+    height: 100% !important;
+    max-height: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+    overflow: hidden !important;
+    gap: 8px !important;
+}
+
+/* Sidebar Compact Rules */
+.app-sidebar {
+    height: 100vh !important;
+    padding: 12px 14px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 8px !important;
+}
+
+.sidebar-nav {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 3px !important;
+}
+
+.sidebar-nav .nav-btn {
+    padding: 5px 12px !important;
+    font-size: 0.85rem !important;
+}
+
+.sidebar-tip-card {
+    padding: 8px 10px !important;
+    margin-top: auto !important;
+}
+
+.sidebar-tip-card p.tip-content {
+    font-size: 0.75rem !important;
+    line-height: 1.2 !important;
+}
+
+.sidebar-tip-illustration {
+    margin-top: 4px !important;
+}
+
+.tip-meditate-svg {
+    max-width: 100px !important;
+    max-height: 45px !important;
+}
+
+/* Main Grid Layout */
+.wellness-dashboard-container {
+    display: grid !important;
+    grid-template-columns: 310px 1fr !important;
+    gap: 10px !important;
+    flex: 1 !important;
+    min-height: 0 !important;
+    overflow: hidden !important;
+}
+
+/* Left Column: Wellness Entry Card */
+.wellness-entry-card {
+    padding: 12px !important;
+    gap: 6px !important;
+    height: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+    border-radius: 16px !important;
+    overflow: hidden !important;
+}
+
+.wellness-entry-card .form-group {
+    margin-bottom: 0 !important;
+}
+
+.date-input-custom {
+    padding: 5px 10px !important;
+    font-size: 0.85rem !important;
+    border-radius: 10px !important;
+}
+
+.field-label {
+    font-size: 0.75rem !important;
+    font-weight: 700 !important;
+    margin-bottom: 2px !important;
+}
+
+.mood-options-grid {
+    gap: 4px !important;
+}
+
+.mood-option-btn {
+    padding: 5px 2px !important;
+    border-radius: 10px !important;
+    gap: 2px !important;
+}
+
+.mood-option-btn .mood-emoji {
+    font-size: 1.15rem !important;
+}
+
+.mood-option-btn .mood-label {
+    font-size: 0.58rem !important;
+}
+
+.event-tag {
+    padding: 3px 8px !important;
+    font-size: 0.68rem !important;
+    border-radius: 8px !important;
+}
+
+.tag-add-btn {
+    padding: 2px 7px !important;
+    font-size: 0.68rem !important;
+}
+
+.slider-group {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 1px !important;
+}
+
+.slider-label-row label {
+    font-size: 0.72rem !important;
+    font-weight: 600 !important;
+}
+
+.slider-val {
+    font-size: 0.75rem !important;
+}
+
+.custom-range-slider {
+    height: 5px !important;
+}
+
+.custom-range-slider::-webkit-slider-thumb {
+    width: 14px !important;
+    height: 14px !important;
+}
+
+.stress-pills-row {
+    gap: 6px !important;
+}
+
+.stress-pill-btn {
+    padding: 5px !important;
+    font-size: 0.75rem !important;
+    border-radius: 10px !important;
+}
+
+.entry-actions-row {
+    margin-top: 2px !important;
+    gap: 6px !important;
+}
+
+.btn-save-entry, .btn-clear-entry {
+    padding: 6px 10px !important;
+    font-size: 0.8rem !important;
+    border-radius: 10px !important;
+    height: 32px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+/* Right Main Panel */
+.wellness-main-panel {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 8px !important;
+    height: 100% !important;
+    min-height: 0 !important;
+    overflow: hidden !important;
+}
+
+/* Top 4 Metrics Row */
+.wellness-metrics-row {
+    gap: 8px !important;
+    height: 54px !important;
+}
+
+.metric-summary-card {
+    padding: 6px 10px !important;
+    border-radius: 14px !important;
+    gap: 8px !important;
+}
+
+.score-ring-wrapper, .score-ring-svg {
+    width: 38px !important;
+    height: 38px !important;
+}
+
+.ring-score-num {
+    font-size: 0.9rem !important;
+}
+
+.metric-icon-circle {
+    width: 32px !important;
+    height: 32px !important;
+    font-size: 0.95rem !important;
+    border-radius: 8px !important;
+}
+
+.metric-main-value {
+    font-size: 0.98rem !important;
+}
+
+.metric-card-title {
+    font-size: 0.68rem !important;
+}
+
+.metric-card-delta.positive {
+    font-size: 0.6rem !important;
+}
+
+.status-pill.green {
+    font-size: 0.58rem !important;
+    padding: 1px 5px !important;
+}
+
+/* Daily Trend Card & Larger Chart */
+.daily-trend-card {
+    flex: 1 !important;
+    min-height: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    padding: 10px 14px !important;
+    border-radius: 16px !important;
+    overflow: hidden !important;
+}
+
+.trend-chart-container {
+    flex: 1 !important;
+    min-height: 0 !important;
+    width: 100% !important;
+    position: relative !important;
+}
+
+#mood-trend-chart {
+    width: 100% !important;
+    height: 100% !important;
+    display: block !important;
+}
+
+.trend-data-callout {
+    top: 4px !important;
+    right: 10px !important;
+    padding: 4px 8px !important;
+    border-radius: 8px !important;
+}
+
+.callout-score {
+    font-size: 0.95rem !important;
+}
+
+/* Row 3: Weekly Summary + Streak Cards */
+.wellness-two-cards-row {
+    gap: 8px !important;
+    height: 94px !important;
+}
+
+.weekly-summary-card, .wellness-streak-card {
+    padding: 8px 12px !important;
+    border-radius: 14px !important;
+}
+
+.weekly-metrics-grid {
+    gap: 6px !important;
+    margin-top: 4px !important;
+}
+
+.weekly-sub-box {
+    padding: 6px 8px !important;
+    border-radius: 10px !important;
+}
+
+.sub-bold-value, .sub-bold-large {
+    font-size: 1.05rem !important;
+}
+
+/* 7-Day Progress Visualization in Wellness Streak */
+.streak-7day-tracker {
+    display: flex !important;
+    align-items: center !important;
+    gap: 3px !important;
+    margin: 3px 0 !important;
+}
+
+.streak-day-dot {
+    flex: 1 !important;
+    height: 22px !important;
+    background: #F1F5F9 !important;
+    border-radius: 6px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 0.6rem !important;
+    font-weight: 700 !important;
+    color: #94A3B8 !important;
+    position: relative !important;
+}
+
+.streak-day-dot.active {
+    background: #FFF1F2 !important;
+    color: #E11D48 !important;
+    border: 1px solid #FECDD3 !important;
+}
+
+.streak-day-dot.flame-today {
+    background: #E11D48 !important;
+    color: white !important;
+    box-shadow: 0 2px 6px rgba(225, 29, 72, 0.3) !important;
+}
+
+.streak-day-dot .day-lbl {
+    font-size: 0.52rem !important;
+    line-height: 1 !important;
+}
+
+.streak-day-dot .dot-icon {
+    font-size: 0.6rem !important;
+    line-height: 1 !important;
+}
+
+/* Bottom Row: Upcoming Reminders */
+.wellness-reminders-wrapper {
+    height: 56px !important;
+    flex-shrink: 0 !important;
+}
+
+.reminders-container-card {
+    padding: 6px 12px !important;
+    border-radius: 14px !important;
+    height: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+}
+
+.reminders-cards-grid {
+    margin-top: 2px !important;
+    gap: 8px !important;
+}
+
+.reminder-item-card {
+    padding: 4px 10px !important;
+    border-radius: 10px !important;
+    gap: 8px !important;
+}
+
+.rem-icon-bubble {
+    width: 28px !important;
+    height: 28px !important;
+    font-size: 0.85rem !important;
+    border-radius: 6px !important;
+}
+
+.rem-text-content strong {
+    font-size: 0.75rem !important;
+}
+
+.rem-text-content span {
+    font-size: 0.65rem !important;
+}
+
+.rem-time-badge {
+    font-size: 0.7rem !important;
+}
+
+/* ==========================================================================
+   LOGIN VIEW CLEANUP (Ensures background elements & overflow are hidden on login page)
+   ========================================================================== */
+body.is-login-active,
+body:has(#view-login:not(.hidden)) {
+    overflow: hidden !important;
+    background: #fdf8f9 !important;
+}
+
+body.is-login-active .app-sidebar,
+body.is-login-active .app-top-header,
+body.is-login-active .app-view:not(#view-login),
+body.is-login-active #view-dashboard,
+body.is-login-active #view-tracker,
+body.is-login-active #view-wellness,
+body.is-login-active #view-fitness,
+body.is-login-active #view-library,
+body.is-login-active #view-community,
+body.is-login-active .wellness-reminders-wrapper,
+body.is-login-active #vera-float-widget,
+body:has(#view-login:not(.hidden)) .app-sidebar,
+body:has(#view-login:not(.hidden)) .app-top-header,
+body:has(#view-login:not(.hidden)) .app-view:not(#view-login),
+body:has(#view-login:not(.hidden)) #view-dashboard,
+body:has(#view-login:not(.hidden)) #view-tracker,
+body:has(#view-login:not(.hidden)) #view-wellness,
+body:has(#view-login:not(.hidden)) #view-fitness,
+body:has(#view-login:not(.hidden)) #view-library,
+body:has(#view-login:not(.hidden)) #view-community,
+body:has(#view-login:not(.hidden)) .wellness-reminders-wrapper,
+body:has(#view-login:not(.hidden)) #vera-float-widget {
+    display: none !important;
+    visibility: hidden !important;
+    height: 0 !important;
+    overflow: hidden !important;
+}
+
+body.is-login-active .app-main-wrapper,
+body:has(#view-login:not(.hidden)) .app-main-wrapper {
+    margin-left: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    max-height: 100vh !important;
+    overflow: hidden !important;
+    background: #fdf8f9 !important;
+}
+
+body.is-login-active .app-main-content,
+body:has(#view-login:not(.hidden)) .app-main-content {
+    height: 100vh !important;
+    max-height: 100vh !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    background: #fdf8f9 !important;
+}
+
+#view-login:not(.hidden) {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    height: 100vh !important;
+    max-height: 100vh !important;
+    width: 100% !important;
+    overflow: hidden !important;
+    margin: 0 !important;
+    padding: 20px !important;
+    box-sizing: border-box !important;
+    background: #fdf8f9 !important;
+}
+
+#view-login .auth-card-container {
+    margin: auto !important;
+    max-height: 90vh !important;
+    overflow-y: auto !important;
+}
+

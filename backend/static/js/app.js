@@ -100,13 +100,20 @@ function navigate(viewId) {
         viewId = 'login';
     }
 
-    // Hide all view sections
-    document.querySelectorAll('.app-view').forEach(el => el.classList.add('hidden'));
+    // Toggle body class for login mode cleanup
+    document.body.classList.toggle('is-login-active', viewId === 'login');
+
+    // Hide all view sections explicitly
+    document.querySelectorAll('.app-view').forEach(el => {
+        el.classList.add('hidden');
+        el.style.display = 'none';
+    });
 
     // Show selected view
     const targetView = document.getElementById(`view-${viewId}`);
     if (targetView) {
         targetView.classList.remove('hidden');
+        targetView.style.display = 'flex';
         state.currentView = viewId;
     }
 
