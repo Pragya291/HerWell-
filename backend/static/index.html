@@ -9,7 +9,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/css/style.css?v=1005">
+    <link rel="stylesheet" href="/css/style.css?v=1009">
 </head>
 <body>
 
@@ -1004,216 +1004,275 @@
 
         <!-- ================= VIEW 5: FITNESS ================= -->
         <section id="view-fitness" class="app-view hidden">
-            <!-- Hero Banner -->
-            <div class="fitness-hero-banner">
-                <div class="fitness-hero-left">
-                    <span class="hero-subtitle">CURRENT RECOMMENDED MOVEMENT STRATEGY</span>
-                    <h2 class="hero-title">Ovulatory Phase Fitness Guide</h2>
-                    <p class="hero-desc">Estrogen levels are climbing. Optimize stamina with strength training and dynamic cardio.</p>
-                    <button class="btn-log-workout-hero" onclick="openLogWorkoutModal()">
-                        <span class="icon-plus">⊕</span> Log a Workout
-                    </button>
-                </div>
+            <div class="fitness-dashboard-grid-v4">
                 
-                <div class="fitness-hero-center">
-                    <!-- Placeholder for the illustration -->
-                    <img src="/assets/fitness-hero-illustration.svg" alt="Fitness Illustration" class="hero-illustration-img" onerror="this.style.display='none'">
+                <!-- TOP ROW: Hero (Left) & Snapshot (Right) -->
+                <div class="fit-top-row">
+                    <!-- HERO CARD -->
+                    <div class="fit-hero-card">
+                        <div class="fit-hero-left">
+                            <span class="hero-subtext">CURRENT RECOMMENDED MOVEMENT STRATEGY</span>
+                            <h2 class="hero-title-main">Ovulatory Phase Fitness Guide</h2>
+                            <p class="hero-desc-main">Estrogen levels are climbing. Optimize stamina with strength training and dynamic cardio.</p>
+                            <div class="hero-actions-row">
+                                <button class="btn-log-action" onclick="openLogWorkoutModal()">
+                                    <span class="icon-plus-circle">⊕</span> Log a Workout
+                                </button>
+                                <a href="#" class="link-learn-more-white">Learn More →</a>
+                            </div>
+                        </div>
+                        <div class="fit-hero-right">
+                            <div class="glass-stats-panel">
+                                <div class="glass-stat">
+                                    <div class="glass-icon bg-yellow-tint">📊</div>
+                                    <div class="glass-text">
+                                        <span class="gl-lbl">Energy Level</span>
+                                        <strong class="gl-val">High <span class="text-green">↑</span></strong>
+                                    </div>
+                                </div>
+                                <div class="glass-stat">
+                                    <div class="glass-icon bg-green-tint">✔️</div>
+                                    <div class="glass-text">
+                                        <span class="gl-lbl">Recovery</span>
+                                        <strong class="gl-val">Optimal <span class="text-white">↻</span></strong>
+                                    </div>
+                                </div>
+                                <div class="glass-stat">
+                                    <div class="glass-icon bg-pink-tint">🎯</div>
+                                    <div class="glass-text">
+                                        <span class="gl-lbl">Focus</span>
+                                        <strong class="gl-val">Sharp <span class="text-pink">♥</span></strong>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="glass-ring-panel">
+                                <div class="ring-wrap-v3">
+                                    <svg viewBox="0 0 36 36" class="circ-chart-v3">
+                                        <path class="circ-bg" d="M18 2 a 16 16 0 0 1 0 32 a 16 16 0 0 1 0 -32"/>
+                                        <path class="circ-fill" stroke-dasharray="57, 100" d="M18 2 a 16 16 0 0 1 0 32 a 16 16 0 0 1 0 -32"/>
+                                    </svg>
+                                    <div class="ring-info-v3">
+                                        <span class="r-lbl">Phase Progress</span>
+                                        <strong class="r-day">Day 8</strong>
+                                        <span class="r-of">of 14</span>
+                                    </div>
+                                </div>
+                                <span class="r-btm-lbl">Ovulatory Phase</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SNAPSHOT CARD -->
+                    <div class="fit-snapshot-card">
+                        <div class="snap-head-v3">
+                            <h3 class="snap-title-v3">Today's Snapshot</h3>
+                            <p class="snap-sub-v3">Keep going, you're doing great!</p>
+                        </div>
+                        <div class="snap-grid-v3">
+                            <div class="s-box">
+                                <div class="s-icon-wrap"><span class="s-icon text-green">✅</span></div>
+                                <div class="s-txt-wrap">
+                                    <span class="s-lbl">Workout</span>
+                                    <strong class="s-val">1/1</strong>
+                                    <span class="s-sub">Completed</span>
+                                </div>
+                            </div>
+                            <div class="s-box">
+                                <div class="s-icon-wrap"><span class="s-icon text-orange">🔥</span></div>
+                                <div class="s-txt-wrap">
+                                    <span class="s-lbl">Calories</span>
+                                    <strong class="s-val">320</strong>
+                                    <span class="s-sub">kcal</span>
+                                </div>
+                            </div>
+                            <div class="s-box">
+                                <div class="s-icon-wrap"><span class="s-icon text-purple">🕒</span></div>
+                                <div class="s-txt-wrap">
+                                    <span class="s-lbl">Active Time</span>
+                                    <strong class="s-val">45</strong>
+                                    <span class="s-sub">mins</span>
+                                </div>
+                            </div>
+                            <div class="s-box">
+                                <div class="s-icon-wrap"><span class="s-icon text-blue">💧</span></div>
+                                <div class="s-txt-wrap">
+                                    <span class="s-lbl">Water</span>
+                                    <strong class="s-val">6/8</strong>
+                                    <span class="s-sub">Glasses</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="snap-prog-v3">
+                            <div class="sp-hdr"><span class="sp-lbl">Weekly Goal Progress</span><span class="sp-pct">75%</span></div>
+                            <div class="sp-bg"><div class="sp-fill bg-purple-bar" style="width:75%"></div></div>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="fitness-hero-right">
-                    <div class="hero-stats-col">
-                        <div class="hero-stat-item">
-                            <div class="stat-icon-circle bg-yellow-transparent">📊</div>
-                            <div class="stat-text">
-                                <span class="stat-label">Energy Level</span>
-                                <strong class="stat-val">High <span class="text-green">↑</span></strong>
-                            </div>
+                <!-- MIDDLE ROW: Recommendations & Logged Workout in 4 columns -->
+                <div class="fit-mid-row-v4">
+                    
+                    <div class="mid-headers-row">
+                        <div class="mh-left">
+                            <h3 class="rec-title">Recommended Workouts for Your Phase</h3>
+                            <a href="#" class="rec-link">Why these workouts? ⓘ</a>
                         </div>
-                        <div class="hero-stat-item">
-                            <div class="stat-icon-circle bg-green-transparent">✔️</div>
-                            <div class="stat-text">
-                                <span class="stat-label">Recovery</span>
-                                <strong class="stat-val">Optimal <span class="text-green">↻</span></strong>
-                            </div>
+                        <div class="mh-right">
+                            <h3 class="rec-title">Logged Workout</h3>
+                            <a href="#" class="rec-link c-pink">View All</a>
                         </div>
-                        <div class="hero-stat-item">
-                            <div class="stat-icon-circle bg-pink-transparent">🎯</div>
-                            <div class="stat-text">
-                                <span class="stat-label">Focus</span>
-                                <strong class="stat-val">Sharp <span class="text-pink">♥</span></strong>
+                    </div>
+                    
+                    <div class="mid-cards-4col">
+                        <!-- Card 1 -->
+                        <div class="rec-card">
+                            <div class="r-tags"><span class="t-pill t-red">CARDIO</span><span class="t-pill t-gray">40 MINS</span><span class="t-pill t-gray">HIGH INTENSITY</span></div>
+                            <div class="r-body">
+                                <div class="r-ico bg-red-light">💓</div>
+                                <div class="r-txt">
+                                    <h4>High-Energy Peak Cardio</h4>
+                                    <p>Running, cycling, or energetic dance workouts while your stamina and pain tolerance peak.</p>
+                                </div>
+                            </div>
+                            <div class="r-bnf">
+                                <span class="star">⭐</span>
+                                <p><strong>Benefits:</strong> Capitalizes on peak estrogen for maximal athletic output and cardiovascular conditioning.</p>
+                            </div>
+                            <button class="btn-rec-outline c-red">Log This Workout →</button>
+                        </div>
+                        <!-- Card 2 -->
+                        <div class="rec-card">
+                            <div class="r-tags"><span class="t-pill t-purple">STRENGTH</span><span class="t-pill t-gray">50 MINS</span><span class="t-pill t-gray">HIGH INTENSITY</span></div>
+                            <div class="r-body">
+                                <div class="r-ico bg-purple-light">🏋️‍♀️</div>
+                                <div class="r-txt">
+                                    <h4>Heavy Lift & Hypertrophy</h4>
+                                    <p>Challenge your personal bests in compound strength lifts with optimal muscle recovery speed.</p>
+                                </div>
+                            </div>
+                            <div class="r-bnf">
+                                <span class="star">⭐</span>
+                                <p><strong>Benefits:</strong> Stimulates bone density and neuromuscular strength.</p>
+                            </div>
+                            <button class="btn-rec-outline c-purple">Log This Workout →</button>
+                        </div>
+                        <!-- Card 3 -->
+                        <div class="rec-card">
+                            <div class="r-tags"><span class="t-pill t-orange">COMBAT FITNESS</span><span class="t-pill t-gray">35 MINS</span><span class="t-pill t-gray">HIGH INTENSITY</span></div>
+                            <div class="r-body">
+                                <div class="r-ico bg-orange-light">🥊</div>
+                                <div class="r-txt">
+                                    <h4>Kickboxing & Conditioning</h4>
+                                    <p>Fast-paced punch-kick combos paired with agility core drills for ultimate stress relief.</p>
+                                </div>
+                            </div>
+                            <div class="r-bnf">
+                                <span class="star">⭐</span>
+                                <p><strong>Benefits:</strong> Releases high dopamine and boosts confidence.</p>
+                            </div>
+                            <button class="btn-rec-outline c-orange">Log This Workout →</button>
+                        </div>
+                        
+                        <!-- Card 4 (Logged) -->
+                        <div class="logged-card-v3">
+                            <div class="lc-tag"><span class="text-green">✔️ Completed Today</span></div>
+                            <div class="lc-main">
+                                <div class="r-ico bg-red-light">💓</div>
+                                <div class="lc-info">
+                                    <h4>High-Energy Peak Cardio</h4>
+                                    <span>40 mins • High Intensity • Cardio</span>
+                                </div>
+                                <div class="lc-time">7:30 AM</div>
+                            </div>
+                            <div class="lc-metrics">
+                                <div class="lcm-item">
+                                    <span class="lcm-lbl">Calories</span>
+                                    <span class="lcm-val c-red">320 <small>kcal</small></span>
+                                </div>
+                                <div class="lcm-item">
+                                    <span class="lcm-lbl">Avg. Heart Rate</span>
+                                    <span class="lcm-val c-red">♥ 142 <small>bpm</small></span>
+                                </div>
+                                <div class="lcm-item">
+                                    <span class="lcm-lbl">Active Time</span>
+                                    <span class="lcm-val c-purple">45 <small>mins</small></span>
+                                </div>
+                            </div>
+                            <div class="lc-msg">🎉 Great job! You crushed your workout. 💪</div>
+                            <button class="btn-lc-outline">View Details</button>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- BOTTOM ROW: 3 Analytics Cards -->
+                <div class="fit-btm-row">
+                    
+                    <div class="f-btm-card">
+                        <div class="fbc-head"><h3>Weekly Activity Stats</h3></div>
+                        <div class="fbc-chart">
+                            <!-- CSS Bar Chart -->
+                            <div class="bar-col-v3"><span class="bv">30<br>mins</span><div class="bar-v3 bg-green" style="height:30%"></div><span class="bl">Mon</span></div>
+                            <div class="bar-col-v3"><span class="bv">45<br>mins</span><div class="bar-v3 bg-green" style="height:45%"></div><span class="bl">Tue</span></div>
+                            <div class="bar-col-v3"><span class="bv">60<br>mins</span><div class="bar-v3 bg-green" style="height:60%"></div><span class="bl">Wed</span></div>
+                            <div class="bar-col-v3"><span class="bv">40<br>mins</span><div class="bar-v3 bg-green" style="height:40%"></div><span class="bl">Thu</span></div>
+                            <div class="bar-col-v3"><span class="bv">50<br>mins</span><div class="bar-v3 bg-green" style="height:50%"></div><span class="bl">Fri</span></div>
+                            <div class="bar-col-v3"><span class="bv">35<br>mins</span><div class="bar-v3 bg-green" style="height:35%"></div><span class="bl">Sat</span></div>
+                            <div class="bar-col-v3"><span class="bv">45<br>mins</span><div class="bar-v3 bg-green" style="height:45%"></div><span class="bl">Sun</span></div>
+                        </div>
+                    </div>
+
+                    <div class="f-btm-card">
+                        <div class="fbc-head"><h3>Recent Workout History</h3> <a href="#" class="rec-link">View All</a></div>
+                        <div class="fbc-list">
+                            <div class="fbl-item">
+                                <div class="fbl-ico bg-red-light">💓</div>
+                                <div class="fbl-txt"><strong>High-Energy Peak Cardio</strong><span>Cardio • 40 mins • 320 kcal</span></div>
+                                <div class="fbl-meta"><span>Today, 7:30 AM</span><span class="text-green">✔️</span></div>
+                            </div>
+                            <div class="fbl-item">
+                                <div class="fbl-ico bg-purple-light">🏋️‍♀️</div>
+                                <div class="fbl-txt"><strong>Heavy Lift & Hypertrophy</strong><span>Strength • 50 mins • 410 kcal</span></div>
+                                <div class="fbl-meta"><span>Yesterday, 6:45 PM</span><span class="text-green">✔️</span></div>
+                            </div>
+                            <div class="fbl-item">
+                                <div class="fbl-ico bg-orange-light">🥊</div>
+                                <div class="fbl-txt"><strong>Kickboxing & Conditioning</strong><span>Combat • 35 mins • 280 kcal</span></div>
+                                <div class="fbl-meta"><span>May 17, 8:15 AM</span><span class="text-green">✔️</span></div>
                             </div>
                         </div>
                     </div>
-                    <div class="hero-progress-ring-col">
-                        <div class="phase-progress-circle">
-                            <svg viewBox="0 0 36 36" class="circular-chart-fit">
-                                <path class="circle-bg-fit" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
-                                <path class="circle-fit" stroke-dasharray="57, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
-                            </svg>
-                            <div class="ring-text-fit">
-                                <span class="ring-label-small">Phase Progress</span>
-                                <strong class="ring-day">Day 8</strong>
-                                <span class="ring-of">of 14</span>
+
+                    <div class="f-btm-card">
+                        <div class="fbc-head"><h3>Your Progress</h3> <span class="rec-link">This Month ˅</span></div>
+                        <div class="fbc-prog">
+                            <div class="fbp-item">
+                                <div class="fbpi-hdr"><span class="ic">📈</span><span class="lb">Workouts Completed</span><span class="vl">12 / 16</span><span class="pc">75%</span></div>
+                                <div class="fbpi-tr"><div class="fbpi-fl bg-green" style="width:75%"></div></div>
+                            </div>
+                            <div class="fbp-item">
+                                <div class="fbpi-hdr"><span class="ic">🕒</span><span class="lb">Active Minutes</span><span class="vl">540 / 600</span><span class="pc">90%</span></div>
+                                <div class="fbpi-tr"><div class="fbpi-fl bg-purple" style="width:90%"></div></div>
+                            </div>
+                            <div class="fbp-item">
+                                <div class="fbpi-hdr"><span class="ic">🔥</span><span class="lb">Calories Burned</span><span class="vl">3,200 / 4,000</span><span class="pc">80%</span></div>
+                                <div class="fbpi-tr"><div class="fbpi-fl bg-orange" style="width:80%"></div></div>
+                            </div>
+                            <div class="fbp-item">
+                                <div class="fbpi-hdr"><span class="ic">💧</span><span class="lb">Hydration Goal</span><span class="vl">18 / 24</span><span class="pc">75%</span></div>
+                                <div class="fbpi-tr"><div class="fbpi-fl bg-blue" style="width:75%"></div></div>
                             </div>
                         </div>
-                        <span class="ring-bottom-label">Ovulatory Phase</span>
                     </div>
+
                 </div>
             </div>
 
-            <!-- Recommendations Grid -->
-            <div class="section-header-row-fit">
-                <h3 class="section-subtitle-fit">Recommended Workouts for Your Phase</h3>
-                <a href="#" class="link-why-workouts">Why these workouts? ⓘ</a>
-            </div>
-            <div class="workouts-3-col-grid">
-                <!-- Card 1 -->
-                <div class="workout-rec-card">
-                    <div class="workout-tags">
-                        <span class="tag-pill tag-red">CARDIO</span>
-                        <span class="tag-pill tag-red-light">40 mins</span>
-                        <span class="tag-pill tag-gray">High Intensity</span>
-                    </div>
-                    <div class="workout-card-body">
-                        <div class="workout-icon-wrap bg-red-lightest"><span class="workout-icon text-red">💓</span></div>
-                        <div class="workout-text-content">
-                            <h4>High-Energy Peak Cardio</h4>
-                            <p>Running, cycling, or energetic dance workouts while your stamina and pain tolerance peak.</p>
-                        </div>
-                    </div>
-                    <div class="workout-benefits">
-                        <span class="star-icon">⭐</span>
-                        <p><strong>Benefits:</strong> Capitalizes on peak estrogen for maximal athletic output and cardiovascular conditioning.</p>
-                    </div>
-                    <button class="btn-log-this text-red" onclick="openLogWorkoutModal('Cardio')">Log This Workout <span class="arrow-icon">›</span></button>
-                </div>
-                <!-- Card 2 -->
-                <div class="workout-rec-card">
-                    <div class="workout-tags">
-                        <span class="tag-pill tag-purple">STRENGTH</span>
-                        <span class="tag-pill tag-purple-light">50 mins</span>
-                        <span class="tag-pill tag-gray">High Intensity</span>
-                    </div>
-                    <div class="workout-card-body">
-                        <div class="workout-icon-wrap bg-purple-lightest"><span class="workout-icon text-purple">🏋️‍♀️</span></div>
-                        <div class="workout-text-content">
-                            <h4>Heavy Lift & Hypertrophy</h4>
-                            <p>Challenge your personal bests in compound strength lifts with optimal muscle recovery speed.</p>
-                        </div>
-                    </div>
-                    <div class="workout-benefits">
-                        <span class="star-icon text-orange">⭐</span>
-                        <p><strong>Benefits:</strong> Stimulates bone density and neuromuscular strength.</p>
-                    </div>
-                    <button class="btn-log-this text-purple" onclick="openLogWorkoutModal('Strength')">Log This Workout <span class="arrow-icon">›</span></button>
-                </div>
-                <!-- Card 3 -->
-                <div class="workout-rec-card">
-                    <div class="workout-tags">
-                        <span class="tag-pill tag-orange">COMBAT FITNESS</span>
-                        <span class="tag-pill tag-orange-light">35 mins</span>
-                        <span class="tag-pill tag-gray">High Intensity</span>
-                    </div>
-                    <div class="workout-card-body">
-                        <div class="workout-icon-wrap bg-orange-lightest"><span class="workout-icon text-orange">🥊</span></div>
-                        <div class="workout-text-content">
-                            <h4>Kickboxing & Conditioning</h4>
-                            <p>Fast-paced punch-kick combos paired with agility core drills for ultimate stress relief.</p>
-                        </div>
-                    </div>
-                    <div class="workout-benefits">
-                        <span class="star-icon text-orange">⭐</span>
-                        <p><strong>Benefits:</strong> Releases high dopamine and boosts confidence.</p>
-                    </div>
-                    <button class="btn-log-this text-orange" onclick="openLogWorkoutModal('Combat')">Log This Workout <span class="arrow-icon">›</span></button>
-                </div>
-            </div>
-
-            <!-- Bottom Row -->
-            <div class="fitness-stats-3-col">
-                <!-- Weekly Activity Stats -->
-                <div class="fitness-stat-card">
-                    <div class="card-header-row-fit">
-                        <h3><span class="icon text-red">📊</span> Weekly Activity Stats</h3>
-                    </div>
-                    <div class="activity-stats-grid">
-                        <div class="activity-box">
-                            <span class="icon text-red">🔥</span>
-                            <strong class="stat-number-fit">320</strong>
-                            <span class="stat-label-fit">Calories Burned</span>
-                        </div>
-                        <div class="activity-box">
-                            <span class="icon text-purple">🕒</span>
-                            <strong class="stat-number-fit">4h 25m</strong>
-                            <span class="stat-label-fit">Active Time</span>
-                        </div>
-                        <div class="activity-box">
-                            <span class="icon text-green">✅</span>
-                            <strong class="stat-number-fit">5</strong>
-                            <span class="stat-label-fit">Workouts</span>
-                        </div>
-                    </div>
-                    <div class="progress-bar-container-fit">
-                        <div class="progress-bar-bg-fit"><div class="progress-bar-fill-fit bg-red-bar" style="width: 72%;"></div></div>
-                        <p class="progress-text-fit">Great job! You're <strong class="text-red">72%</strong> towards your weekly goal.</p>
-                    </div>
-                </div>
-
-                <!-- Recent Workout History -->
-                <div class="fitness-stat-card">
-                    <div class="card-header-row-fit">
-                        <h3><span class="icon text-red">📅</span> Recent Workout History</h3>
-                        <a href="#" class="link-btn-small">View All</a>
-                    </div>
-                    <div class="history-list-fit">
-                        <div class="history-item">
-                            <div class="hist-icon-wrap bg-purple-lightest text-purple">🏋️‍♀️</div>
-                            <div class="hist-details">
-                                <strong>Strength Training</strong>
-                                <span>Upper Body Focus</span>
-                            </div>
-                            <div class="hist-meta">
-                                <span>May 18, 2025</span>
-                                <span>🕒 50 mins</span>
-                            </div>
-                        </div>
-                        <div class="history-item">
-                            <div class="hist-icon-wrap bg-green-lightest text-green">🏃‍♀️</div>
-                            <div class="hist-details">
-                                <strong>HIIT Cardio</strong>
-                                <span>High Intensity</span>
-                            </div>
-                            <div class="hist-meta">
-                                <span>May 16, 2025</span>
-                                <span>🕒 35 mins</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Your Progress -->
-                <div class="fitness-stat-card">
-                    <div class="card-header-row-fit">
-                        <h3><span class="icon text-red">📈</span> Your Progress</h3>
-                        <select class="select-month-fit">
-                            <option>This Month ˅</option>
-                        </select>
-                    </div>
-                    <div class="progress-chart-layout">
-                        <div class="chart-area-fit">
-                            <canvas id="fitness-progress-chart-new" height="90"></canvas>
-                        </div>
-                        <div class="score-area-fit">
-                            <div class="green-score-box">
-                                <span class="score-lbl">Green Score</span>
-                                <strong class="score-val">86 <span class="leaf-icon">🍃</span></strong>
-                                <span class="score-delta text-red">+12 this month</span>
-                            </div>
-                            <button class="btn-view-insights text-red">View Insights</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <!-- Ask Vera Floating Button -->
+            <button class="btn-ask-vera-float-v3">
+                <img src="/assets/vera-avatar.png" class="vera-img-v3" onerror="this.style.display='none'">
+                Ask Vera
+            </button>
         </section>
 
 
