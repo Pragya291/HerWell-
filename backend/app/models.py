@@ -22,6 +22,7 @@ class User(Base):
     wellness_logs = relationship("WellnessLog", back_populates="user", cascade="all, delete-orphan")
     share_links = relationship("ShareLink", back_populates="user", cascade="all, delete-orphan")
     community_posts = relationship("CommunityPost", back_populates="user", cascade="all, delete-orphan")
+    community_comments = relationship("CommunityComment", back_populates="user", cascade="all, delete-orphan")
 
 
 class CycleLog(Base):
@@ -129,5 +130,20 @@ class CommunityPost(Base):
 
     # Relationship
     user = relationship("User", back_populates="community_posts")
+    comments = relationship("CommunityComment", back_populates="post", cascade="all, delete-orphan")
 
 
+class CommunityComment(Base):
+    """Peer support community comment model."""
+    __tablename__ = "community_comments"
+
+    id = Column(Integer, primary_key=True, index=True)
+    post_id = Column(Integer, ForeignKey("community_posts.id"), nullable=False)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    author_name = Column(String, nullable=False, default="Anonymous Member")
+    content = Column(Text, nullable=False)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+    # Relationships
+    post = relationship("CommunityPost", back_populates="comments")
+    user = relationship("User", back_populates="community_comments")

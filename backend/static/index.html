@@ -9,7 +9,22 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/css/style.css?v=1009">
+    <link rel="stylesheet" href="/css/style.css?v=1010">
+    <style>
+        /* ===== COMMUNITY PAGE VISIBILITY FIX ===== */
+        /* style.css was setting overflow:hidden !important on .app-main-content
+           when community view is active, clipping all content to zero height.
+           This override restores scrollability and removes the clip. */
+        body:has(#view-community:not(.hidden)) .app-main-content {
+            overflow: auto !important;
+            padding: 0 !important;
+            background: #f8fafc !important;
+        }
+        /* Ensure community section uses block layout, not the flex forced by navigate() */
+        #view-community {
+            width: 100% !important;
+        }
+    </style>
 </head>
 <body>
 
@@ -27,7 +42,7 @@
             </div>
 
             <nav class="sidebar-nav" id="main-nav">
-                <button class="nav-btn active" data-view="dashboard" onclick="navigate('dashboard')">
+                <button class="nav-btn" data-view="dashboard" onclick="navigate('dashboard')">
                     <span class="nav-icon">📊</span> Dashboard
                 </button>
                 <button class="nav-btn" data-view="tracker" onclick="navigate('tracker')">
@@ -42,9 +57,7 @@
                 <button class="nav-btn" data-view="library" onclick="navigate('library')">
                     <span class="nav-icon">📚</span> Library
                 </button>
-                <button class="nav-btn" data-view="community" onclick="navigate('community')">
-                    <span class="nav-icon">👥</span> Community
-                </button>
+
             </nav>
 
             <!-- Daily Tip Sidebar Card -->
@@ -1277,47 +1290,381 @@
 
 
         <!-- ================= VIEW 6: HEALTH LIBRARY ================= -->
+        <!-- ================= VIEW 5: HEALTH LIBRARY ================= -->
         <section id="view-library" class="app-view hidden">
-            <div class="view-header">
-                <h2><span class="icon">📚</span> Evidence-Based Health Library</h2>
-                <p>Accessible medical guidance on PCOS, Endometriosis, Menopause, Contraception, Mental Health & Nutrition.</p>
-            </div>
-
-            <!-- Search & Filters -->
-            <div class="library-controls">
-                <div class="search-box">
-                    <span class="search-icon">🔍</span>
+            <!-- Search & Category Filters Container -->
+            <div class="library-top-controls">
+                <div class="library-search-box">
+                    <span class="library-search-icon">🔍</span>
                     <input type="text" id="library-search-input" placeholder="Search articles by title or keyword..." oninput="filterArticles()">
                 </div>
                 
-                <div class="category-filters" id="category-filters-container">
+                <div class="category-filters-container" id="category-filters-container">
                     <button class="filter-btn active" data-category="All" onclick="selectCategoryFilter('All')">All</button>
-                    <button class="filter-btn" data-category="PCOS" onclick="selectCategoryFilter('PCOS')">PCOS</button>
-                    <button class="filter-btn" data-category="Endometriosis" onclick="selectCategoryFilter('Endometriosis')">Endometriosis</button>
-                    <button class="filter-btn" data-category="Menopause" onclick="selectCategoryFilter('Menopause')">Menopause</button>
-                    <button class="filter-btn" data-category="Contraception" onclick="selectCategoryFilter('Contraception')">Contraception</button>
-                    <button class="filter-btn" data-category="Mental Health" onclick="selectCategoryFilter('Mental Health')">Mental Health</button>
-                    <button class="filter-btn" data-category="Nutrition" onclick="selectCategoryFilter('Nutrition')">Nutrition</button>
+                    <button class="filter-btn" data-category="PCOS" onclick="selectCategoryFilter('PCOS')"><span class="cat-icon">♀</span> PCOS</button>
+                    <button class="filter-btn" data-category="Endometriosis" onclick="selectCategoryFilter('Endometriosis')"><span class="cat-icon">🪻</span> Endometriosis</button>
+                    <button class="filter-btn" data-category="Menopause" onclick="selectCategoryFilter('Menopause')"><span class="cat-icon">⏸</span> Menopause</button>
+                    <button class="filter-btn" data-category="Contraception" onclick="selectCategoryFilter('Contraception')"><span class="cat-icon">🛡</span> Contraception</button>
+                    <button class="filter-btn" data-category="Mental Health" onclick="selectCategoryFilter('Mental Health')"><span class="cat-icon">🧠</span> Mental Health</button>
+                    <button class="filter-btn" data-category="Nutrition" onclick="selectCategoryFilter('Nutrition')"><span class="cat-icon">🍎</span> Nutrition</button>
+                    <button class="cat-scroll-arrow" title="Next Categories">›</button>
                 </div>
             </div>
 
-            <!-- Articles Grid -->
-            <h3 class="section-subtitle">Articles & Medical Guides</h3>
-            <div id="articles-grid" class="articles-grid">
+            <!-- Library Highlight Banner -->
+            <div class="library-highlight-banner">
+                <div class="banner-metrics">
+                    <div class="metric-item">
+                        <div class="metric-icon-box pink-icon-box">
+                            <span class="m-icon">🗓️</span>
+                        </div>
+                        <div class="metric-text">
+                            <strong>120+</strong>
+                            <span>Expert Articles</span>
+                        </div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-icon-box purple-icon-box">
+                            <span class="m-icon">🛡️</span>
+                        </div>
+                        <div class="metric-text">
+                            <strong>Medically</strong>
+                            <span>Reviewed</span>
+                        </div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-icon-box green-icon-box">
+                            <span class="m-icon">🔖</span>
+                        </div>
+                        <div class="metric-text">
+                            <strong>Personalized</strong>
+                            <span>For You</span>
+                        </div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-icon-box yellow-icon-box">
+                            <span class="m-icon">⭐</span>
+                        </div>
+                        <div class="metric-text">
+                            <strong>Trusted by</strong>
+                            <span>Thousands</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="banner-illustration">
+                    <svg viewBox="0 0 160 110" width="160" height="110" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="25" y="88" width="90" height="10" rx="3" fill="#E11D48"/>
+                        <rect x="20" y="77" width="100" height="10" rx="3" fill="#9333EA"/>
+                        <rect x="30" y="66" width="80" height="10" rx="3" fill="#3B82F6"/>
+                        <path d="M 52,66 Q 70,68 88,66 Q 95,58 82,52 Q 70,50 58,52 Q 45,58 52,66 Z" fill="#1E293B"/>
+                        <path d="M 60,34 Q 70,32 78,34 L 82,54 Q 70,58 58,54 Z" fill="#F43F5E"/>
+                        <circle cx="70" cy="22" r="8" fill="#FCA5A5"/>
+                        <path d="M 61,20 Q 70,12 79,20 Q 83,28 78,30 Q 70,32 62,30 Z" fill="#334155"/>
+                        <path d="M 54,40 L 70,44 L 86,40 L 86,49 L 70,52 L 54,49 Z" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5"/>
+                        <path d="M 115,30 C 115,25 122,25 124,29 C 126,25 133,25 133,30 C 133,37 124,41 124,41 C 124,41 115,37 115,30 Z" fill="#F43F5E" opacity="0.8"/>
+                        <circle cx="108" cy="18" r="2" fill="#A855F7" opacity="0.7"/>
+                        <circle cx="138" cy="45" r="2" fill="#F59E0B" opacity="0.7"/>
+                    </svg>
+                </div>
+            </div>
+
+            <!-- Articles & Medical Guides Header & Controls -->
+            <div class="articles-section-header">
+                <h3><span class="section-icon">💐</span> Articles & Medical Guides</h3>
+                <div class="articles-controls-right">
+                    <div class="sort-pill-dropdown">
+                        Sort by: <strong>Latest</strong> <span class="chevron">˅</span>
+                    </div>
+                    <div class="grid-list-toggle">
+                        <button class="toggle-btn active" title="Grid View">
+                            <span class="toggle-icon">⊞</span>
+                        </button>
+                        <button class="toggle-btn" title="List View">
+                            <span class="toggle-icon">≡</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Articles Grid (3 columns) -->
+            <div id="articles-grid" class="articles-grid-v2">
                 <!-- Dynamically populated -->
             </div>
+        </section> <!-- Close view-library -->
 
-            <!-- Myth Buster Section -->
-            <div class="myth-buster-section">
-                <div class="section-header-centered">
-                    <h3><span class="icon">💡</span> Myth Buster Cards</h3>
-                    <p>Click any card to flip and discover the medical truth!</p>
+        <!-- Floating Ask Vera Assistant Widget -->
+        <div id="vera-float-widget" class="vera-float-widget-v2" onclick="openAIAssistantOrVera()">
+            <div class="vera-speech-pill">Ask Vera</div>
+            <div class="vera-avatar-circle">
+                <img src="/assets/vera_avatar.png" alt="Vera AI" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><circle cx=%2250%22 cy=%2250%22 r=%2250%22 fill=%22%23f43f5e%22/><text x=%2250%22 y=%2265%22 font-size=%2245%22 text-anchor=%22middle%22 fill=%22white%22>🌸</text></svg>'">
+                <span class="vera-online-dot"></span>
+            </div>
+        </div>
+
+        <section id="view-community" class="app-view hidden">
+            <div class="comm-dashboard-layout" style="padding: 24px; max-width: 1400px; margin: 0 auto; box-sizing: border-box;">
+                
+                <!-- 1. Community Header -->
+                <div class="comm-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+                    <div>
+                        <h2 style="margin: 0; font-size: 28px; color: #1e293b; font-weight: 700;">Community</h2>
+                        <p style="margin: 4px 0 0; color: #64748b; font-size: 16px;">Connect, share, and grow together 💕</p>
+                    </div>
+                    <div style="display: flex; gap: 16px; align-items: center;">
+                        <div style="position: relative;">
+                            <span style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #94a3b8; font-size: 14px;">🔍</span>
+                            <input type="text" placeholder="Search community..." style="padding: 10px 16px 10px 36px; border-radius: 20px; border: 1px solid #e2e8f0; outline: none; background: white; font-size: 14px; width: 220px; font-family: inherit; transition: all 0.2s;">
+                        </div>
+                        <button class="btn-primary-glow" style="padding: 10px 24px; border-radius: 24px; font-weight: 600; font-size: 14px; display: flex; gap: 8px; align-items: center; border: none; cursor: pointer;">
+                            <span style="font-size: 16px;">+</span> Create Post
+                        </button>
+                    </div>
                 </div>
 
-                <div id="myth-cards-container" class="myth-cards-grid">
-                    <!-- 3D Flip cards dynamically populated -->
+                <!-- 2. Community Stats Row -->
+                <div class="comm-stats-row" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px;">
+                    <div class="stat-card" style="background: white; border-radius: 16px; padding: 16px; display: flex; align-items: center; gap: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.03);">
+                        <div style="width: 48px; height: 48px; border-radius: 12px; background: rgba(168, 85, 247, 0.1); color: #a855f7; display: flex; align-items: center; justify-content: center; font-size: 24px;">👥</div>
+                        <div>
+                            <div style="color: #64748b; font-size: 13px; font-weight: 500;">Active Members</div>
+                            <div style="color: #1e293b; font-size: 20px; font-weight: 700;">2,480</div>
+                        </div>
+                    </div>
+                    <div class="stat-card" style="background: white; border-radius: 16px; padding: 16px; display: flex; align-items: center; gap: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.03);">
+                        <div style="width: 48px; height: 48px; border-radius: 12px; background: rgba(59, 130, 246, 0.1); color: #3b82f6; display: flex; align-items: center; justify-content: center; font-size: 24px;">💬</div>
+                        <div>
+                            <div style="color: #64748b; font-size: 13px; font-weight: 500;">Posts This Week</div>
+                            <div style="color: #1e293b; font-size: 20px; font-weight: 700;">186</div>
+                        </div>
+                    </div>
+                    <div class="stat-card" style="background: white; border-radius: 16px; padding: 16px; display: flex; align-items: center; gap: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.03);">
+                        <div style="width: 48px; height: 48px; border-radius: 12px; background: rgba(236, 72, 153, 0.1); color: #ec4899; display: flex; align-items: center; justify-content: center; font-size: 24px;">❤️</div>
+                        <div>
+                            <div style="color: #64748b; font-size: 13px; font-weight: 500;">Support Given</div>
+                            <div style="color: #1e293b; font-size: 20px; font-weight: 700;">1,240</div>
+                        </div>
+                    </div>
+                    <div class="stat-card" style="background: white; border-radius: 16px; padding: 16px; display: flex; align-items: center; gap: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.03);">
+                        <div style="width: 48px; height: 48px; border-radius: 12px; background: rgba(249, 115, 22, 0.1); color: #f97316; display: flex; align-items: center; justify-content: center; font-size: 24px;">🔥</div>
+                        <div>
+                            <div style="color: #64748b; font-size: 13px; font-weight: 500;">Community Streak</div>
+                            <div style="color: #1e293b; font-size: 20px; font-weight: 700;">12 days</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="comm-main-grid" style="display: grid; grid-template-columns: 66% 32%; gap: 2%; align-items: start;">
+                    
+                    <!-- Left Column (Feed) -->
+                    <div class="comm-feed-col" style="display: flex; flex-direction: column; gap: 24px;">
+                        
+                        <!-- Community Feed Card -->
+                        <div class="feed-container" style="background: white; border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.02); overflow: hidden;">
+                            <!-- Tabs -->
+                            <div class="feed-tabs" style="display: flex; border-bottom: 1px solid #f1f5f9; padding: 0 24px;">
+                                <div style="padding: 16px 20px; font-weight: 600; color: #db2777; border-bottom: 2px solid #db2777; cursor: pointer; transition: all 0.2s;">For You</div>
+                                <div style="padding: 16px 20px; font-weight: 500; color: #64748b; cursor: pointer; transition: all 0.2s;">Trending</div>
+                                <div style="padding: 16px 20px; font-weight: 500; color: #64748b; cursor: pointer; transition: all 0.2s;">Following</div>
+                            </div>
+                            
+                            <!-- Posts (populated by JS renderCommunityFeed) -->
+                            <div id="community-feed-container" class="feed-posts" style="padding: 24px; display: flex; flex-direction: column; gap: 24px;">
+                                <!-- Post 1 -->
+                                <div class="post-item" style="border-bottom: 1px solid #f8fafc; padding-bottom: 24px;">
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                                        <div style="display: flex; align-items: center; gap: 12px;">
+                                            <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=SarahM" style="width: 44px; height: 44px; border-radius: 50%; background: #f1f5f9;" alt="Sarah M.">
+                                            <div>
+                                                <div style="font-weight: 600; color: #1e293b; font-size: 15px;">Sarah M.</div>
+                                                <div style="font-size: 12px; color: #94a3b8;">2 hours ago</div>
+                                            </div>
+                                        </div>
+                                        <button style="background: none; border: none; color: #94a3b8; cursor: pointer; font-size: 18px; padding: 4px;">⋮</button>
+                                    </div>
+                                    <p style="color: #334155; line-height: 1.6; margin: 0 0 16px 0; font-size: 15px;">Completed my 30-minute morning workout today! Feeling so much more energized. 💪🌸</p>
+                                    <div style="display: flex; gap: 16px;">
+                                        <button style="display: flex; align-items: center; gap: 6px; background: rgba(244,63,94,0.05); border: none; color: #f43f5e; font-weight: 600; cursor: pointer; padding: 6px 12px; border-radius: 16px; font-size: 13px;"><span>❤️</span> 45</button>
+                                        <button style="display: flex; align-items: center; gap: 6px; background: rgba(241,245,249,0.5); border: none; color: #64748b; font-weight: 600; cursor: pointer; padding: 6px 12px; border-radius: 16px; font-size: 13px;"><span>💬</span> 12</button>
+                                        <button style="display: flex; align-items: center; gap: 6px; background: rgba(241,245,249,0.5); border: none; color: #64748b; font-weight: 600; cursor: pointer; margin-left: auto; padding: 6px 12px; border-radius: 16px; font-size: 13px;"><span>🔗</span> Share</button>
+                                    </div>
+                                </div>
+                                
+                                <!-- Post 2 -->
+                                <div class="post-item" style="border-bottom: 1px solid #f8fafc; padding-bottom: 24px;">
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                                        <div style="display: flex; align-items: center; gap: 12px;">
+                                            <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Priya" style="width: 44px; height: 44px; border-radius: 50%; background: #f1f5f9;" alt="Priya K.">
+                                            <div>
+                                                <div style="font-weight: 600; color: #1e293b; font-size: 15px;">Priya K.</div>
+                                                <div style="font-size: 12px; color: #94a3b8;">5 hours ago</div>
+                                            </div>
+                                        </div>
+                                        <button style="background: none; border: none; color: #94a3b8; cursor: pointer; font-size: 18px; padding: 4px;">⋮</button>
+                                    </div>
+                                    <p style="color: #334155; line-height: 1.6; margin: 0 0 16px 0; font-size: 15px;">Just tried the new guided meditation feature before bed. It really helped calm my racing thoughts. Highly recommend to anyone struggling with sleep lately! 🌙🧘‍♀️</p>
+                                    <div style="display: flex; gap: 16px;">
+                                        <button style="display: flex; align-items: center; gap: 6px; background: rgba(241,245,249,0.5); border: none; color: #64748b; font-weight: 600; cursor: pointer; padding: 6px 12px; border-radius: 16px; font-size: 13px;"><span>🤍</span> 89</button>
+                                        <button style="display: flex; align-items: center; gap: 6px; background: rgba(241,245,249,0.5); border: none; color: #64748b; font-weight: 600; cursor: pointer; padding: 6px 12px; border-radius: 16px; font-size: 13px;"><span>💬</span> 24</button>
+                                        <button style="display: flex; align-items: center; gap: 6px; background: rgba(241,245,249,0.5); border: none; color: #64748b; font-weight: 600; cursor: pointer; margin-left: auto; padding: 6px 12px; border-radius: 16px; font-size: 13px;"><span>🔗</span> Share</button>
+                                    </div>
+                                </div>
+                                
+                                <!-- Post 3 -->
+                                <div class="post-item">
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                                        <div style="display: flex; align-items: center; gap: 12px;">
+                                            <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Elena" style="width: 44px; height: 44px; border-radius: 50%; background: #f1f5f9;" alt="Elena R.">
+                                            <div>
+                                                <div style="font-weight: 600; color: #1e293b; font-size: 15px;">Elena R.</div>
+                                                <div style="font-size: 12px; color: #94a3b8;">Yesterday</div>
+                                            </div>
+                                        </div>
+                                        <button style="background: none; border: none; color: #94a3b8; cursor: pointer; font-size: 18px; padding: 4px;">⋮</button>
+                                    </div>
+                                    <p style="color: #334155; line-height: 1.6; margin: 0 0 16px 0; font-size: 15px;">Meal prepping for the week has been a game changer for my stress levels. What are your favorite healthy, quick recipes? 🥗</p>
+                                    <div style="display: flex; gap: 16px;">
+                                        <button style="display: flex; align-items: center; gap: 6px; background: rgba(241,245,249,0.5); border: none; color: #64748b; font-weight: 600; cursor: pointer; padding: 6px 12px; border-radius: 16px; font-size: 13px;"><span>🤍</span> 156</button>
+                                        <button style="display: flex; align-items: center; gap: 6px; background: rgba(241,245,249,0.5); border: none; color: #64748b; font-weight: 600; cursor: pointer; padding: 6px 12px; border-radius: 16px; font-size: 13px;"><span>💬</span> 45</button>
+                                        <button style="display: flex; align-items: center; gap: 6px; background: rgba(241,245,249,0.5); border: none; color: #64748b; font-weight: 600; cursor: pointer; margin-left: auto; padding: 6px 12px; border-radius: 16px; font-size: 13px;"><span>🔗</span> Share</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Trending & Featured -->
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                            <!-- Trending Topics -->
+                            <div style="background: white; border-radius: 20px; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.02);">
+                                <h3 style="margin: 0 0 16px 0; font-size: 15px; font-weight: 700; color: #1e293b;">Trending Topics</h3>
+                                <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                                    <span style="background: rgba(219,39,119,0.08); color: #db2777; padding: 6px 12px; border-radius: 16px; font-size: 12px; font-weight: 600; cursor: pointer;">#MentalWellness</span>
+                                    <span style="background: rgba(219,39,119,0.08); color: #db2777; padding: 6px 12px; border-radius: 16px; font-size: 12px; font-weight: 600; cursor: pointer;">#FitnessJourney</span>
+                                    <span style="background: rgba(219,39,119,0.08); color: #db2777; padding: 6px 12px; border-radius: 16px; font-size: 12px; font-weight: 600; cursor: pointer;">#SelfCare</span>
+                                    <span style="background: rgba(219,39,119,0.08); color: #db2777; padding: 6px 12px; border-radius: 16px; font-size: 12px; font-weight: 600; cursor: pointer;">#HealthyHabits</span>
+                                    <span style="background: rgba(219,39,119,0.08); color: #db2777; padding: 6px 12px; border-radius: 16px; font-size: 12px; font-weight: 600; cursor: pointer;">#Mindfulness</span>
+                                </div>
+                            </div>
+                            
+                            <!-- Featured Discussion -->
+                            <div style="background: linear-gradient(135deg, rgba(236,72,153,0.08), rgba(168,85,247,0.08)); border-radius: 20px; padding: 20px; border: 1px solid rgba(236,72,153,0.15); display: flex; flex-direction: column; justify-content: space-between;">
+                                <div>
+                                    <div style="display: flex; align-items: center; gap: 6px; color: #db2777; font-weight: 700; font-size: 12px; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px;"><span>✨</span> Featured Discussion</div>
+                                    <h4 style="margin: 0 0 12px 0; color: #1e293b; font-size: 15px; font-weight: 700; line-height: 1.4;">"What is one small habit that improved your life?"</h4>
+                                    <div style="display: flex; gap: 12px; font-size: 12px; color: #475569; font-weight: 500;">
+                                        <span>💬 245 replies</span>
+                                        <span>👥 128 participants</span>
+                                    </div>
+                                </div>
+                                <button style="background: white; border: 1px solid #e2e8f0; color: #db2777; padding: 8px 16px; border-radius: 16px; font-weight: 600; font-size: 13px; margin-top: 16px; cursor: pointer; transition: all 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">Join Discussion</button>
+                            </div>
+                        </div>
+
+                    </div> <!-- End Left Column -->
+
+                    <!-- Right Column Panel -->
+                    <div class="comm-right-panel" style="display: flex; flex-direction: column; gap: 24px;">
+                        
+                        <!-- Top Contributors -->
+                        <div style="background: white; border-radius: 20px; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.02);">
+                            <h3 style="margin: 0 0 16px 0; font-size: 15px; font-weight: 700; color: #1e293b; display: flex; align-items: center; gap: 8px;">🌟 Top Contributors</h3>
+                            <div style="display: flex; flex-direction: column; gap: 16px;">
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <div style="display: flex; align-items: center; gap: 12px;">
+                                        <div style="position: relative;">
+                                            <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=PriyaCont" style="width: 40px; height: 40px; border-radius: 50%; background: #f8fafc;" alt="Priya">
+                                            <span style="position: absolute; bottom: -4px; right: -4px; font-size: 14px; background: white; border-radius: 50%; width: 18px; height: 18px; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">🥇</span>
+                                        </div>
+                                        <div>
+                                            <div style="font-weight: 600; font-size: 14px; color: #1e293b;">Priya</div>
+                                            <div style="font-size: 12px; color: #db2777; font-weight: 500;">Wellness Guide</div>
+                                        </div>
+                                    </div>
+                                    <span style="font-size: 13px; font-weight: 600; color: #64748b;">1,240 pts</span>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <div style="display: flex; align-items: center; gap: 12px;">
+                                        <div style="position: relative;">
+                                            <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Ananya" style="width: 40px; height: 40px; border-radius: 50%; background: #f8fafc;" alt="Ananya">
+                                            <span style="position: absolute; bottom: -4px; right: -4px; font-size: 14px; background: white; border-radius: 50%; width: 18px; height: 18px; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">🥈</span>
+                                        </div>
+                                        <div>
+                                            <div style="font-weight: 600; font-size: 14px; color: #1e293b;">Ananya</div>
+                                            <div style="font-size: 12px; color: #db2777; font-weight: 500;">Motivator</div>
+                                        </div>
+                                    </div>
+                                    <span style="font-size: 13px; font-weight: 600; color: #64748b;">1,180 pts</span>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <div style="display: flex; align-items: center; gap: 12px;">
+                                        <div style="position: relative;">
+                                            <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Sarah" style="width: 40px; height: 40px; border-radius: 50%; background: #f8fafc;" alt="Sarah">
+                                            <span style="position: absolute; bottom: -4px; right: -4px; font-size: 14px; background: white; border-radius: 50%; width: 18px; height: 18px; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">🥉</span>
+                                        </div>
+                                        <div>
+                                            <div style="font-weight: 600; font-size: 14px; color: #1e293b;">Sarah</div>
+                                            <div style="font-size: 12px; color: #db2777; font-weight: 500;">Supporter</div>
+                                        </div>
+                                    </div>
+                                    <span style="font-size: 13px; font-weight: 600; color: #64748b;">1,050 pts</span>
+                                </div>
+                            </div>
+                            <div style="margin-top: 16px; text-align: center; border-top: 1px solid #f1f5f9; padding-top: 16px;">
+                                <a href="#" style="color: #db2777; font-size: 13px; font-weight: 600; text-decoration: none; display: inline-block;">View Full Leaderboard</a>
+                            </div>
+                        </div>
+
+                        <!-- Community Challenge -->
+                        <div style="background: linear-gradient(135deg, #fdf2f8, #fff1f2); border-radius: 20px; padding: 20px; border: 1px solid #fce7f3; box-shadow: 0 4px 15px rgba(0,0,0,0.02);">
+                            <div style="display: inline-block; background: #fbcfe8; color: #be185d; padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px;">🏆 Challenge</div>
+                            <h4 style="margin: 0 0 8px 0; font-size: 16px; font-weight: 700; color: #1e293b;">7-Day Wellness Challenge</h4>
+                            <p style="margin: 0 0 16px 0; font-size: 13px; color: #475569; line-height: 1.4;">Focus on mindfulness and hydration.</p>
+                            
+                            <div style="margin-bottom: 16px;">
+                                <div style="display: flex; justify-content: space-between; font-size: 12px; font-weight: 600; color: #1e293b; margin-bottom: 6px;">
+                                    <span>Progress</span>
+                                    <span>4 / 7 days completed</span>
+                                </div>
+                                <div style="height: 8px; background: #fce7f3; border-radius: 4px; overflow: hidden;">
+                                    <div style="height: 100%; width: 57%; background: linear-gradient(90deg, #ec4899, #f43f5e); border-radius: 4px;"></div>
+                                </div>
+                            </div>
+                            
+                            <button class="btn-primary-glow" style="width: 100%; padding: 10px; border-radius: 12px; font-weight: 600; font-size: 14px; border: none; cursor: pointer; text-align: center;">Join Challenge</button>
+                        </div>
+
+                        <!-- Upcoming Events -->
+                        <div style="background: white; border-radius: 20px; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.02);">
+                            <h3 style="margin: 0 0 16px 0; font-size: 15px; font-weight: 700; color: #1e293b; display: flex; align-items: center; gap: 8px;">📅 Upcoming Events</h3>
+                            
+                            <div style="display: flex; flex-direction: column; gap: 16px;">
+                                <div style="display: flex; gap: 12px; align-items: center;">
+                                    <div style="background: rgba(59,130,246,0.1); color: #3b82f6; border-radius: 12px; width: 48px; height: 48px; display: flex; flex-direction: column; align-items: center; justify-content: center; flex-shrink: 0;">
+                                        <span style="font-size: 10px; font-weight: 800; text-transform: uppercase;">Today</span>
+                                        <span style="font-size: 14px; font-weight: 800; margin-top: -2px;">7PM</span>
+                                    </div>
+                                    <div>
+                                        <div style="font-weight: 600; font-size: 14px; color: #1e293b;">Morning Meditation</div>
+                                        <div style="font-size: 12px; color: #64748b; margin-top: 2px;">Live Audio Room</div>
+                                    </div>
+                                </div>
+                                
+                                <div style="display: flex; gap: 12px; align-items: center;">
+                                    <div style="background: rgba(16,185,129,0.1); color: #10b981; border-radius: 12px; width: 48px; height: 48px; display: flex; flex-direction: column; align-items: center; justify-content: center; flex-shrink: 0;">
+                                        <span style="font-size: 10px; font-weight: 800; text-transform: uppercase;">Sat</span>
+                                        <span style="font-size: 14px; font-weight: 800; margin-top: -2px;">8AM</span>
+                                    </div>
+                                    <div>
+                                        <div style="font-weight: 600; font-size: 14px; color: #1e293b;">Weekend Wellness Walk</div>
+                                        <div style="font-size: 12px; color: #64748b; margin-top: 2px;">Local Meetups</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </div> <!-- End Right Column -->
                 </div>
             </div>
+        </section>
     </main>
 
     </div> <!-- Close app-main-wrapper -->
@@ -1732,6 +2079,6 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
     <!-- JS Application Script -->
-    <script src="/js/app.js?v=101"></script>
+    <script src="/js/app.js?v=102"></script>
 </body>
 </html>

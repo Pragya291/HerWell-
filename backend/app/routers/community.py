@@ -5,10 +5,10 @@ from pydantic import BaseModel
 from datetime import datetime
 
 from ..database import get_db
-from ..models import User, CommunityPost
+from ..models import User, CommunityPost, CommunityComment
 from .auth import get_current_user
 
-router = APIRouter(prefix="/community", tags=["community"])
+router = APIRouter(prefix="/api/community", tags=["community"])
 
 
 class PostCreateSchema(BaseModel):
@@ -26,11 +26,26 @@ class PostResponseSchema(BaseModel):
     title: str
     content: str
     likes_count: int
+    comments_count: int = 0
     created_at: str
 
     class Config:
         from_attributes = True
 
+class CommentCreateSchema(BaseModel):
+    content: str
+    author_name: Optional[str] = "Anonymous Member"
+
+class CommentResponseSchema(BaseModel):
+    id: int
+    post_id: int
+    user_id: int
+    author_name: str
+    content: str
+    created_at: str
+
+    class Config:
+        from_attributes = True
 
 DEFAULT_POSTS = [
     {
@@ -99,6 +114,7 @@ def get_community_posts(category: Optional[str] = None, db: Session = Depends(ge
             "title": p.title,
             "content": p.content,
             "likes_count": p.likes_count,
+            "comments_count": len(p.comments) if hasattr(p, 'comments') else 0,
             "created_at": p.created_at.isoformat() if p.created_at else datetime.utcnow().isoformat()
         })
     return result
@@ -149,3 +165,60 @@ def like_community_post(post_id: int, db: Session = Depends(get_db)):
     post.likes_count += 1
     db.commit()
     return {"id": post.id, "likes_count": post.likes_count}
+
+
+@router.post("/posts/{post_id}/comments", response_model=CommentResponseSchema)
+def create_comment(
+    post_id: int,
+    comment_data: CommentCreateSchema,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    """Add a comment to a community post."""
+    post = db.query(CommunityPost).filter(CommunityPost.id == post_id).first()
+    if not post:
+        raise HTTPException(status_code=404, detail="Post not found")
+        
+    author = comment_data.author_name
+    if not author or author == "Anonymous Member":
+        author = current_user.email.split("@")[0].capitalize() if current_user and current_user.email else "Anonymous Member"
+
+    new_comment = CommunityComment(
+        post_id=post.id,
+        user_id=current_user.id if current_user else 1,
+        author_name=author,
+        content=comment_data.content
+    )
+    db.add(new_comment)
+    db.commit()
+    db.refresh(new_comment)
+    
+    return {
+        "id": new_comment.id,
+        "post_id": new_comment.post_id,
+        "user_id": new_comment.user_id,
+        "author_name": new_comment.author_name,
+        "content": new_comment.content,
+        "created_at": new_comment.created_at.isoformat()
+    }
+
+
+@router.get("/posts/{post_id}/comments", response_model=List[CommentResponseSchema])
+def get_comments(post_id: int, db: Session = Depends(get_db)):
+    """Get comments for a specific post."""
+    post = db.query(CommunityPost).filter(CommunityPost.id == post_id).first()
+    if not post:
+        raise HTTPException(status_code=404, detail="Post not found")
+        
+    comments = db.query(CommunityComment).filter(CommunityComment.post_id == post_id).order_by(CommunityComment.created_at.asc()).all()
+    
+    return [
+        {
+            "id": c.id,
+            "post_id": c.post_id,
+            "user_id": c.user_id,
+            "author_name": c.author_name,
+            "content": c.content,
+            "created_at": c.created_at.isoformat()
+        } for c in comments
+    ]

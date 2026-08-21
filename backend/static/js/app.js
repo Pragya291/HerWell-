@@ -55,6 +55,7 @@ async function initApp() {
     setupDashboardSymptomLogger();
     setupModalSymptomLogger();
 
+
     // Check Vera AI API Connection Status
     checkAPIKeyStatus();
 }
@@ -1904,23 +1905,123 @@ async function loadLibraryData() {
     }
 }
 
+function getCategoryIllustrationSVG(category) {
+    const cat = (category || '').toLowerCase();
+    if (cat.includes('pcos')) {
+        return `<svg viewBox="0 0 100 100" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+            <rect width="100" height="100" rx="14" fill="#FFE4E6"/>
+            <path d="M 68,85 C 68,70 58,62 48,60 C 44,55 42,48 44,42 C 40,42 36,38 36,32 C 36,25 42,20 50,20 C 58,20 64,25 64,32 C 64,36 62,40 58,42 C 60,48 62,55 68,60 C 72,62 76,70 76,85 Z" fill="#F43F5E" opacity="0.85"/>
+            <circle cx="34" cy="68" r="4" fill="#FB7185"/>
+            <circle cx="28" cy="74" r="3" fill="#FDA4AF"/>
+            <path d="M 22,80 C 26,72 32,70 36,78 C 30,82 25,84 22,80 Z" fill="#FB7185"/>
+            <path d="M 72,32 C 78,34 82,40 78,46 C 74,42 74,36 72,32 Z" fill="#F43F5E"/>
+            <circle cx="76" cy="28" r="2.5" fill="#FDA4AF"/>
+        </svg>`;
+    } else if (cat.includes('endometriosis')) {
+        return `<svg viewBox="0 0 100 100" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+            <rect width="100" height="100" rx="14" fill="#FFE4E6"/>
+            <path d="M 50,32 C 40,32 32,40 32,50 C 32,62 45,72 50,78 C 55,72 68,62 68,50 C 68,40 60,32 50,32 Z" fill="#E11D48" opacity="0.8"/>
+            <path d="M 50,40 C 42,40 36,46 36,54 C 36,63 46,70 50,74 C 54,70 64,63 64,54 C 64,46 58,40 50,40 Z" fill="#FFF0F5"/>
+            <path d="M 32,44 C 22,38 18,48 24,54 C 28,50 30,46 32,44 Z" fill="#FB7185"/>
+            <path d="M 68,44 C 78,38 82,48 76,54 C 72,50 70,46 68,44 Z" fill="#FB7185"/>
+            <circle cx="20" cy="46" r="3" fill="#E11D48"/>
+            <circle cx="80" cy="46" r="3" fill="#E11D48"/>
+        </svg>`;
+    } else if (cat.includes('menopause')) {
+        return `<svg viewBox="0 0 100 100" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+            <rect width="100" height="100" rx="14" fill="#F3E8FF"/>
+            <circle cx="58" cy="48" r="22" fill="#E9D5FF"/>
+            <circle cx="58" cy="48" r="18" fill="#FFFFFF"/>
+            <path d="M 58,34 L 58,48 L 68,48" stroke="#9333EA" stroke-width="2.5" stroke-linecap="round"/>
+            <path d="M 32,82 C 32,70 38,62 44,60 C 40,56 38,50 40,44 C 36,44 32,40 32,34 C 32,28 38,24 44,24 C 50,24 54,28 54,34 C 54,40 50,44 46,44 C 48,50 46,56 42,60 C 48,62 54,70 54,82 Z" fill="#A855F7" opacity="0.85"/>
+            <circle cx="74" cy="28" r="4" fill="#FDBA74"/>
+        </svg>`;
+    } else if (cat.includes('contraception')) {
+        return `<svg viewBox="0 0 100 100" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+            <rect width="100" height="100" rx="14" fill="#FFE4E6"/>
+            <rect x="25" y="25" width="50" height="50" rx="12" fill="#FFFFFF" stroke="#FDA4AF" stroke-width="2"/>
+            <circle cx="38" cy="38" r="5" fill="#F43F5E"/>
+            <circle cx="50" cy="38" r="5" fill="#F43F5E"/>
+            <circle cx="62" cy="38" r="5" fill="#F43F5E"/>
+            <circle cx="38" cy="50" r="5" fill="#F43F5E"/>
+            <circle cx="50" cy="50" r="5" fill="#F43F5E"/>
+            <circle cx="62" cy="50" r="5" fill="#F43F5E"/>
+            <circle cx="38" cy="62" r="5" fill="#F43F5E"/>
+            <circle cx="50" cy="62" r="5" fill="#F43F5E"/>
+            <circle cx="62" cy="62" r="5" fill="#FDA4AF"/>
+        </svg>`;
+    } else if (cat.includes('mental')) {
+        return `<svg viewBox="0 0 100 100" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+            <rect width="100" height="100" rx="14" fill="#E0F2FE"/>
+            <path d="M 40,32 C 34,32 30,36 30,42 C 26,44 24,48 24,54 C 24,60 28,64 34,66 C 36,70 42,74 50,74 C 58,74 64,70 66,66 C 72,64 76,60 76,54 C 76,48 74,44 70,42 C 70,36 66,32 60,32 C 55,32 52,35 50,38 C 48,35 45,32 40,32 Z" fill="#38BDF8" opacity="0.8"/>
+            <path d="M 40,40 C 44,42 46,46 45,52 M 60,40 C 56,42 54,46 55,52 M 50,40 L 50,68" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round"/>
+            <circle cx="24" cy="30" r="2" fill="#7DD3FC"/>
+            <circle cx="78" cy="32" r="3" fill="#7DD3FC"/>
+        </svg>`;
+    } else {
+        return `<svg viewBox="0 0 100 100" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+            <rect width="100" height="100" rx="14" fill="#DCFCE7"/>
+            <ellipse cx="50" cy="58" rx="28" ry="16" fill="#16A34A" opacity="0.2"/>
+            <path d="M 22,50 C 22,68 35,76 50,76 C 65,76 78,68 78,50 Z" fill="#22C55E"/>
+            <ellipse cx="50" cy="50" rx="28" ry="12" fill="#86EFAC"/>
+            <circle cx="42" cy="48" r="6" fill="#EF4444"/>
+            <circle cx="54" cy="46" r="5" fill="#EAB308"/>
+            <circle cx="62" cy="50" r="4.5" fill="#3B82F6"/>
+            <path d="M 34,46 Q 38,42 44,46" stroke="#15803D" stroke-width="2" fill="none"/>
+            <path d="M 56,52 Q 62,48 66,54" stroke="#15803D" stroke-width="2" fill="none"/>
+        </svg>`;
+    }
+}
+
+function toggleBookmark(e, id) {
+    e.stopPropagation();
+    const btn = e.currentTarget;
+    btn.classList.toggle('bookmarked');
+    if (btn.classList.contains('bookmarked')) {
+        btn.style.color = '#E11D48';
+    } else {
+        btn.style.color = '#94a3b8';
+    }
+}
+
 function renderArticles(articlesList) {
     const grid = document.getElementById('articles-grid');
+    if (!grid) return;
     grid.innerHTML = '';
 
-    if (articlesList.length === 0) {
+    if (!articlesList || articlesList.length === 0) {
         grid.innerHTML = `<p class="empty-state span-full">No articles matching your search criteria.</p>`;
         return;
     }
 
     articlesList.forEach(art => {
         const card = document.createElement('div');
-        card.className = 'article-card';
+        card.className = 'article-card-v2';
+        const svgIllustration = getCategoryIllustrationSVG(art.category);
+        
+        let catStyle = 'background:#FFE4E6; color:#E11D48;';
+        const catLower = (art.category || '').toLowerCase();
+        if (catLower.includes('endo') || catLower.includes('menopause')) {
+            catStyle = 'background:#F3E8FF; color:#9333EA;';
+        } else if (catLower.includes('mental')) {
+            catStyle = 'background:#E0F2FE; color:#0284C7;';
+        } else if (catLower.includes('nutrition')) {
+            catStyle = 'background:#DCFCE7; color:#15803D;';
+        }
+
         card.innerHTML = `
-            <span class="category-pill">${art.category}</span>
-            <h4>${art.title}</h4>
-            <p>${art.summary}</p>
-            <button class="btn btn-sm btn-outline margin-top-auto" onclick="openArticleModal(${art.id})">Read Article →</button>
+            <div class="article-thumb-box">
+                ${svgIllustration}
+            </div>
+            <div class="article-info-wrap">
+                <span class="article-cat-tag" style="${catStyle}">${art.category}</span>
+                <h4 class="article-v2-title" title="${art.title}">${art.title}</h4>
+                <p class="article-v2-desc">${art.summary || ''}</p>
+                <div class="article-v2-footer">
+                    <button class="btn-read-article" onclick="openArticleModal(${art.id})">Read Article →</button>
+                    <button class="btn-bookmark-icon" title="Bookmark Article" onclick="toggleBookmark(event, ${art.id})">🔖</button>
+                </div>
+            </div>
         `;
         grid.appendChild(card);
     });
@@ -2615,4 +2716,174 @@ function renderFitnessProgressChart() {
         ctx.lineWidth = 1;
         ctx.stroke();
     });
+}
+/* ==========================================================================
+   VIEW 6: COMMUNITY
+   ========================================================================== */
+
+function setupCommunity() {
+    const submitBtn = document.getElementById('btn-submit-post');
+    if (submitBtn) {
+        submitBtn.addEventListener('click', handlePostSubmit);
+    }
+}
+
+async function loadCommunityData() {
+    try {
+        const posts = await apiCall('/community/posts');
+        renderCommunityFeed(posts);
+    } catch (err) {
+        console.error('Error loading community posts:', err);
+        // On API error, still show sample posts so the page is never empty
+        renderCommunityFeed([]);
+    }
+}
+
+// Static sample posts shown when no real posts exist yet
+const SAMPLE_POSTS = [
+    {
+        id: 'sample-1',
+        author_name: 'Sarah M.',
+        avatar_seed: 'SarahM',
+        time_label: '2 hours ago',
+        content: 'Completed my 30-minute morning workout today! Feeling so much more energized. 💪🌸',
+        likes: 45,
+        comments: 12,
+        liked: true
+    },
+    {
+        id: 'sample-2',
+        author_name: 'Priya K.',
+        avatar_seed: 'PriyaK',
+        time_label: '5 hours ago',
+        content: 'Just tried the new guided meditation feature before bed. It really helped calm my racing thoughts. Highly recommend to anyone struggling with sleep lately! 🌙🧘‍♀️',
+        likes: 89,
+        comments: 24,
+        liked: false
+    },
+    {
+        id: 'sample-3',
+        author_name: 'Elena R.',
+        avatar_seed: 'ElenaR',
+        time_label: 'Yesterday',
+        content: 'Meal prepping for the week has been a game changer for my stress levels. What are your favorite healthy, quick recipes? 🥗',
+        likes: 156,
+        comments: 45,
+        liked: false
+    }
+];
+
+function makeSamplePostHTML(post) {
+    const avatarUrl = `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(post.avatar_seed)}`;
+    const heartIcon = post.liked ? '❤️' : '🤍';
+    const heartStyle = post.liked
+        ? 'background:rgba(244,63,94,0.08); color:#f43f5e;'
+        : 'background:rgba(241,245,249,0.5); color:#64748b;';
+    return `
+        <div class="post-item" style="border-bottom:1px solid #f8fafc; padding-bottom:24px; margin-bottom:0;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                <div style="display:flex; align-items:center; gap:12px;">
+                    <img src="${avatarUrl}" style="width:44px;height:44px;border-radius:50%;background:#f1f5f9;" alt="${post.author_name}">
+                    <div>
+                        <div style="font-weight:600;color:#1e293b;font-size:15px;">${post.author_name}</div>
+                        <div style="font-size:12px;color:#94a3b8;">${post.time_label}</div>
+                    </div>
+                </div>
+                <button style="background:none;border:none;color:#94a3b8;cursor:pointer;font-size:18px;padding:4px;">⋮</button>
+            </div>
+            <p style="color:#334155;line-height:1.6;margin:0 0 16px 0;font-size:15px;">${post.content}</p>
+            <div style="display:flex;gap:16px;">
+                <button style="display:flex;align-items:center;gap:6px;${heartStyle}border:none;font-weight:600;cursor:pointer;padding:6px 12px;border-radius:16px;font-size:13px;">
+                    <span>${heartIcon}</span> ${post.likes}
+                </button>
+                <button style="display:flex;align-items:center;gap:6px;background:rgba(241,245,249,0.5);border:none;color:#64748b;font-weight:600;cursor:pointer;padding:6px 12px;border-radius:16px;font-size:13px;">
+                    <span>💬</span> ${post.comments}
+                </button>
+                <button style="display:flex;align-items:center;gap:6px;background:rgba(241,245,249,0.5);border:none;color:#64748b;font-weight:600;cursor:pointer;margin-left:auto;padding:6px 12px;border-radius:16px;font-size:13px;">
+                    <span>🔗</span> Share
+                </button>
+            </div>
+        </div>`;
+}
+
+function renderCommunityFeed(posts) {
+    const container = document.getElementById('community-feed-container');
+    if (!container) return;
+    container.innerHTML = '';
+
+    // Always prepend sample posts so the feed looks active
+    let html = SAMPLE_POSTS.map(makeSamplePostHTML).join('\n');
+
+    if (posts && posts.length > 0) {
+        // Also render real API posts after samples
+        posts.forEach(post => {
+            const seed = post.author_name || 'Anonymous';
+            const avatarUrl = `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(seed)}`;
+            const createdDate = new Date(post.created_at);
+            const timeStr = createdDate.toLocaleString();
+            html += `
+                <div class="post-item" style="border-bottom:1px solid #f8fafc;padding-bottom:24px;margin-bottom:0;">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+                        <div style="display:flex;align-items:center;gap:12px;">
+                            <img src="${avatarUrl}" style="width:44px;height:44px;border-radius:50%;background:#f1f5f9;" alt="${post.author_name}">
+                            <div>
+                                <div style="font-weight:600;color:#1e293b;font-size:15px;">${post.author_name}</div>
+                                <div style="font-size:12px;color:#94a3b8;">${timeStr}</div>
+                            </div>
+                        </div>
+                        <button style="background:none;border:none;color:#94a3b8;cursor:pointer;font-size:18px;padding:4px;">⋮</button>
+                    </div>
+                    ${post.title && post.title !== 'Community Post' ? `<strong style="display:block;margin-bottom:8px;color:#1e293b;">${post.title}</strong>` : ''}
+                    <p style="color:#334155;line-height:1.6;margin:0 0 16px 0;font-size:15px;">${post.content}</p>
+                    <div style="display:flex;gap:16px;">
+                        <button class="btn-action-ghost" onclick="likePost(${post.id})" style="display:flex;align-items:center;gap:6px;background:rgba(241,245,249,0.5);border:none;color:#64748b;font-weight:600;cursor:pointer;padding:6px 12px;border-radius:16px;font-size:13px;">
+                            <span>🤍</span> ${post.likes_count || 0}
+                        </button>
+                        <button style="display:flex;align-items:center;gap:6px;background:rgba(241,245,249,0.5);border:none;color:#64748b;font-weight:600;cursor:pointer;padding:6px 12px;border-radius:16px;font-size:13px;">
+                            <span>💬</span> ${post.comments_count || 0}
+                        </button>
+                    </div>
+                </div>`;
+        });
+    }
+
+    container.innerHTML = html;
+}
+
+async function handlePostSubmit() {
+    const inputEl = document.getElementById('composer-input');
+    const content = inputEl.value.trim();
+    if (!content) return;
+    
+    // Auto-generate title from content for simplicity
+    const title = content.length > 30 ? content.substring(0, 30) + '...' : 'Community Post';
+    
+    const submitBtn = document.getElementById('btn-submit-post');
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Posting...';
+
+    try {
+        await apiCall('/community/posts', 'POST', {
+            title: title,
+            content: content,
+            category: "General Q&A"
+        });
+        inputEl.value = ''; // clear
+        loadCommunityData(); // reload feed
+    } catch (err) {
+        console.error('Error creating post:', err);
+        alert('Failed to create post.');
+    } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Post';
+    }
+}
+
+async function likePost(postId) {
+    try {
+        await apiCall(`/community/posts/${postId}/like`, 'POST');
+        loadCommunityData(); // simple reload for now
+    } catch(err) {
+        console.error('Error liking post:', err);
+    }
 }
