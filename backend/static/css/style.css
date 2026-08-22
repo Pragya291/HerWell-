@@ -5129,10 +5129,16 @@ body:has(#view-tracker:not(.hidden)) {
     left: auto !important;
     margin: 0 !important;
     z-index: 99999 !important;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 8px !important;
+    animation: vera-float-bob 4s ease-in-out infinite;
+}
+
+@keyframes vera-float-bob {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-5px); }
 }
 
 .vera-fab-pill {
@@ -7810,58 +7816,6 @@ body:has(#view-tracker:not(.hidden)) {
     font-weight: 700;
 }
 
-/* Floating Vera AI Assistant */
-.vera-float-widget {
-    position: fixed;
-    bottom: 24px;
-    right: 24px;
-    z-index: 999;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: 6px;
-}
-
-.vera-fab-pill {
-    background: #E11D48 !important;
-    color: white !important;
-    border: none !important;
-    border-radius: 20px !important;
-    padding: 6px 16px !important;
-    font-size: 0.85rem !important;
-    font-weight: 700 !important;
-    box-shadow: 0 4px 14px rgba(225, 29, 72, 0.4) !important;
-    cursor: pointer;
-}
-
-.vera-avatar-wrap {
-    position: relative;
-    width: 54px;
-    height: 54px;
-    border-radius: 50%;
-    background: white;
-    box-shadow: 0 6px 20px rgba(225, 29, 72, 0.25);
-    cursor: pointer;
-    border: 2px solid #E11D48;
-}
-
-.vera-avatar-img {
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    object-fit: cover;
-}
-
-.vera-online-dot {
-    position: absolute;
-    bottom: 2px;
-    right: 2px;
-    width: 12px;
-    height: 12px;
-    background: #22C55E;
-    border: 2px solid white;
-    border-radius: 50%;
-}
 
 
 /* ==========================================================================
@@ -8614,6 +8568,200 @@ body:has(#view-fitness:not(.hidden)) .app-main-content {
 .fbl-txt strong { font-size: 0.7rem; margin-bottom: 1px; }
 .fbl-txt span { font-size: 0.6rem; color: #64748b; line-height: 1.1; }
 .fbl-meta { display: flex; flex-direction: column; align-items: flex-end; font-size: 0.55rem; color: #64748b; }
+.fit-hero-left {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.hero-subtext { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.5px; opacity: 0.9; text-transform: uppercase; margin-bottom: 4px; }
+.hero-title-main { font-size: 1.3rem; font-weight: 700; margin: 0 0 6px 0; }
+.hero-desc-main { font-size: 0.8rem; opacity: 0.9; margin: 0 0 10px 0; max-width: 90%; line-height: 1.2; }
+.hero-actions-row { display: flex; align-items: center; gap: 16px; }
+
+.btn-log-action {
+    background: white; color: #db2777; border: none; padding: 6px 14px;
+    border-radius: 30px; font-weight: 600; font-size: 0.8rem; cursor: pointer;
+    display: flex; align-items: center; gap: 6px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+.icon-plus-circle { font-size: 1rem; }
+.link-learn-more-white { color: white; font-weight: 500; font-size: 0.8rem; text-decoration: none; }
+
+.fit-hero-right {
+    display: flex; gap: 12px; align-items: stretch;
+    background: rgba(255,255,255,0.1); backdrop-filter: blur(8px);
+    border-radius: 12px; padding: 10px 14px; border: 1px solid rgba(255,255,255,0.2);
+}
+
+.glass-stats-panel { display: flex; flex-direction: column; gap: 8px; justify-content: center; }
+.glass-stat { display: flex; align-items: center; gap: 8px; }
+.glass-icon { width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; }
+.bg-yellow-tint { background: rgba(253,224,71,0.2); }
+.bg-green-tint { background: rgba(34,197,94,0.2); }
+.bg-pink-tint { background: rgba(236,72,153,0.2); }
+.glass-text { display: flex; flex-direction: column; }
+.gl-lbl { font-size: 0.55rem; opacity: 0.9; line-height: 1; }
+.gl-val { font-size: 0.75rem; line-height: 1.2; margin-top: 2px; }
+.text-green { color: #4ade80; }
+.text-pink { color: #f9a8d4; }
+.text-white { color: white; }
+
+.glass-ring-panel { display: flex; flex-direction: column; align-items: center; justify-content: center; border-left: 1px solid rgba(255,255,255,0.2); padding-left: 12px; }
+.ring-wrap-v3 { position: relative; width: 56px; height: 56px; }
+.circ-chart-v3 { width: 100%; height: 100%; }
+.circ-bg { fill: none; stroke: rgba(255,255,255,0.2); stroke-width: 3; }
+.circ-fill { fill: none; stroke: white; stroke-width: 3; stroke-linecap: round; }
+.ring-info-v3 { position: absolute; top:0;left:0;right:0;bottom:0; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+.r-lbl { font-size: 0.35rem; opacity: 0.8; }
+.r-day { font-size: 0.8rem; font-weight: 700; line-height: 1; margin: 2px 0; }
+.r-of { font-size: 0.35rem; opacity: 0.8; }
+.r-btm-lbl { font-size: 0.55rem; margin-top: 4px; font-weight: 500; }
+
+.fit-snapshot-card {
+    background: white; border-radius: 16px; padding: 12px 16px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.03); border: 1px solid #f1f5f9;
+    display: flex; flex-direction: column; justify-content: space-between;
+    height: 180px;
+    overflow: hidden;
+}
+.snap-head-v3 { display: flex; flex-direction: column; }
+.snap-title-v3 { font-size: 1rem; margin: 0; }
+.snap-sub-v3 { font-size: 0.65rem; color: #64748b; margin: 2px 0 0 0; }
+.snap-grid-v3 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 8px 0; flex:1; }
+.s-box { background: #f8fafc; border-radius: 12px; padding: 8px; display: flex; align-items: center; gap: 8px; border: 1px solid #f1f5f9; }
+.s-icon-wrap { width: 24px; height: 24px; border-radius: 50%; background: white; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+.s-icon { font-size: 0.8rem; }
+.text-orange { color: #f97316; }
+.text-purple { color: #a855f7; }
+.text-blue { color: #3b82f6; }
+.s-txt-wrap { display: flex; flex-direction: column; }
+.s-lbl { font-size: 0.55rem; color: #64748b; line-height: 1;}
+.s-val { font-size: 0.85rem; font-weight: 700; color: #0f172a; line-height: 1.1; margin: 2px 0; }
+.s-sub { font-size: 0.5rem; color: #94a3b8; line-height: 1; }
+.snap-prog-v3 { display: flex; flex-direction: column; gap: 4px; }
+.sp-hdr { display: flex; justify-content: space-between; font-size: 0.6rem; font-weight: 600; color: #475569; }
+.sp-bg { background: #f1f5f9; height: 5px; border-radius: 3px; overflow: hidden; }
+.sp-fill { height: 100%; border-radius: 3px; }
+.bg-purple-bar { background: #a855f7; }
+
+/* MIDDLE ROW */
+.fit-mid-row-v4 {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 16px;
+    flex: 0 0 auto;
+}
+
+.mid-headers-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    align-items: flex-end;
+}
+.mh-left { grid-column: span 3; display: flex; justify-content: space-between; align-items: flex-end; }
+.mh-right { grid-column: span 1; display: flex; justify-content: space-between; align-items: flex-end; }
+
+.rec-title { font-size: 0.95rem; margin: 0; color: #0f172a; }
+.rec-link { font-size: 0.7rem; color: #64748b; text-decoration: none; font-weight: 500; }
+.c-pink { color: #db2777; }
+
+.mid-cards-4col {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    flex: 1;
+}
+
+.rec-card {
+    background: white; border-radius: 12px; padding: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.03); border: 1px solid #f1f5f9;
+    display: flex; flex-direction: column; justify-content: space-between;
+    height: 215px;
+}
+.rec-card > button { margin-top: auto; }
+.r-tags { display: flex; gap: 4px; margin-bottom: 8px; flex-wrap: wrap; }
+.t-pill { font-size: 0.5rem; font-weight: 700; padding: 3px 6px; border-radius: 4px; }
+.t-red { background: #fee2e2; color: #ef4444; }
+.t-purple { background: #f3e8ff; color: #a855f7; }
+.t-orange { background: #ffedd5; color: #f97316; }
+.t-gray { background: #f8fafc; color: #475569; }
+
+.r-body { display: flex; gap: 10px; margin-bottom: 6px; align-items: flex-start; }
+.r-ico { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink:0; }
+.bg-red-light { background: #fef2f2; }
+.bg-purple-light { background: #faf5ff; }
+.bg-orange-light { background: #fff7ed; }
+.r-txt h4 { font-size: 0.8rem; margin: 0 0 2px 0; }
+.r-txt p { font-size: 0.65rem; color: #64748b; margin: 0; line-height: 1.1; }
+
+.r-bnf { display: flex; gap: 6px; background: #f8fafc; padding: 6px; border-radius: 8px; margin-bottom: 8px; align-items: flex-start; }
+.star { font-size: 0.7rem; }
+.r-bnf p { font-size: 0.6rem; color: #475569; margin: 0; line-height: 1.1; }
+
+.btn-rec-outline {
+    background: white; padding: 6px; border-radius: 8px; font-weight: 600; font-size: 0.75rem;
+    cursor: pointer; text-align: center; border: 1px solid; background: transparent; width: 100%;
+}
+.c-red { border-color: #fca5a5; color: #ef4444; }
+.c-purple { border-color: #d8b4fe; color: #a855f7; }
+.c-orange { border-color: #fdba74; color: #f97316; }
+
+.logged-card-v3 {
+    background: white; border-radius: 12px; padding: 10px;
+    box-shadow: 0 4px 16px rgba(219,39,119,0.05); border: 1px solid #fce7f3;
+    display: flex; flex-direction: column; justify-content: space-between;
+    height: 215px;
+}
+.logged-card-v3 > button { margin-top: auto; }
+.lc-tag { margin-bottom: 8px; font-size: 0.7rem; font-weight: 600; }
+.lc-main { display: flex; gap: 8px; align-items: center; margin-bottom: 8px; position: relative; }
+.lc-info h4 { font-size: 0.8rem; margin: 0 0 2px 0; }
+.lc-info span { font-size: 0.6rem; color: #64748b; }
+.lc-time { position: absolute; right: 0; top: 0; font-size: 0.65rem; color: #94a3b8; }
+.lc-metrics { display: flex; justify-content: space-between; padding: 4px 0; border-top: 1px solid #f1f5f9; border-bottom: 1px solid #f1f5f9; margin-bottom: 6px; }
+.lcm-item { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+.lcm-lbl { font-size: 0.55rem; color: #64748b; }
+.lcm-val { font-size: 0.75rem; font-weight: 700; }
+.lcm-val small { font-size: 0.55rem; font-weight: 400; color: #64748b; }
+.lc-msg { background: #fdf2f8; color: #db2777; padding: 6px; border-radius: 6px; font-size: 0.65rem; font-weight: 600; text-align: center; margin-bottom: 6px; }
+.btn-lc-outline { background: white; color: #db2777; border: 1px solid #fbcfe8; padding: 6px; border-radius: 8px; font-weight: 600; font-size: 0.75rem; cursor: pointer; width: 100%; }
+
+/* BOTTOM ROW */
+.fit-btm-row {
+    display: flex;
+    flex: 1;
+    gap: 16px;
+    min-height: 0;
+}
+.f-btm-card {
+    flex: 1; background: white; border-radius: 12px; padding: 10px 14px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.03); border: 1px solid #f1f5f9;
+    display: flex; flex-direction: column;
+}
+.fbc-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+.fbc-head h3 { font-size: 0.85rem; margin: 0; }
+.fbc-chart { 
+    flex: 1; position: relative; 
+    display: flex; justify-content: space-between; align-items: flex-end; 
+    padding-top: 24px; padding-bottom: 16px; height: 100%;
+}
+.bar-chart-v3 { display: none; }
+.bar-col-v3 { width: 12%; height: 100%; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; position: relative; }
+.bv { font-size: 0.55rem; color: #475569; text-align: center; margin-bottom: 2px; line-height: 1; position: absolute; top: -16px; }
+.bar-v3 { width: 100%; border-radius: 3px 3px 0 0; }
+.bg-green { background: #4ade80; }
+.bl { font-size: 0.55rem; color: #64748b; position: absolute; bottom: -14px; }
+
+.fbc-list { flex: 1; display: flex; flex-direction: column; gap: 6px; overflow: hidden; justify-content: space-around; }
+.fbl-item { display: flex; align-items: center; gap: 8px; padding-bottom: 4px; border-bottom: 1px solid #f1f5f9; }
+.fbl-item:last-child { border: none; padding: 0; margin: 0; }
+.fbl-ico { width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; flex-shrink:0; }
+.fbl-txt { flex: 1; display: flex; flex-direction: column; }
+.fbl-txt strong { font-size: 0.7rem; margin-bottom: 1px; }
+.fbl-txt span { font-size: 0.6rem; color: #64748b; line-height: 1.1; }
+.fbl-meta { display: flex; flex-direction: column; align-items: flex-end; font-size: 0.55rem; color: #64748b; }
 
 .fbc-prog { flex: 1; display: flex; flex-direction: column; justify-content: space-around; gap: 4px; overflow: hidden; }
 .fbp-item { display: flex; flex-direction: column; gap: 3px; }
@@ -8627,15 +8775,6 @@ body:has(#view-fitness:not(.hidden)) .app-main-content {
 .bg-orange { background: #f97316; }
 .bg-blue { background: #3b82f6; }
 
-/* FLOATING VERA */
-.btn-ask-vera-float-v3 {
-    position: fixed; bottom: 20px; right: 20px;
-    background: #db2777; border: none; border-radius: 30px;
-    padding: 4px 10px 4px 4px; display: flex; align-items: center; gap: 6px;
-    box-shadow: 0 4px 12px rgba(219,39,119,0.3); cursor: pointer;
-    font-weight: 600; color: white; font-size: 0.75rem; z-index: 100;
-}
-.vera-img-v3 { width: 20px; height: 20px; border-radius: 50%; border: 1px solid white; object-fit: cover; background: white; }
 
 /* ================= COMMUNITY DASHBOARD (REDESIGN) ================= */
 body:has(#view-community:not(.hidden)) .app-main-content {
@@ -9847,67 +9986,52 @@ body:has(#view-library:not(.hidden)) .app-main-content {
     color: #E11D48;
 }
 
-/* 6. Floating Ask Vera Assistant Widget */
-.vera-float-widget-v2 {
-    position: fixed;
-    bottom: 20px;
-    right: 24px;
-    z-index: 1000;
+/* ---- Canonical Vera widget: pill + avatar are one unified trigger ---- */
+/* (Legacy .vera-float-widget-v2, .vera-speech-pill, .vera-avatar-circle,
+   .btn-ask-vera-float-v3 removed — only one widget remains) */
+
+/* Hide any stale vera-float-widget-v2 that may linger in HTML cache */
+.vera-float-widget-v2 { display: none !important; }
+
+/* Unified trigger container: stacks pill above avatar, centered */
+.vera-trigger {
     display: flex;
     flex-direction: column;
     align-items: center;
+    gap: 6px;
     cursor: pointer;
-    transition: transform 0.2s ease;
+    border: none;
+    background: transparent;
+    padding: 0;
+    outline: none;
+}
+.vera-trigger:focus-visible {
+    outline: 2px solid #f43f5e;
+    outline-offset: 4px;
+    border-radius: 24px;
+}
+.vera-trigger:hover .vera-avatar-wrap {
+    transform: scale(1.1);
+}
+.vera-trigger:hover .vera-fab-pill {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(244, 63, 94, 0.45);
 }
 
-.vera-float-widget-v2:hover {
-    transform: scale(1.06);
+/* ============================================================
+   VERA WIDGET: FORCE VISIBLE ON ALL NON-LOGIN VIEWS
+   (Overrides any height:0 or display:none set by login rules)
+   ============================================================ */
+body:has(#view-library:not(.hidden)) #vera-float-widget,
+body:has(#view-dashboard:not(.hidden)) #vera-float-widget,
+body:has(#view-tracker:not(.hidden)) #vera-float-widget,
+body:has(#view-wellness:not(.hidden)) #vera-float-widget,
+body:has(#view-fitness:not(.hidden)) #vera-float-widget,
+body:has(#view-community:not(.hidden)) #vera-float-widget {
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+    height: auto !important;
+    overflow: visible !important;
 }
-
-.vera-speech-pill {
-    background: #E11D48;
-    color: #FFFFFF;
-    font-size: 10.5px;
-    font-weight: 700;
-    padding: 3px 10px;
-    border-radius: 10px;
-    margin-bottom: 3px;
-    box-shadow: 0 4px 10px rgba(225, 29, 72, 0.3);
-    white-space: nowrap;
-}
-
-.vera-avatar-circle {
-    width: 44px;
-    height: 44px;
-    border-radius: 50%;
-    border: 2px solid #FFFFFF;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
-    position: relative;
-    background: #FFF0F5;
-}
-
-.vera-avatar-circle img {
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    object-fit: cover;
-}
-
-.vera-online-dot {
-    position: absolute;
-    bottom: 1px;
-    right: 1px;
-    width: 10px;
-    height: 10px;
-    background: #22C55E;
-    border: 2px solid #FFFFFF;
-    border-radius: 50%;
-}
-
-/* Hide legacy floating Vera buttons when library view is active */
-body:has(#view-library:not(.hidden)) .btn-ask-vera-float-v3,
-body:has(#view-library:not(.hidden)) .btn-ask-vera-float,
-body:has(#view-library:not(.hidden)) .vera-float-widget {
-    display: none !important;
-}
-

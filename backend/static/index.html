@@ -1281,11 +1281,7 @@
                 </div>
             </div>
 
-            <!-- Ask Vera Floating Button -->
-            <button class="btn-ask-vera-float-v3">
-                <img src="/assets/vera-avatar.png" class="vera-img-v3" onerror="this.style.display='none'">
-                Ask Vera
-            </button>
+
         </section>
 
 
@@ -1392,14 +1388,6 @@
             </div>
         </section> <!-- Close view-library -->
 
-        <!-- Floating Ask Vera Assistant Widget -->
-        <div id="vera-float-widget" class="vera-float-widget-v2" onclick="openAIAssistantOrVera()">
-            <div class="vera-speech-pill">Ask Vera</div>
-            <div class="vera-avatar-circle">
-                <img src="/assets/vera_avatar.png" alt="Vera AI" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><circle cx=%2250%22 cy=%2250%22 r=%2250%22 fill=%22%23f43f5e%22/><text x=%2250%22 y=%2265%22 font-size=%2245%22 text-anchor=%22middle%22 fill=%22white%22>🌸</text></svg>'">
-                <span class="vera-online-dot"></span>
-            </div>
-        </div>
 
         <section id="view-community" class="app-view hidden">
             <div class="comm-dashboard-layout" style="padding: 24px; max-width: 1400px; margin: 0 auto; box-sizing: border-box;">
@@ -2004,16 +1992,14 @@
     <!-- ================= FLOATING VERA AI WIDGET ================= -->
     <div id="vera-float-widget" class="vera-float-widget">
 
-        <!-- Pink "Ask Vera" Pill above avatar -->
-        <button class="vera-fab-pill" id="vera-fab-btn" onclick="toggleVeraFloat()" aria-label="Open Vera AI">
-            Ask Vera
-        </button>
-
-        <!-- Circular Female AI Avatar with Glowing Ring and Green Online Indicator -->
-        <div class="vera-avatar-wrap" onclick="toggleVeraFloat()" title="Need help? Ask Vera">
-            <img src="/assets/vera_avatar.png" alt="Vera AI" class="vera-avatar-img">
-            <span class="vera-online-dot"></span>
-            <span class="vera-glow-ring"></span>
+        <!-- Single unified Vera trigger: pill + avatar as one clickable widget -->
+        <div class="vera-trigger" onclick="toggleVeraFloat()" title="Need help? Ask Vera" role="button" aria-label="Open Vera AI" tabindex="0">
+            <span class="vera-fab-pill">Ask Vera</span>
+            <div class="vera-avatar-wrap">
+                <img src="/assets/vera_avatar.png" alt="Vera AI" class="vera-avatar-img" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><circle cx=%2250%22 cy=%2250%22 r=%2250%22 fill=%22%23f43f5e%22/><text x=%2250%22 y=%2265%22 font-size=%2245%22 text-anchor=%22middle%22 fill=%22white%22>🌸</text></svg>'">
+                <span class="vera-online-dot"></span>
+                <span class="vera-glow-ring"></span>
+            </div>
         </div>
 
         <!-- Expandable Chat Panel -->

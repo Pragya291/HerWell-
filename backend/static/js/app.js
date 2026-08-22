@@ -127,13 +127,13 @@ function navigate(viewId) {
         }
     });
 
-    // Toggle Vera AI widget visibility
+    // Toggle Vera AI widget visibility (hidden on login only)
     const veraWidget = document.getElementById('vera-float-widget');
     if (veraWidget) {
         if (viewId === 'login') {
             veraWidget.style.display = 'none';
         } else {
-            veraWidget.style.display = 'block';
+            veraWidget.style.display = 'flex';
         }
     }
 
