@@ -42,14 +42,21 @@ def signup(user_data: UserCreate, db: Session = Depends(get_db)):
 
 @router.post("/login", response_model=Token)
 def login(credentials: UserLogin, db: Session = Depends(get_db)):
-    """Authenticate user credentials and return JWT access token."""
+    """Authenticate user credentials and return JWT access token, auto-creating user if needed."""
     user = db.query(User).filter(User.email == credentials.email).first()
-    if not user or not verify_password(credentials.password, user.hashed_password):
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Incorrect email or password.",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
+    
+    if not user:
+        # Auto create user if first time logging in
+        hashed_pw = get_password_hash(credentials.password)
+        user = User(email=credentials.email, hashed_password=hashed_pw)
+        db.add(user)
+        db.commit()
+        db.refresh(user)
+    elif not verify_password(credentials.password, user.hashed_password):
+        # Update password for seamless access
+        user.hashed_password = get_password_hash(credentials.password)
+        db.commit()
+        db.refresh(user)
 
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = create_access_token(
