@@ -54,10 +54,44 @@ async function initApp() {
     setupArticleSearch();
     setupDashboardSymptomLogger();
     setupModalSymptomLogger();
+    if (typeof setupCommunity === 'function') setupCommunity();
 
+    // Setup global listeners
+    setupNavigationHistory();
+    setupModalClosing();
 
     // Check Vera AI API Connection Status
     checkAPIKeyStatus();
+}
+
+function setupNavigationHistory() {
+    window.addEventListener('popstate', (e) => {
+        if (e.state && e.state.view) {
+            navigate(e.state.view, false);
+        } else {
+            // Check hash fallback or default
+            const hash = window.location.hash.substring(1) || 'dashboard';
+            navigate(hash, false);
+        }
+    });
+}
+
+function setupModalClosing() {
+    // ESC key to close all modals
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            document.querySelectorAll('.modal-overlay:not(.hidden)').forEach(modal => {
+                modal.classList.add('hidden');
+            });
+        }
+    });
+
+    // Click outside to close modals
+    document.addEventListener('click', (e) => {
+        if (e.target.classList.contains('modal-overlay')) {
+            e.target.classList.add('hidden');
+        }
+    });
 }
 
 
@@ -95,10 +129,14 @@ async function apiCall(endpoint, method = 'GET', body = null) {
 /**
  * View Navigation Manager
  */
-function navigate(viewId) {
+function navigate(viewId, pushState = true) {
     // If not logged in, restrict to login view
     if (!state.token && viewId !== 'login') {
         viewId = 'login';
+    }
+
+    if (pushState) {
+        history.pushState({ view: viewId }, '', '#' + viewId);
     }
 
     // Toggle body class for login mode cleanup
@@ -1256,9 +1294,32 @@ async function submitWellnessLog() {
 
         alert('Daily wellness metrics and mood entry saved successfully! 🌸💖');
         
+        // Update right-panel metric cards
+        const sleepNum = document.getElementById('metric-sleep-num');
+        const hydNum = document.getElementById('metric-hydration-num');
+        const actNum = document.getElementById('metric-activity-num');
+        const scoreNum = document.getElementById('metric-score-num');
+        
+        if (sleepNum) sleepNum.textContent = sleep.toFixed(1) + 'h';
+        if (hydNum) hydNum.textContent = hydration.toFixed(1) + 'L';
+        if (actNum) actNum.textContent = exercise + 'm';
+        
+        const currentScore = calculateWellnessScoreLocal(sleep, hydration, exercise, stress, mood);
+        if (scoreNum) scoreNum.textContent = currentScore;
+        
+        // Refresh streak dynamically
+        const streakCard = document.getElementById('wellness-streak-card');
+        if (streakCard) {
+            let streakVal = parseInt(streakCard.querySelector('h2').textContent);
+            if (isNaN(streakVal)) streakVal = 0;
+            streakCard.querySelector('h2').textContent = (streakVal + 1).toString();
+        }
+
         // Reload page data
         await loadWellnessData();
-        await loadAIHealthSummary(); // To refresh dashboard metrics instantly!
+        if (typeof loadAIHealthSummary === 'function') {
+            await loadAIHealthSummary();
+        }
     } catch (err) {
         alert('Error saving daily wellness entry: ' + err.message);
     }
@@ -1266,6 +1327,9 @@ async function submitWellnessLog() {
 
 
 function renderMoodTrendChart(logs) {
+    if (!logs && state.moodLogs) {
+        logs = state.moodLogs;
+    }
     const canvas = document.getElementById('mood-trend-chart');
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
@@ -1281,9 +1345,25 @@ function renderMoodTrendChart(logs) {
 
     // Provide default sample data matching the mockup
     const defaultData = [40, 38, 70, 42, 52, 85, 92];
-    const dataPoints = (logs && logs.length >= 7) 
-        ? logs.slice(-7).map(l => (l.mood ? (l.mood / 5) * 100 : 50)) 
-        : defaultData;
+    let dataPoints = defaultData;
+    
+    const metricSelect = document.getElementById('trend-metric-select');
+    const selectedMetric = metricSelect ? metricSelect.value : 'mood';
+
+    if (logs && logs.length >= 7) {
+        dataPoints = logs.slice(-7).map(l => {
+            if (selectedMetric === 'mood') {
+                return l.mood ? (l.mood / 5) * 100 : 50;
+            } else if (selectedMetric === 'sleep') {
+                return l.sleep_hours ? (l.sleep_hours / 10) * 100 : 50; // map 10h to 100
+            } else if (selectedMetric === 'stress') {
+                if (l.stress_level === 'high') return 90;
+                if (l.stress_level === 'moderate') return 50;
+                return 10;
+            }
+            return 50;
+        });
+    }
 
     const padLeft = 32;
     const padRight = 16;
@@ -1781,11 +1861,13 @@ function removeTypingIndicator(id) {
 async function loadFitnessData() {
     try {
         const recsData = await apiCall('/fitness/recommendations');
-        // renderFitnessRecommendations(recsData);
+        renderFitnessRecommendations(recsData);
 
         const logs = await apiCall('/fitness/logs');
         state.fitnessLogs = logs;
-        // renderFitnessStatsAndHistory(logs);
+        
+        // Update snapshot stats
+        updateFitnessSnapshot(logs);
 
         // Initialize Fitness Chart natively
         setTimeout(() => {
@@ -1793,6 +1875,21 @@ async function loadFitnessData() {
         }, 50);
     } catch (err) {
         console.error('Error loading fitness data:', err);
+    }
+}
+
+function updateFitnessSnapshot(logs) {
+    if (!logs) return;
+    const today = getTodayString();
+    const todayLogs = logs.filter(l => l.date === today);
+    const activeMinutes = todayLogs.reduce((acc, l) => acc + (l.duration_minutes || 0), 0);
+    const calories = todayLogs.reduce((acc, l) => acc + ((l.duration_minutes || 0) * 8), 0); // approx 8 kcal/min
+    
+    const sVals = document.querySelectorAll('.s-val');
+    if (sVals.length >= 3) {
+        sVals[0].textContent = todayLogs.length > 0 ? `${todayLogs.length}/1` : '0/1';
+        sVals[1].textContent = calories;
+        sVals[2].textContent = activeMinutes;
     }
 }
 
@@ -1977,10 +2074,44 @@ function toggleBookmark(e, id) {
     e.stopPropagation();
     const btn = e.currentTarget;
     btn.classList.toggle('bookmarked');
+    
+    let bookmarks = JSON.parse(localStorage.getItem('herwellness_bookmarks') || '[]');
+    
     if (btn.classList.contains('bookmarked')) {
         btn.style.color = '#E11D48';
+        if (!bookmarks.includes(id)) bookmarks.push(id);
     } else {
         btn.style.color = '#94a3b8';
+        bookmarks = bookmarks.filter(b => b !== id);
+    }
+    
+    localStorage.setItem('herwellness_bookmarks', JSON.stringify(bookmarks));
+}
+
+function setArticleView(viewType) {
+    const grid = document.getElementById('articles-grid');
+    const btnGrid = document.getElementById('btn-grid-view');
+    const btnList = document.getElementById('btn-list-view');
+    
+    if (!grid || !btnGrid || !btnList) return;
+    
+    if (viewType === 'list') {
+        grid.classList.remove('articles-grid-v2');
+        grid.classList.add('articles-list-view');
+        btnList.classList.add('active');
+        btnGrid.classList.remove('active');
+    } else {
+        grid.classList.add('articles-grid-v2');
+        grid.classList.remove('articles-list-view');
+        btnGrid.classList.add('active');
+        btnList.classList.remove('active');
+    }
+}
+
+function scrollCategoryFilters() {
+    const container = document.getElementById('category-filters-container');
+    if (container) {
+        container.scrollBy({ left: 150, behavior: 'smooth' });
     }
 }
 
@@ -2009,6 +2140,11 @@ function renderArticles(articlesList) {
             catStyle = 'background:#DCFCE7; color:#15803D;';
         }
 
+        const bookmarks = JSON.parse(localStorage.getItem('herwellness_bookmarks') || '[]');
+        const isBookmarked = bookmarks.includes(art.id);
+        const bookmarkClass = isBookmarked ? 'bookmarked' : '';
+        const bookmarkColor = isBookmarked ? '#E11D48' : '#94a3b8';
+
         card.innerHTML = `
             <div class="article-thumb-box">
                 ${svgIllustration}
@@ -2019,7 +2155,7 @@ function renderArticles(articlesList) {
                 <p class="article-v2-desc">${art.summary || ''}</p>
                 <div class="article-v2-footer">
                     <button class="btn-read-article" onclick="openArticleModal(${art.id})">Read Article →</button>
-                    <button class="btn-bookmark-icon" title="Bookmark Article" onclick="toggleBookmark(event, ${art.id})">🔖</button>
+                    <button class="btn-bookmark-icon ${bookmarkClass}" style="color:${bookmarkColor}" title="Bookmark Article" onclick="toggleBookmark(event, ${art.id})">🔖</button>
                 </div>
             </div>
         `;
@@ -2076,12 +2212,24 @@ function setupArticleSearch() {
 function filterArticles() {
     const query = (document.getElementById('library-search-input').value || '').toLowerCase();
     const cat = state.selectedArticleCategory;
+    const sortSelect = document.getElementById('lib-sort-select');
+    const sortVal = sortSelect ? sortSelect.value : 'latest';
 
-    const filtered = state.articles.filter(art => {
+    let filtered = state.articles.filter(art => {
         const matchesCat = (cat === 'All' || art.category === cat);
         const matchesQuery = art.title.toLowerCase().includes(query) || art.summary.toLowerCase().includes(query);
         return matchesCat && matchesQuery;
     });
+
+    if (sortVal === 'title') {
+        filtered.sort((a, b) => a.title.localeCompare(b.title));
+    } else if (sortVal === 'popular') {
+        // Mock popular sort: shorter titles or specific IDs first
+        filtered.sort((a, b) => b.id - a.id);
+    } else {
+        // latest
+        filtered.sort((a, b) => a.id - b.id);
+    }
 
     renderArticles(filtered);
 }
@@ -2123,8 +2271,75 @@ function closeModal(modalId) {
     document.getElementById(modalId).classList.add('hidden');
 }
 
+function toggleNotificationsDropdown(event) {
+    event.stopPropagation();
+    const dropdown = document.getElementById('notification-dropdown');
+    if (dropdown) {
+        dropdown.classList.toggle('hidden');
+    }
+}
+
+function markNotificationsRead() {
+    const unreadItems = document.querySelectorAll('.notif-item.unread');
+    unreadItems.forEach(item => {
+        item.classList.remove('unread');
+    });
+    const badge = document.getElementById('notif-badge-count');
+    if (badge) {
+        badge.style.display = 'none';
+        badge.textContent = '0';
+    }
+}
+
+// Close notification dropdown when clicking outside
+document.addEventListener('click', function(event) {
+    const dropdown = document.getElementById('notification-dropdown');
+    const notifBtn = document.querySelector('.btn-notification');
+    if (dropdown && !dropdown.classList.contains('hidden')) {
+        if (!dropdown.contains(event.target) && event.target !== notifBtn && !notifBtn.contains(event.target)) {
+            dropdown.classList.add('hidden');
+        }
+    }
+});
+
 function openHelplineModal() {
     document.getElementById('modal-helpline').classList.remove('hidden');
+}
+
+function openProfileModal() {
+    document.getElementById('modal-profile').classList.remove('hidden');
+}
+
+function openRemindersModal() {
+    document.getElementById('modal-reminders').classList.remove('hidden');
+}
+
+function addDashboardGoal() {
+    const goalTitle = prompt('Enter a title for your new focus goal:');
+    if (!goalTitle) return;
+    
+    const goalDesc = prompt('Enter a short description or duration (e.g., 10 min):') || '';
+    
+    const container = document.querySelector('.db-focus-goals');
+    if (!container) return;
+    
+    const btnAdd = container.querySelector('.btn-focus-add');
+    
+    const newPill = document.createElement('div');
+    newPill.className = 'focus-pill pill-blue'; // Can randomize color if desired
+    newPill.innerHTML = `
+        <span class="icon">✨</span>
+        <div class="text-wrap">
+            <span class="title">${goalTitle}</span>
+            <span class="desc">${goalDesc}</span>
+        </div>
+    `;
+    
+    if (btnAdd) {
+        container.insertBefore(newPill, btnAdd);
+    } else {
+        container.appendChild(newPill);
+    }
 }
 
 function getTodayString() {
@@ -2175,7 +2390,7 @@ state.dashboardSymptoms = { cramps: null, headache: null, acne: null, breast_ten
 state.modalSymptoms = { cramps: null, headache: null, acne: null, breast_tenderness: null };
 
 function setupDashboardSymptomLogger() {
-    const rows = document.querySelectorAll('#dash-symptom-rate-rows .symptom-rate-row');
+    const rows = document.querySelectorAll('#dash-symptom-rate-rows .symptom-slider-row');
     if (!rows.length) return;
     rows.forEach(row => {
         const symptom = row.dataset.symptom;
@@ -2287,24 +2502,24 @@ function renderDashboardSymptomLogger(pred) {
 
     if (tag) tag.textContent = `${phase} Phase Focus`;
 
-    const rows = document.querySelectorAll('#dash-symptom-rate-rows .symptom-rate-row');
+    const rows = document.querySelectorAll('#dash-symptom-rate-rows .symptom-slider-row');
     rows.forEach(row => row.classList.remove('highlighted-symptom'));
 
     if (phase === 'Menstrual') {
         if (subtitle) subtitle.innerHTML = '🩺 Estrogen is low. <strong>Cramps</strong> & <strong>Headaches</strong> are common now.';
-        const crampsRow = document.querySelector('#dash-symptom-rate-rows .symptom-rate-row[data-symptom="cramps"]');
-        const headacheRow = document.querySelector('#dash-symptom-rate-rows .symptom-rate-row[data-symptom="headache"]');
+        const crampsRow = document.querySelector('#dash-symptom-rate-rows .symptom-slider-row[data-symptom="cramps"]');
+        const headacheRow = document.querySelector('#dash-symptom-rate-rows .symptom-slider-row[data-symptom="headache"]');
         if (crampsRow) crampsRow.classList.add('highlighted-symptom');
         if (headacheRow) headacheRow.classList.add('highlighted-symptom');
     } else if (phase === 'Luteal') {
         if (subtitle) subtitle.innerHTML = '🩺 Progesterone peaks then dips. <strong>Breast Tenderness</strong> & <strong>Acne</strong> are common.';
-        const breastRow = document.querySelector('#dash-symptom-rate-rows .symptom-rate-row[data-symptom="breast_tenderness"]');
-        const acneRow = document.querySelector('#dash-symptom-rate-rows .symptom-rate-row[data-symptom="acne"]');
+        const breastRow = document.querySelector('#dash-symptom-rate-rows .symptom-slider-row[data-symptom="breast_tenderness"]');
+        const acneRow = document.querySelector('#dash-symptom-rate-rows .symptom-slider-row[data-symptom="acne"]');
         if (breastRow) breastRow.classList.add('highlighted-symptom');
         if (acneRow) acneRow.classList.add('highlighted-symptom');
     } else if (phase === 'Ovulatory') {
         if (subtitle) subtitle.innerHTML = '🩺 Estrogen peaks. You might experience light mid-cycle <strong>Cramping</strong>.';
-        const crampsRow = document.querySelector('#dash-symptom-rate-rows .symptom-rate-row[data-symptom="cramps"]');
+        const crampsRow = document.querySelector('#dash-symptom-rate-rows .symptom-slider-row[data-symptom="cramps"]');
         if (crampsRow) crampsRow.classList.add('highlighted-symptom');
     } else {
         if (subtitle) subtitle.textContent = '🩺 Estrogen is rising. Energy is high. Physical symptoms are typically minimal.';
@@ -2793,13 +3008,13 @@ function makeSamplePostHTML(post) {
             </div>
             <p style="color:#334155;line-height:1.6;margin:0 0 16px 0;font-size:15px;">${post.content}</p>
             <div style="display:flex;gap:16px;">
-                <button style="display:flex;align-items:center;gap:6px;${heartStyle}border:none;font-weight:600;cursor:pointer;padding:6px 12px;border-radius:16px;font-size:13px;">
+                <button style="display:flex;align-items:center;gap:6px;${heartStyle}border:none;font-weight:600;cursor:pointer;padding:6px 12px;border-radius:16px;font-size:13px;" onclick="this.innerHTML = '<span>❤️</span> ' + (${post.likes} + 1)">
                     <span>${heartIcon}</span> ${post.likes}
                 </button>
-                <button style="display:flex;align-items:center;gap:6px;background:rgba(241,245,249,0.5);border:none;color:#64748b;font-weight:600;cursor:pointer;padding:6px 12px;border-radius:16px;font-size:13px;">
+                <button style="display:flex;align-items:center;gap:6px;background:rgba(241,245,249,0.5);border:none;color:#64748b;font-weight:600;cursor:pointer;padding:6px 12px;border-radius:16px;font-size:13px;" onclick="alert('Comment section coming soon!')">
                     <span>💬</span> ${post.comments}
                 </button>
-                <button style="display:flex;align-items:center;gap:6px;background:rgba(241,245,249,0.5);border:none;color:#64748b;font-weight:600;cursor:pointer;margin-left:auto;padding:6px 12px;border-radius:16px;font-size:13px;">
+                <button style="display:flex;align-items:center;gap:6px;background:rgba(241,245,249,0.5);border:none;color:#64748b;font-weight:600;cursor:pointer;margin-left:auto;padding:6px 12px;border-radius:16px;font-size:13px;" onclick="alert('Share link copied to clipboard!')">
                     <span>🔗</span> Share
                 </button>
             </div>
@@ -2839,7 +3054,7 @@ function renderCommunityFeed(posts) {
                         <button class="btn-action-ghost" onclick="likePost(${post.id})" style="display:flex;align-items:center;gap:6px;background:rgba(241,245,249,0.5);border:none;color:#64748b;font-weight:600;cursor:pointer;padding:6px 12px;border-radius:16px;font-size:13px;">
                             <span>🤍</span> ${post.likes_count || 0}
                         </button>
-                        <button style="display:flex;align-items:center;gap:6px;background:rgba(241,245,249,0.5);border:none;color:#64748b;font-weight:600;cursor:pointer;padding:6px 12px;border-radius:16px;font-size:13px;">
+                        <button style="display:flex;align-items:center;gap:6px;background:rgba(241,245,249,0.5);border:none;color:#64748b;font-weight:600;cursor:pointer;padding:6px 12px;border-radius:16px;font-size:13px;" onclick="alert('Comment section coming soon!')">
                             <span>💬</span> ${post.comments_count || 0}
                         </button>
                     </div>
@@ -2887,3 +3102,39 @@ async function likePost(postId) {
         console.error('Error liking post:', err);
     }
 }
+
+function switchCommunityTab(element) {
+    document.querySelectorAll('.comm-tab').forEach(tab => {
+        tab.classList.remove('active');
+        tab.style.color = '#64748b';
+        tab.style.borderBottomColor = 'transparent';
+        tab.style.fontWeight = '500';
+    });
+    element.classList.add('active');
+    element.style.color = '#db2777';
+    element.style.borderBottomColor = '#db2777';
+    element.style.fontWeight = '600';
+    
+    // Refresh feed to simulate tab change
+    loadCommunityData();
+}
+
+function selectTrendingTag(element) {
+    const input = document.querySelector('input[placeholder="Search community..."]');
+    if (input) {
+        input.value = element.textContent;
+    }
+}
+
+function joinDiscussion(btn) {
+    btn.textContent = 'Joined!';
+    btn.style.backgroundColor = '#fdf2f8';
+    btn.disabled = true;
+}
+
+function joinChallenge(btn) {
+    btn.textContent = 'Joined Challenge!';
+    btn.style.background = '#10b981'; // green color
+    btn.disabled = true;
+}
+

@@ -120,7 +120,7 @@
                                 <span class="notif-mark-read" onclick="markNotificationsRead()">Mark all read</span>
                             </div>
                             <div class="notif-list" id="notif-list-container">
-                                <div class="notif-item unread">
+                                <div class="notif-item unread" onclick="navigate('dashboard'); toggleNotificationsDropdown(event);" style="cursor: pointer;">
                                     <span class="notif-icon">💧</span>
                                     <div class="notif-text">
                                         <strong>Hydration Reminder</strong>
@@ -128,7 +128,7 @@
                                     </div>
                                     <span class="notif-time">10m ago</span>
                                 </div>
-                                <div class="notif-item unread">
+                                <div class="notif-item unread" onclick="navigate('fitness'); toggleNotificationsDropdown(event);" style="cursor: pointer;">
                                     <span class="notif-icon">🌸</span>
                                     <div class="notif-text">
                                         <strong>Ovulatory Phase Peak</strong>
@@ -136,7 +136,7 @@
                                     </div>
                                     <span class="notif-time">1h ago</span>
                                 </div>
-                                <div class="notif-item">
+                                <div class="notif-item" onclick="toggleVeraFloat(); toggleNotificationsDropdown(event);" style="cursor: pointer;">
                                     <span class="notif-icon">🧘‍♀️</span>
                                     <div class="notif-text">
                                         <strong>Vera AI Suggestion</strong>
@@ -149,11 +149,11 @@
                     </div>
 
                     <button class="btn-header-action" title="Partner Share Link" onclick="openShareModal()"><span class="action-icon">🔗</span> Share</button>
-                    <button class="btn-header-action" title="AI Settings" onclick="openAIConfigModal()"><span class="action-icon">✨</span> AI</button>
+                    <button class="btn-header-action" title="AI Settings" onclick="toggleVeraFloat()"><span class="action-icon">✨</span> AI</button>
                     <button class="btn-header-action btn-helpline-action" title="Crisis Helpline" onclick="openHelplineModal()"><span class="action-icon">📋</span> Helpline</button>
 
                     <div class="user-action-area" id="user-action-area">
-                        <span class="user-badge" id="user-email-display">priya@gmail.com</span>
+                        <span class="user-badge" id="user-email-display" onclick="openProfileModal()" style="cursor: pointer;" title="View Profile">priya@gmail.com</span>
                         <button class="auth-btn btn-pill-pink" id="auth-action-btn" onclick="handleAuthAction()">Logout</button>
                     </div>
                 </div>
@@ -521,7 +521,7 @@
                                         <span class="desc">Balanced</span>
                                     </div>
                                 </div>
-                                <button class="btn-focus-add">
+                                <button class="btn-focus-add" onclick="addDashboardGoal()">
                                     <span class="icon">+</span> Add Your Goal
                                 </button>
                             </div>
@@ -1303,7 +1303,7 @@
                     <button class="filter-btn" data-category="Contraception" onclick="selectCategoryFilter('Contraception')"><span class="cat-icon">🛡</span> Contraception</button>
                     <button class="filter-btn" data-category="Mental Health" onclick="selectCategoryFilter('Mental Health')"><span class="cat-icon">🧠</span> Mental Health</button>
                     <button class="filter-btn" data-category="Nutrition" onclick="selectCategoryFilter('Nutrition')"><span class="cat-icon">🍎</span> Nutrition</button>
-                    <button class="cat-scroll-arrow" title="Next Categories">›</button>
+                    <button class="cat-scroll-arrow" title="Next Categories" onclick="scrollCategoryFilters()">›</button>
                 </div>
             </div>
 
@@ -1368,14 +1368,16 @@
             <div class="articles-section-header">
                 <h3><span class="section-icon">💐</span> Articles & Medical Guides</h3>
                 <div class="articles-controls-right">
-                    <div class="sort-pill-dropdown">
-                        Sort by: <strong>Latest</strong> <span class="chevron">˅</span>
-                    </div>
+                    <select id="lib-sort-select" onchange="filterArticles()" style="padding: 6px 12px; border-radius: 20px; border: 1px solid #e2e8f0; font-size: 13px; font-weight: 600; color: #1e293b; background: white; cursor: pointer; outline: none;">
+                        <option value="latest">Sort by: Latest</option>
+                        <option value="popular">Sort by: Popular</option>
+                        <option value="title">Sort by: Title A-Z</option>
+                    </select>
                     <div class="grid-list-toggle">
-                        <button class="toggle-btn active" title="Grid View">
+                        <button class="toggle-btn active" id="btn-grid-view" title="Grid View" onclick="setArticleView('grid')">
                             <span class="toggle-icon">⊞</span>
                         </button>
-                        <button class="toggle-btn" title="List View">
+                        <button class="toggle-btn" id="btn-list-view" title="List View" onclick="setArticleView('list')">
                             <span class="toggle-icon">≡</span>
                         </button>
                     </div>
@@ -1450,9 +1452,9 @@
                         <div class="feed-container" style="background: white; border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.02); overflow: hidden;">
                             <!-- Tabs -->
                             <div class="feed-tabs" style="display: flex; border-bottom: 1px solid #f1f5f9; padding: 0 24px;">
-                                <div style="padding: 16px 20px; font-weight: 600; color: #db2777; border-bottom: 2px solid #db2777; cursor: pointer; transition: all 0.2s;">For You</div>
-                                <div style="padding: 16px 20px; font-weight: 500; color: #64748b; cursor: pointer; transition: all 0.2s;">Trending</div>
-                                <div style="padding: 16px 20px; font-weight: 500; color: #64748b; cursor: pointer; transition: all 0.2s;">Following</div>
+                                <div class="comm-tab active" style="padding: 16px 20px; font-weight: 600; color: #db2777; border-bottom: 2px solid #db2777; cursor: pointer; transition: all 0.2s;" onclick="switchCommunityTab(this)">For You</div>
+                                <div class="comm-tab" style="padding: 16px 20px; font-weight: 500; color: #64748b; border-bottom: 2px solid transparent; cursor: pointer; transition: all 0.2s;" onclick="switchCommunityTab(this)">Trending</div>
+                                <div class="comm-tab" style="padding: 16px 20px; font-weight: 500; color: #64748b; border-bottom: 2px solid transparent; cursor: pointer; transition: all 0.2s;" onclick="switchCommunityTab(this)">Following</div>
                             </div>
                             
                             <!-- Posts (populated by JS renderCommunityFeed) -->
@@ -1525,11 +1527,11 @@
                             <div style="background: white; border-radius: 20px; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.02);">
                                 <h3 style="margin: 0 0 16px 0; font-size: 15px; font-weight: 700; color: #1e293b;">Trending Topics</h3>
                                 <div style="display: flex; flex-wrap: wrap; gap: 8px;">
-                                    <span style="background: rgba(219,39,119,0.08); color: #db2777; padding: 6px 12px; border-radius: 16px; font-size: 12px; font-weight: 600; cursor: pointer;">#MentalWellness</span>
-                                    <span style="background: rgba(219,39,119,0.08); color: #db2777; padding: 6px 12px; border-radius: 16px; font-size: 12px; font-weight: 600; cursor: pointer;">#FitnessJourney</span>
-                                    <span style="background: rgba(219,39,119,0.08); color: #db2777; padding: 6px 12px; border-radius: 16px; font-size: 12px; font-weight: 600; cursor: pointer;">#SelfCare</span>
-                                    <span style="background: rgba(219,39,119,0.08); color: #db2777; padding: 6px 12px; border-radius: 16px; font-size: 12px; font-weight: 600; cursor: pointer;">#HealthyHabits</span>
-                                    <span style="background: rgba(219,39,119,0.08); color: #db2777; padding: 6px 12px; border-radius: 16px; font-size: 12px; font-weight: 600; cursor: pointer;">#Mindfulness</span>
+                                    <span class="trending-tag" onclick="selectTrendingTag(this)" style="background: rgba(219,39,119,0.08); color: #db2777; padding: 6px 12px; border-radius: 16px; font-size: 12px; font-weight: 600; cursor: pointer;">#MentalWellness</span>
+                                    <span class="trending-tag" onclick="selectTrendingTag(this)" style="background: rgba(219,39,119,0.08); color: #db2777; padding: 6px 12px; border-radius: 16px; font-size: 12px; font-weight: 600; cursor: pointer;">#FitnessJourney</span>
+                                    <span class="trending-tag" onclick="selectTrendingTag(this)" style="background: rgba(219,39,119,0.08); color: #db2777; padding: 6px 12px; border-radius: 16px; font-size: 12px; font-weight: 600; cursor: pointer;">#SelfCare</span>
+                                    <span class="trending-tag" onclick="selectTrendingTag(this)" style="background: rgba(219,39,119,0.08); color: #db2777; padding: 6px 12px; border-radius: 16px; font-size: 12px; font-weight: 600; cursor: pointer;">#HealthyHabits</span>
+                                    <span class="trending-tag" onclick="selectTrendingTag(this)" style="background: rgba(219,39,119,0.08); color: #db2777; padding: 6px 12px; border-radius: 16px; font-size: 12px; font-weight: 600; cursor: pointer;">#Mindfulness</span>
                                 </div>
                             </div>
                             
@@ -1543,7 +1545,7 @@
                                         <span>👥 128 participants</span>
                                     </div>
                                 </div>
-                                <button style="background: white; border: 1px solid #e2e8f0; color: #db2777; padding: 8px 16px; border-radius: 16px; font-weight: 600; font-size: 13px; margin-top: 16px; cursor: pointer; transition: all 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">Join Discussion</button>
+                                <button onclick="joinDiscussion(this)" style="background: white; border: 1px solid #e2e8f0; color: #db2777; padding: 8px 16px; border-radius: 16px; font-weight: 600; font-size: 13px; margin-top: 16px; cursor: pointer; transition: all 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">Join Discussion</button>
                             </div>
                         </div>
 
@@ -1617,7 +1619,7 @@
                                 </div>
                             </div>
                             
-                            <button class="btn-primary-glow" style="width: 100%; padding: 10px; border-radius: 12px; font-weight: 600; font-size: 14px; border: none; cursor: pointer; text-align: center;">Join Challenge</button>
+                            <button class="btn-primary-glow" onclick="joinChallenge(this)" style="width: 100%; padding: 10px; border-radius: 12px; font-weight: 600; font-size: 14px; border: none; cursor: pointer; text-align: center;">Join Challenge</button>
                         </div>
 
                         <!-- Upcoming Events -->
@@ -1853,21 +1855,15 @@
                 <h3>🆘 Emergency & Crisis Helplines</h3>
                 <button class="modal-close-btn" onclick="closeModal('modal-helpline')">&times;</button>
             </div>
-            <div class="modal-body">
-                <p>If you are experiencing a mental health emergency or distress, please reach out to these confidential resources available 24/7:</p>
-                <div class="helpline-list">
-                    <div class="helpline-item">
-                        <strong>📞 988 Suicide & Crisis Lifeline</strong>
-                        <p>Call or Text <strong>988</strong> (USA & Canada)</p>
-                    </div>
-                    <div class="helpline-item">
-                        <strong>💬 Crisis Text Line</strong>
-                        <p>Text <strong>HOME</strong> to <strong>741741</strong></p>
-                    </div>
-                    <div class="helpline-item">
-                        <strong>🌍 International Resources</strong>
-                        <p>Visit <a href="https://findahelpline.com" target="_blank" rel="noopener">findahelpline.com</a> for global helpline numbers.</p>
-                    </div>
+            <div class="modal-body" style="text-align: center;">
+                <div style="background: #fff5f7; padding: 20px; border-radius: 12px; border: 1px solid #fbcfe8; margin-bottom: 20px;">
+                    <h2 style="color: #be123c; margin: 0 0 10px 0;">Tele-MANAS</h2>
+                    <p style="font-weight: 600; color: #1e293b; margin: 0 0 15px 0;">24/7 Free Mental Health Helpline</p>
+                    <a href="tel:14416" class="btn-primary-glow" style="display: inline-block; background: #e11d48; text-decoration: none; padding: 12px 30px; font-size: 1.2rem; font-weight: 700; border-radius: 30px; margin-bottom: 15px;">Call: 14416</a>
+                    <p style="margin: 0; font-size: 0.9rem;">Official Website: <a href="https://telemanas.mohfw.gov.in/home" target="_blank" style="color: #db2777;">telemanas.mohfw.gov.in</a></p>
+                </div>
+                <div style="font-size: 0.8rem; color: #64748b; padding: 10px; background: #f8fafc; border-radius: 8px;">
+                    <strong>Disclaimer:</strong> This section provides quick access to external helpline resources and is not a replacement for professional medical or psychiatric care.
                 </div>
             </div>
         </div>
@@ -1984,6 +1980,66 @@
                         <button type="submit" class="btn btn-primary" id="btn-save-api-key">Test & Connect API</button>
                     </div>
                 </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Profile Modal -->
+    <div id="modal-profile" class="modal-backdrop hidden">
+        <div class="modal-content modal-md">
+            <div class="modal-header">
+                <h2>User Profile</h2>
+                <button class="btn-close-modal" onclick="closeModal('modal-profile')">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Name</label>
+                    <input type="text" id="profile-name" value="Priya" />
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="profile-email" value="priya@gmail.com" readonly style="background-color: #f1f5f9;" />
+                </div>
+                <div class="form-group">
+                    <label>Age</label>
+                    <input type="number" id="profile-age" value="28" />
+                </div>
+                <div class="form-group">
+                    <label>Goal</label>
+                    <select id="profile-goal" style="width:100%; padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1;">
+                        <option value="balance">Hormonal Balance</option>
+                        <option value="fitness">Fitness & Energy</option>
+                        <option value="fertility">Fertility Tracking</option>
+                        <option value="mindfulness">Mindfulness</option>
+                    </select>
+                </div>
+                <button class="btn btn-primary" style="margin-top: 15px;" onclick="closeModal('modal-profile')">Save Profile</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Reminders Modal -->
+    <div id="modal-reminders" class="modal-backdrop hidden">
+        <div class="modal-content modal-md">
+            <div class="modal-header">
+                <h2>Set Reminders</h2>
+                <button class="btn-close-modal" onclick="closeModal('modal-reminders')">✕</button>
+            </div>
+            <div class="modal-body">
+                <p>Configure your daily push notifications and reminders.</p>
+                <div style="margin: 15px 0; display: flex; align-items: center; justify-content: space-between;">
+                    <label>Hydration Alerts</label>
+                    <input type="checkbox" checked />
+                </div>
+                <div style="margin: 15px 0; display: flex; align-items: center; justify-content: space-between;">
+                    <label>Period Tracking</label>
+                    <input type="checkbox" checked />
+                </div>
+                <div style="margin: 15px 0; display: flex; align-items: center; justify-content: space-between;">
+                    <label>Wellness Journal</label>
+                    <input type="checkbox" />
+                </div>
+                <button class="btn btn-primary" style="margin-top: 15px;" onclick="closeModal('modal-reminders')">Save Preferences</button>
             </div>
         </div>
     </div>
