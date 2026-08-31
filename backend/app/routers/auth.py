@@ -80,7 +80,7 @@ def update_user_profile(
 ):
     """Update user tracking mode and custom cycle length baseline."""
     if profile_data.tracking_mode is not None:
-        valid_modes = ["regular", "pcos_pcod", "irregular", "perimenopause"]
+        valid_modes = ["regular", "pcos_pcod", "irregular", "perimenopause", "ttc"]
         if profile_data.tracking_mode not in valid_modes:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,

@@ -223,11 +223,23 @@ def chat_with_vera(payload: ChatMessage):
 
     ctx_str = ""
     if user_context:
-        ctx_str = f" [User Context: Cycle Phase={user_context.get('current_phase')}, Day={user_context.get('current_cycle_day')}, Mode={user_context.get('tracking_mode')}]"
+        ttc_parts = []
+        if user_context.get("latest_bbt"):
+            ttc_parts.append(f"BBT={user_context.get('latest_bbt')}°C")
+        if user_context.get("latest_lh"):
+            ttc_parts.append(f"LH={user_context.get('latest_lh')}")
+        if user_context.get("cervical_mucus"):
+            ttc_parts.append(f"Mucus={user_context.get('cervical_mucus')}")
+        if user_context.get("fertile_window"):
+            ttc_parts.append(f"FertileWindow={user_context.get('fertile_window')}")
+
+        ttc_str = (", " + ", ".join(ttc_parts)) if ttc_parts else ""
+        ctx_str = f" [User Context: Cycle Phase={user_context.get('current_phase')}, Day={user_context.get('current_cycle_day')}, Mode={user_context.get('tracking_mode')}{ttc_str}]"
 
     system_prompt = (
-        "You are Vera, a supportive wellness companion for women."
+        "You are Vera, a supportive wellness and fertility companion for women."
         f"{ctx_str} Provide empathy, CBT-based journaling prompts, breathing exercises, and positive affirmations. "
+        "Explain fertility signals using actual user context without guaranteeing ovulation dates or medical diagnoses. "
         "Never give medical diagnoses. If the user is in crisis, provide a helpline number."
     )
 

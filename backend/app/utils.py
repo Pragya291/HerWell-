@@ -901,6 +901,66 @@ def generate_fallback_chat_reply(
             f"You can read the full article in the **Health Library** tab!"
         )
 
+    # TTC Topic specific empathetic responses
+    if any(k in msg_lower for k in ["bbt", "basal body", "temperature chart", "temp shift", "thermal shift"]):
+        bbt_info = ""
+        if user_context and user_context.get("latest_bbt"):
+            bbt_info = f"\n\n🌡️ **Your Recorded Temp**: {user_context.get('latest_bbt')} °C"
+        
+        resp_text = (
+            f"{context_prefix}Basal Body Temperature (BBT) is your body's resting baseline temperature taken first thing upon waking. 🌡️{bbt_info}\n\n"
+            "• **What the chart means**: A sustained rise in temperature (typically 0.2°C to 0.5°C over at least 3 consecutive days above the previous 6 days) "
+            "can be consistent with ovulation having occurred due to increased progesterone.\n"
+            "• **Important Retrospective Note**: BBT is generally more useful for confirming that ovulation may have occurred *retrospectively* "
+            "rather than predicting ovulation precisely in advance.\n\n"
+            "Log your morning temperature consistently before getting out of bed for the most clear pattern visualization!"
+            f"{rag_text}"
+        )
+        return {"response": resp_text, "source": "rag_fallback" if article_citation else "fallback", "article_citation": article_citation}
+
+    if any(k in msg_lower for k in ["lh", "surge", "ovulation test", "test strip"]):
+        lh_info = ""
+        if user_context and user_context.get("latest_lh"):
+            lh_info = f"\n\n🧪 **Your Logged LH Result**: {user_context.get('latest_lh')}"
+
+        resp_text = (
+            f"{context_prefix}Luteinizing Hormone (LH) tests measure the hormonal surge that triggers follicle rupture and egg release. 🧪{lh_info}\n\n"
+            "• **What an LH Surge means**: An LH surge indicates that LH levels have peaked, which typically precedes ovulation by roughly 24 to 36 hours. "
+            "This suggests you may be approaching your estimated fertile window.\n"
+            "• **Important Note**: An LH surge indicates hormone activity but does not guarantee that ovulation will occur at a specific time or that conception will result.\n\n"
+            "Log your daily LH test strip results under the **TTC Dashboard** to track your surge trend!"
+            f"{rag_text}"
+        )
+        return {"response": resp_text, "source": "rag_fallback" if article_citation else "fallback", "article_citation": article_citation}
+
+    if any(k in msg_lower for k in ["mucus", "cervical mucus", "egg white", "watery"]):
+        resp_text = (
+            f"{context_prefix}Cervical mucus observation is a key natural fertility signal! 💧\n\n"
+            "• **Egg-White / Watery**: Stretchy or clear, slippery mucus is typically fertile-type cervical fluid, facilitating sperm transport during the fertile window.\n"
+            "• **Creamy / Sticky / Dry**: Common during non-fertile or luteal phases.\n"
+            "• **Important Note**: Cervical mucus variations provide an estimate of your hormonal environment, but individual patterns vary and observation alone does not guarantee ovulation."
+            f"{rag_text}"
+        )
+        return {"response": resp_text, "source": "rag_fallback" if article_citation else "fallback", "article_citation": article_citation}
+
+    if any(k in msg_lower for k in ["pregnancy test", "positive test", "positive pregnancy", "test result"]):
+        resp_text = (
+            f"{context_prefix}Pregnancy testing provides vital clarity on your journey. 🧪\n\n"
+            "If you have recorded a **positive test result**, please consider contacting a qualified healthcare professional for confirmation, blood work, and clinical guidance.\n\n"
+            "• **Note**: HerWell tracks your self-reported log entries but does not diagnose pregnancy or replace professional medical care."
+            f"{rag_text}"
+        )
+        return {"response": resp_text, "source": "rag_fallback" if article_citation else "fallback", "article_citation": article_citation}
+
+    if any(k in msg_lower for k in ["ttc", "trying to conceive", "fertile window", "conceive"]):
+        resp_text = (
+            f"{context_prefix}Welcome to your Trying to Conceive (TTC) journey! 🌱\n\n"
+            "Combining multiple fertility signals—**BBT morning temperatures, LH test surges, and cervical mucus observations**—gives you the clearest retrospective picture of your fertile window.\n\n"
+            "Remember that every body is unique, and cycle variations are completely natural. Switch to **🌱 Trying to Conceive (TTC) Mode** in the header to view your customized fertility dashboard!"
+            f"{rag_text}"
+        )
+        return {"response": resp_text, "source": "rag_fallback" if article_citation else "fallback", "article_citation": article_citation}
+
     # Topic specific empathetic responses
     if any(k in msg_lower for k in ["cramps", "period", "bleed", "pain", "flow", "spotting"]):
         resp_text = (
@@ -978,3 +1038,149 @@ def generate_fallback_chat_reply(
         )
     ]
     return {"response": random.choice(general_replies), "source": "fallback", "article_citation": None}
+
+
+def detect_bbt_ovulation_pattern(bbt_logs: List[Any], last_period_start: Optional[date] = None) -> Dict[str, Any]:
+    """
+    Analyze BBT trends to identify a possible post-ovulatory temperature shift.
+    Uses strict non-diagnostic language:
+    'Your recent temperature pattern shows a sustained rise that may be consistent with ovulation having occurred around this time.'
+    """
+    if not bbt_logs or len(bbt_logs) < 3:
+        return {
+            "detected": False,
+            "estimated_cycle_day": None,
+            "confidence": "Insufficient Data",
+            "message": "Log morning BBT consistently to help detect post-ovulatory temperature patterns.",
+            "disclaimer": "BBT generally helps confirm that ovulation may have occurred retrospectively rather than predicting it with certainty."
+        }
+
+    # Sort logs by date ascending
+    sorted_logs = sorted(bbt_logs, key=lambda x: x.date)
+
+    # Standardize temps to Celsius (°C)
+    entries = []
+    for log in sorted_logs:
+        temp = log.temperature
+        if getattr(log, "unit", "°C") == "°F":
+            temp = (temp - 32.0) * (5.0 / 9.0)
+        entries.append({"date": log.date, "temp": temp})
+
+    detected = False
+    shift_date = None
+
+    if len(entries) >= 6:
+        for i in range(3, len(entries)):
+            prior_temps = [e["temp"] for e in entries[max(0, i-6):i]]
+            baseline = sum(prior_temps) / len(prior_temps)
+            curr_temp = entries[i]["temp"]
+
+            if curr_temp - baseline >= 0.15:
+                if i + 2 < len(entries):
+                    next_temps = [entries[i+1]["temp"], entries[i+2]["temp"]]
+                    if all(t - baseline >= 0.10 for t in next_temps):
+                        detected = True
+                        shift_date = entries[i]["date"]
+                        break
+                else:
+                    detected = True
+                    shift_date = entries[i]["date"]
+                    break
+
+    est_day = None
+    if detected and shift_date and last_period_start:
+        est_day = (shift_date - last_period_start).days + 1
+        confidence = "Moderate"
+        message = "Your recent temperature pattern shows a sustained rise that may be consistent with ovulation having occurred around this time."
+    elif detected and shift_date:
+        confidence = "Moderate"
+        message = "Your recent temperature pattern shows a sustained rise that may be consistent with ovulation having occurred around this time."
+    else:
+        confidence = "Baseline Tracking"
+        message = "No sustained temperature shift detected yet in current logs."
+
+    return {
+        "detected": detected,
+        "estimated_cycle_day": est_day,
+        "confidence": confidence,
+        "message": message,
+        "disclaimer": "BBT generally helps confirm that ovulation may have occurred retrospectively rather than predicting it with certainty."
+    }
+
+
+def aggregate_fertility_signals(
+    cycle_logs: List[Any], 
+    bbt_logs: List[Any], 
+    lh_logs: List[Any], 
+    mucus_logs: List[Any],
+    predictions: Dict[str, Any]
+) -> Dict[str, Any]:
+    """
+    Combine available user fertility signals into a summary card data structure.
+    """
+    today = date.today()
+    
+    # BBT status
+    bbt_today = next((b for b in sorted(bbt_logs, key=lambda x: x.date, reverse=True) if b.date == today), None)
+    if bbt_today:
+        bbt_status = f"🟢 Logged today ({bbt_today.temperature:.1f}{bbt_today.unit})"
+    elif bbt_logs:
+        latest = max(bbt_logs, key=lambda x: x.date)
+        bbt_status = f"🟡 Last logged {latest.date} ({latest.temperature:.1f}{latest.unit})"
+    else:
+        bbt_status = "⚪ Not logged today"
+
+    # LH status
+    lh_today = next((l for l in sorted(lh_logs, key=lambda x: x.date, reverse=True) if l.date == today), None)
+    if lh_today:
+        badge_emoji = "🔴" if lh_today.result == "surge" else ("🟡" if lh_today.result == "rising" else "🟢")
+        lh_status = f"{badge_emoji} {lh_today.result.replace('_', ' ').capitalize()} recorded today"
+    else:
+        surge_recent = next((l for l in sorted(lh_logs, key=lambda x: x.date, reverse=True) if l.result == "surge" and (today - l.date).days <= 3), None)
+        if surge_recent:
+            lh_status = f"🔴 Surge recorded on {surge_recent.date}"
+        elif lh_logs:
+            lh_status = f"🟢 Recent test logged ({lh_logs[-1].result.capitalize()})"
+        else:
+            lh_status = "⚪ No LH tests recorded"
+
+    # Cervical Mucus status
+    mucus_today = next((m for m in sorted(mucus_logs, key=lambda x: x.date, reverse=True) if m.date == today), None)
+    if mucus_today:
+        type_str = mucus_today.type.replace('_', '-').capitalize()
+        is_fertile_type = mucus_today.type in ["watery", "egg_white"]
+        icon = "💧" if is_fertile_type else "⚪"
+        fert_label = "Fertile-type observation" if is_fertile_type else "Non-fertile observation"
+        cervical_mucus_status = f"{icon} {fert_label} ({type_str})"
+    elif mucus_logs:
+        latest_m = max(mucus_logs, key=lambda x: x.date)
+        type_str = latest_m.type.replace('_', '-').capitalize()
+        cervical_mucus_status = f"⚪ Last observed {type_str} on {latest_m.date}"
+    else:
+        cervical_mucus_status = "⚪ Not observed today"
+
+    # Cycle Data Status
+    cycle_day = predictions.get("current_cycle_day", 1)
+    cycle_len = predictions.get("average_cycle_length", 28)
+    cycle_data_status = f"🟢 Consistent (Day {cycle_day} of {cycle_len})"
+
+    # Estimated Fertility Status
+    phase = predictions.get("current_phase", "Follicular")
+    if phase == "Ovulatory" or (lh_today and lh_today.result in ["surge", "rising"]) or (mucus_today and mucus_today.type in ["watery", "egg_white"]):
+        estimated_fertility_status = "Potentially fertile window"
+    elif phase == "Follicular" and cycle_day >= cycle_len - 18:
+        estimated_fertility_status = "Approaching fertile window"
+    elif phase == "Luteal":
+        estimated_fertility_status = "Lower fertility phase (Luteal)"
+    else:
+        estimated_fertility_status = "Baseline tracking phase"
+
+    return {
+        "bbt_status": bbt_status,
+        "lh_status": lh_status,
+        "cervical_mucus_status": cervical_mucus_status,
+        "cycle_data_status": cycle_data_status,
+        "estimated_fertility_status": estimated_fertility_status,
+        "disclaimer": "Fertility estimates are based on logged information and can be inaccurate. Never rely on predictions as guaranteed contraception or medical diagnosis."
+    }
+

@@ -15,7 +15,7 @@ class UserLogin(BaseModel):
 
 
 class UserProfileUpdate(BaseModel):
-    tracking_mode: Optional[str] = Field("regular", description="Tracking mode: regular, pcos_pcod, irregular, perimenopause")
+    tracking_mode: Optional[str] = Field("regular", description="Tracking mode: regular, pcos_pcod, irregular, perimenopause, ttc")
     custom_cycle_length: Optional[int] = Field(None, ge=15, le=120, description="Optional custom expected cycle length baseline")
 
 
@@ -284,6 +284,135 @@ class CommunityPulseResponse(BaseModel):
     phase: str
     message: str
     pulse_type: str
+
+
+# --- Fertility & TTC Schemas ---
+class BBTLogCreate(BaseModel):
+    date: date
+    temperature: float = Field(..., ge=34.0, le=42.0)
+    unit: str = Field("°C", description="°C or °F")
+    note: Optional[str] = None
+
+
+class BBTLogOut(BaseModel):
+    id: int
+    user_id: int
+    date: date
+    temperature: float
+    unit: str
+    note: Optional[str] = None
+    created_at: datetime
+
+    class Config:
+        from_attributes = True
+
+
+class LHTestLogCreate(BaseModel):
+    date: date
+    time: Optional[str] = None
+    result: str = Field(..., description="low, rising, surge, not_recorded")
+    value: Optional[float] = Field(None, ge=0)
+    note: Optional[str] = None
+
+
+class LHTestLogOut(BaseModel):
+    id: int
+    user_id: int
+    date: date
+    time: Optional[str] = None
+    result: str
+    value: Optional[float] = None
+    note: Optional[str] = None
+    created_at: datetime
+
+    class Config:
+        from_attributes = True
+
+
+class CervicalMucusLogCreate(BaseModel):
+    date: date
+    type: str = Field(..., description="dry, sticky, creamy, watery, egg_white, not_observed")
+    note: Optional[str] = None
+
+
+class CervicalMucusLogOut(BaseModel):
+    id: int
+    user_id: int
+    date: date
+    type: str
+    note: Optional[str] = None
+    created_at: datetime
+
+    class Config:
+        from_attributes = True
+
+
+class PregnancyTestLogCreate(BaseModel):
+    date: date
+    result: str = Field(..., description="negative, positive, unclear")
+    note: Optional[str] = None
+
+
+class PregnancyTestLogOut(BaseModel):
+    id: int
+    user_id: int
+    date: date
+    result: str
+    note: Optional[str] = None
+    created_at: datetime
+
+    class Config:
+        from_attributes = True
+
+
+class FertilityOverview(BaseModel):
+    current_cycle_day: int
+    cycle_length: int
+    current_phase: str
+    estimated_fertile_window: str
+    estimated_ovulation_date: str
+    days_until_fertile_window: int
+    days_since_period_start: int
+    status_badge: str
+    bbt_pattern_shift: Optional[dict] = None
+    sufficient_data: bool = True
+
+
+class FertilitySignalSummary(BaseModel):
+    bbt_status: str
+    lh_status: str
+    cervical_mucus_status: str
+    cycle_data_status: str
+    estimated_fertility_status: str
+    disclaimer: str
+
+
+class FertilityCalendarEvent(BaseModel):
+    date: str
+    is_period: bool = False
+    is_fertile_window: bool = False
+    is_ovulation: bool = False
+    has_bbt: bool = False
+    bbt_temp: Optional[float] = None
+    has_lh: bool = False
+    lh_result: Optional[str] = None
+    has_mucus: bool = False
+    mucus_type: Optional[str] = None
+    has_pregnancy_test: bool = False
+    pregnancy_result: Optional[str] = None
+
+
+class TTCInsightItem(BaseModel):
+    icon: str
+    title: str
+    description: str
+    category: str
+
+
+class TTCInsightsResponse(BaseModel):
+    insights: List[TTCInsightItem]
+    sufficient_data: bool = True
+
 
 
 

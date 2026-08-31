@@ -23,6 +23,10 @@ class User(Base):
     share_links = relationship("ShareLink", back_populates="user", cascade="all, delete-orphan")
     community_posts = relationship("CommunityPost", back_populates="user", cascade="all, delete-orphan")
     community_comments = relationship("CommunityComment", back_populates="user", cascade="all, delete-orphan")
+    bbt_logs = relationship("BBTLog", back_populates="user", cascade="all, delete-orphan")
+    lh_test_logs = relationship("LHTestLog", back_populates="user", cascade="all, delete-orphan")
+    cervical_mucus_logs = relationship("CervicalMucusLog", back_populates="user", cascade="all, delete-orphan")
+    pregnancy_test_logs = relationship("PregnancyTestLog", back_populates="user", cascade="all, delete-orphan")
 
 
 class CycleLog(Base):
@@ -147,3 +151,67 @@ class CommunityComment(Base):
     # Relationships
     post = relationship("CommunityPost", back_populates="comments")
     user = relationship("User", back_populates="community_comments")
+
+
+class BBTLog(Base):
+    """Basal Body Temperature (BBT) tracking log entry."""
+    __tablename__ = "bbt_logs"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    date = Column(Date, nullable=False, index=True)
+    temperature = Column(Float, nullable=False)
+    unit = Column(String, default="°C", nullable=False)  # "°C" or "°F"
+    note = Column(Text, nullable=True)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+    # Relationship
+    user = relationship("User", back_populates="bbt_logs")
+
+
+class LHTestLog(Base):
+    """Luteinizing Hormone (LH) ovulation test log entry."""
+    __tablename__ = "lh_test_logs"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    date = Column(Date, nullable=False, index=True)
+    time = Column(String, nullable=True)  # e.g., "08:30"
+    result = Column(String, nullable=False)  # "low", "rising", "surge", "not_recorded"
+    value = Column(Float, nullable=True)  # Optional quantitative test value (e.g., mIU/mL)
+    note = Column(Text, nullable=True)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+    # Relationship
+    user = relationship("User", back_populates="lh_test_logs")
+
+
+class CervicalMucusLog(Base):
+    """Cervical Mucus observation log entry."""
+    __tablename__ = "cervical_mucus_logs"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    date = Column(Date, nullable=False, index=True)
+    type = Column(String, nullable=False)  # "dry", "sticky", "creamy", "watery", "egg_white", "not_observed"
+    note = Column(Text, nullable=True)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+    # Relationship
+    user = relationship("User", back_populates="cervical_mucus_logs")
+
+
+class PregnancyTestLog(Base):
+    """Pregnancy test log entry."""
+    __tablename__ = "pregnancy_test_logs"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    date = Column(Date, nullable=False, index=True)
+    result = Column(String, nullable=False)  # "negative", "positive", "unclear"
+    note = Column(Text, nullable=True)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+    # Relationship
+    user = relationship("User", back_populates="pregnancy_test_logs")
+

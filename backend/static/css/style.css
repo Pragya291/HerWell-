@@ -9253,30 +9253,39 @@ html, body {
     justify-content: space-between !important;
     align-items: center !important;
     padding: 8px 24px !important;
-    min-height: 52px !important;
-    height: 52px !important;
+    min-height: 56px !important;
+    height: auto !important;
     flex-shrink: 0 !important;
     box-sizing: border-box !important;
+    gap: 12px !important;
+    flex-wrap: wrap !important;
 }
 .greeting-section {
     display: flex !important;
     flex-direction: column !important;
-    flex: 1 !important;
     min-width: 0 !important;
 }
 .greeting-section h1 {
+    font-size: 1.25rem !important;
+    margin: 0 !important;
+    line-height: 1.2 !important;
     white-space: nowrap !important;
-    font-size: 1.3rem !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
 }
 .greeting-section p {
-    white-space: nowrap !important;
     font-size: 0.8rem !important;
+    margin: 2px 0 0 0 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
 }
 .top-header-right {
     display: flex !important;
-    gap: 10px !important;
+    gap: 8px !important;
     flex-shrink: 0 !important;
     align-items: center !important;
+    flex-wrap: wrap !important;
 }
 .app-main-content {
     flex: 1 !important;
@@ -10078,6 +10087,7 @@ body:has(#view-library:not(.hidden)) .app-main-content {
    ============================================================ */
 body:has(#view-library:not(.hidden)) #vera-float-widget,
 body:has(#view-dashboard:not(.hidden)) #vera-float-widget,
+body:has(#view-ttc-dashboard:not(.hidden)) #vera-float-widget,
 body:has(#view-tracker:not(.hidden)) #vera-float-widget,
 body:has(#view-wellness:not(.hidden)) #vera-float-widget,
 body:has(#view-fitness:not(.hidden)) #vera-float-widget,
@@ -10089,3 +10099,1335 @@ body:has(#view-community:not(.hidden)) #vera-float-widget {
     height: auto !important;
     overflow: visible !important;
 }
+
+/* ============================================================
+   TTC MODE & FERTILITY DASHBOARD STYLES
+   ============================================================ */
+
+/* Top Header Mode Switcher Pills */
+.header-mode-toggle-pills {
+    display: flex;
+    align-items: center;
+    background: #f1f5f9;
+    border-radius: 30px;
+    padding: 3px;
+    margin-right: 12px;
+    border: 1px solid #e2e8f0;
+}
+
+.header-mode-toggle-pills .mode-pill-btn {
+    border: none;
+    background: transparent;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: #64748b;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.header-mode-toggle-pills .mode-pill-btn.active {
+    background: white;
+    color: #059669;
+    font-weight: 700;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+}
+
+.header-mode-toggle-pills .mode-pill-btn:hover:not(.active) {
+    color: #1e293b;
+}
+
+/* TTC Dashboard Layout */
+.ttc-dashboard-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 10px 0 30px 0;
+}
+
+/* Header Banner */
+.ttc-header-banner {
+    background: linear-gradient(135deg, #ecfdf5 0%, #f0fdf4 50%, #fff1f2 100%);
+    border: 1px solid #a7f3d0;
+    border-radius: 16px;
+    padding: 20px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.ttc-header-title-wrap {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.ttc-header-icon {
+    font-size: 2.2rem;
+    background: white;
+    width: 54px;
+    height: 54px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.15);
+}
+
+.ttc-header-title {
+    margin: 0;
+    font-size: 1.35rem;
+    font-weight: 800;
+    color: #065f46;
+}
+
+.ttc-header-sub {
+    margin: 4px 0 0 0;
+    font-size: 0.88rem;
+    color: #047857;
+}
+
+.ttc-mode-switcher-pills {
+    display: flex;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 30px;
+    padding: 4px;
+    border: 1px solid #6ee7b7;
+}
+
+.ttc-mode-switcher-pills .mode-pill-btn {
+    border: none;
+    background: transparent;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #047857;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.ttc-mode-switcher-pills .mode-pill-btn.active {
+    background: #10b981;
+    color: white;
+    font-weight: 700;
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+}
+
+/* Empty State Card */
+.ttc-empty-state-card {
+    background: #f0fdf4;
+    border: 2px dashed #86efac;
+    border-radius: 16px;
+    padding: 24px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.ttc-empty-state-card .empty-icon {
+    font-size: 2.8rem;
+}
+
+.ttc-empty-state-card h3 {
+    margin: 0 0 6px 0;
+    color: #065f46;
+    font-size: 1.15rem;
+    font-weight: 700;
+}
+
+.ttc-empty-state-card p {
+    margin: 0 0 14px 0;
+    color: #047857;
+    font-size: 0.9rem;
+}
+
+.empty-btn-group {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+/* TTC Card Component */
+.ttc-card {
+    background: white;
+    border-radius: 16px;
+    border: 1px solid #e2e8f0;
+    padding: 20px 24px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.03);
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.ttc-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.title-with-icon {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.card-icon {
+    font-size: 1.25rem;
+}
+
+.ttc-card-header h3 {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #1e293b;
+}
+
+/* Overview Card Grid */
+.ttc-overview-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 16px;
+}
+
+.ttc-metric-item {
+    background: #f8fafc;
+    border-radius: 12px;
+    padding: 14px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    border: 1px solid #f1f5f9;
+}
+
+.ttc-metric-label {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.ttc-metric-val {
+    font-size: 1.2rem;
+    font-weight: 800;
+    color: #0f172a;
+}
+
+.ttc-metric-val.text-pink { color: #e11d48; }
+.ttc-metric-val.text-purple { color: #7c3aed; }
+
+.ttc-tag-est {
+    display: inline-block;
+    font-size: 0.68rem;
+    font-weight: 700;
+    color: #059669;
+    background: #ecfdf5;
+    padding: 2px 6px;
+    border-radius: 6px;
+    width: fit-content;
+    margin-top: 2px;
+}
+
+.ttc-status-badge {
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.82rem;
+    font-weight: 700;
+}
+
+.badge-green { background: #ecfdf5; color: #047857; border: 1px solid #a7f3d0; }
+.badge-purple { background: #f5f3ff; color: #6d28d9; border: 1px solid #ddd6fe; }
+
+.ttc-disclaimer-note {
+    background: #fff8f6;
+    border-left: 4px solid #f43f5e;
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 0.82rem;
+    color: #881337;
+}
+
+/* Two-column layout grid */
+.ttc-two-col-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+@media (max-width: 900px) {
+    .ttc-two-col-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.ttc-col-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* Unit Toggle Pill */
+.unit-toggle-pill {
+    display: flex;
+    background: #f1f5f9;
+    border-radius: 16px;
+    padding: 2px;
+}
+
+.unit-btn {
+    border: none;
+    background: transparent;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: #64748b;
+    cursor: pointer;
+}
+
+.unit-btn.active {
+    background: white;
+    color: #0f172a;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+}
+
+/* Forms */
+.ttc-log-form {
+    background: #f8fafc;
+    padding: 14px 16px;
+    border-radius: 12px;
+    border: 1px solid #f1f5f9;
+}
+
+.form-row-3 {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1.5fr;
+    gap: 12px;
+}
+
+.form-row-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+@media (max-width: 600px) {
+    .form-row-3, .form-row-2 {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* BBT Chart Wrapper */
+.bbt-chart-wrapper {
+    position: relative;
+    width: 100%;
+    margin-top: 10px;
+    background: #fafafa;
+    border-radius: 12px;
+    padding: 12px;
+    border: 1px solid #f1f5f9;
+}
+
+.chart-empty-msg {
+    text-align: center;
+    padding: 30px;
+    color: #64748b;
+    font-size: 0.9rem;
+}
+
+/* Pattern Status Box */
+.pattern-status-box {
+    background: #fdf4ff;
+    border: 1px solid #f0abfc;
+    border-radius: 12px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.pattern-main-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.pattern-label { font-size: 0.88rem; color: #701a75; }
+.pattern-val { font-size: 1.1rem; color: #86198f; font-weight: 800; }
+
+.pattern-explanation {
+    margin: 0;
+    font-size: 0.88rem;
+    color: #701a75;
+    line-height: 1.4;
+}
+
+.pattern-disclaimer {
+    font-size: 0.78rem;
+    color: #86198f;
+    background: rgba(255, 255, 255, 0.7);
+    padding: 8px 12px;
+    border-radius: 8px;
+}
+
+.badge-confidence {
+    background: #e879f9;
+    color: white;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 700;
+}
+
+/* Signals Summary List */
+.signals-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.signal-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 12px;
+    background: #f8fafc;
+    border-radius: 8px;
+}
+
+.signal-name {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #475569;
+}
+
+.signal-value {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #0f172a;
+}
+
+.signal-divider {
+    border: none;
+    border-top: 1px dashed #cbd5e1;
+    margin: 4px 0;
+}
+
+.signal-summary-result {
+    background: #ecfdf5;
+    border: 1px solid #a7f3d0;
+    padding: 12px 16px;
+    border-radius: 12px;
+    text-align: center;
+}
+
+.summary-label {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #047857;
+    font-weight: 700;
+}
+
+.summary-status-text {
+    margin: 4px 0 0 0;
+    font-size: 1.15rem;
+    color: #065f46;
+    font-weight: 800;
+}
+
+.signal-disclaimer {
+    font-size: 0.75rem;
+    color: #64748b;
+    margin: 0;
+    text-align: center;
+}
+
+/* History chips */
+.ttc-history-wrap {
+    margin-top: 12px;
+}
+
+.history-title {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: #475569;
+    margin: 0 0 8px 0;
+    text-transform: uppercase;
+}
+
+.history-chip-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    max-height: 140px;
+    overflow-y: auto;
+}
+
+.history-chip {
+    background: #f1f5f9;
+    border: 1px solid #e2e8f0;
+    padding: 4px 10px;
+    border-radius: 14px;
+    font-size: 0.78rem;
+    color: #334155;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.btn-chip-del {
+    border: none;
+    background: transparent;
+    color: #94a3b8;
+    cursor: pointer;
+    font-weight: bold;
+    padding: 0 2px;
+}
+
+.btn-chip-del:hover {
+    color: #ef4444;
+}
+
+/* Cervical Mucus Today Card */
+.cm-today-card {
+    background: #f0f9ff;
+    border: 1px solid #bae6fd;
+    padding: 12px 16px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.cm-today-label { font-size: 0.88rem; color: #0369a1; }
+.cm-today-val { font-size: 1rem; color: #0284c7; font-weight: 800; }
+
+/* Calendar Grid */
+.ttc-cal-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #475569;
+    padding-bottom: 8px;
+}
+
+.ttc-cal-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 6px;
+}
+
+.ttc-cal-day {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 6px 4px;
+    min-height: 52px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    font-size: 0.75rem;
+}
+
+.ttc-cal-day.is-today {
+    border: 2px solid #10b981;
+    background: #ecfdf5;
+}
+
+.ttc-cal-day.is-period { background: #ffe4e6; border-color: #fca5a5; }
+.ttc-cal-day.is-fertile { background: #ecfdf5; border-color: #6ee7b7; }
+.ttc-cal-day.is-ovulation { background: #f3e8ff; border-color: #c084fc; }
+
+.ttc-cal-icons {
+    display: flex;
+    gap: 2px;
+    font-size: 0.7rem;
+}
+
+/* Timeline Feed */
+.ttc-timeline-feed {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-height: 380px;
+    overflow-y: auto;
+}
+
+.timeline-item {
+    display: flex;
+    gap: 12px;
+    padding: 10px;
+    background: #f8fafc;
+    border-radius: 10px;
+    border-left: 3px solid #10b981;
+}
+
+.timeline-icon { font-size: 1.3rem; }
+.timeline-content h5 { margin: 0 0 2px 0; font-size: 0.88rem; color: #0f172a; }
+.timeline-content p { margin: 0; font-size: 0.8rem; color: #475569; }
+
+/* TTC Insights Grid */
+.ttc-insights-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+}
+
+.ttc-insight-card {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.insight-head {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.insight-icon { font-size: 1.2rem; }
+.insight-head h4 { margin: 0; font-size: 0.95rem; font-weight: 700; color: #1e293b; }
+.insight-desc { margin: 0; font-size: 0.82rem; color: #475569; line-height: 1.4; }
+
+/* Positive Test Warning Alert */
+.pt-positive-alert {
+    background: #fdf2f8;
+    border: 1px solid #f472b6;
+    color: #9d174d;
+    padding: 12px 16px;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    margin-top: 10px;
+    line-height: 1.4;
+}
+
+.pt-safety-note {
+    font-size: 0.78rem;
+    color: #64748b;
+    margin-top: 8px;
+}
+
+/* Accordion */
+.ttc-edu-accordion {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.edu-item {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 10px 14px;
+}
+
+.edu-item summary {
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: #1e293b;
+    cursor: pointer;
+}
+
+.edu-item p {
+    margin: 8px 0 0 0;
+    font-size: 0.82rem;
+    color: #475569;
+    line-height: 1.5;
+}
+
+/* ==========================================================================
+   REDESIGNED TTC DASHBOARD STYLES (MATCHING MOCKUP STRICTLY)
+   ========================================================================== */
+
+/* Left Sidebar Cycle Progress Card */
+.sidebar-cycle-progress-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    padding: 14px;
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+}
+
+.progress-title-row {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: #1e293b;
+}
+
+.progress-stats-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 0.85rem;
+}
+
+.progress-days {
+    font-weight: 700;
+    color: #0f172a;
+}
+
+.progress-pct {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #64748b;
+}
+
+.sidebar-progress-bar-track {
+    height: 6px;
+    background: #e2e8f0;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.sidebar-progress-bar-fill {
+    height: 100%;
+    background: #10b981;
+    border-radius: 4px;
+}
+
+.progress-phase-tag {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #059669;
+}
+
+/* Nav Button Active for TTC */
+.sidebar-nav .nav-btn[data-view="ttc-dashboard"].active {
+    background: #e6f4ea !important;
+    color: #059669 !important;
+    border-left: 4px solid #059669 !important;
+}
+
+/* TTC View Layout Wrapper (Vertical Stack of Sections) */
+.ttc-layout-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    max-width: 1400px;
+    width: 100%;
+    margin: 0 auto;
+    box-sizing: border-box;
+}
+
+/* 1. Hero Banner Card */
+.ttc-hero-card {
+    background: linear-gradient(135deg, #ecfdf5 0%, #f0fdf4 100%);
+    border: 1px solid #a7f3d0;
+    border-radius: 16px;
+    padding: 18px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.ttc-hero-left {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    min-width: 0;
+}
+
+.ttc-sprout-circle {
+    width: 44px;
+    height: 44px;
+    background: #ffffff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    flex-shrink: 0;
+}
+
+.ttc-hero-text {
+    min-width: 0;
+}
+
+.ttc-hero-text h2 {
+    margin: 0;
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: #064e3b;
+}
+
+.ttc-hero-text p {
+    margin: 3px 0 0 0;
+    font-size: 0.82rem;
+    color: #047857;
+}
+
+.ttc-mode-switcher-toggle {
+    background: #ffffff;
+    border-radius: 30px;
+    padding: 4px;
+    display: flex;
+    gap: 6px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+    border: 1px solid #e2e8f0;
+    flex-shrink: 0;
+}
+
+.ttc-mode-switcher-toggle .mode-pill-btn {
+    border: none;
+    background: transparent;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #64748b;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.ttc-mode-switcher-toggle .mode-pill-btn.active {
+    background: #0fa968;
+    color: #ffffff;
+}
+
+/* 2. Fertility Overview Card (Full Width 6 Metrics Grid) */
+.ttc-overview-card-v2 {
+    background: #ffffff;
+    border: 1px solid #f1f5f9;
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.ttc-card-header-v2 {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+    gap: 12px;
+}
+
+.header-title-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.header-title-info h3 {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 700;
+    color: #0f172a;
+}
+
+.info-circle-icon {
+    font-size: 0.75rem;
+    color: #94a3b8;
+    cursor: help;
+}
+
+.ttc-status-pill {
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 5px 14px;
+    border-radius: 20px;
+    white-space: nowrap;
+}
+
+.pill-green {
+    background: #ecfdf5;
+    color: #047857;
+    border: 1px solid #a7f3d0;
+}
+
+.ttc-overview-6grid {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 12px;
+    width: 100%;
+}
+
+.ttc-mcard {
+    background: #f8fafc;
+    border: 1px solid #f1f5f9;
+    border-radius: 12px;
+    padding: 14px 12px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 105px;
+    min-width: 0;
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+.mcard-label {
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: #64748b;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+    line-height: 1.25;
+    word-break: break-word;
+}
+
+.mcard-val {
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: #0f172a;
+    margin: 4px 0;
+    line-height: 1.15;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.mcard-val.text-pink { color: #e11d48; font-size: 0.92rem; }
+.mcard-val.text-purple { color: #7c3aed; font-size: 1.05rem; }
+.mcard-val .val-unit { font-size: 0.78rem; font-weight: 600; color: #64748b; }
+
+.mcard-sub-phase { font-size: 0.72rem; font-weight: 600; color: #059669; margin-bottom: 4px; }
+.mcard-sub-muted { font-size: 0.72rem; color: #94a3b8; }
+.mcard-sub-green { font-size: 0.72rem; font-weight: 600; color: #059669; }
+
+.mcard-tag-est {
+    font-size: 0.65rem;
+    font-weight: 600;
+    color: #059669;
+    background: #ecfdf5;
+    padding: 2px 6px;
+    border-radius: 4px;
+    width: fit-content;
+}
+
+.mcard-progress-track {
+    height: 5px;
+    background: #e2e8f0;
+    border-radius: 3px;
+    overflow: hidden;
+    margin-top: 4px;
+}
+
+.mcard-progress-fill {
+    height: 100%;
+    background: #10b981;
+    border-radius: 3px;
+}
+
+/* 3. Four-Column Analytics & Info Row */
+.ttc-analytics-4col {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 16px;
+    align-items: stretch;
+    width: 100%;
+}
+
+.ttc-col-card {
+    background: #ffffff;
+    border: 1px solid #f1f5f9;
+    border-radius: 16px;
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+    min-width: 0;
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+/* BBT Chart Wrap */
+.bbt-chart-canvas-wrap {
+    position: relative;
+    width: 100%;
+    height: 190px;
+    min-height: 180px;
+    margin: 8px 0;
+    min-width: 0;
+}
+
+.bbt-annotation-pill {
+    position: absolute;
+    top: 6px;
+    right: 8px;
+    z-index: 2;
+    background: rgba(243, 232, 255, 0.95);
+    border: 1px dashed #c084fc;
+    color: #7e22ce;
+    font-size: 0.65rem;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 10px;
+    pointer-events: none;
+    white-space: nowrap;
+}
+
+.btn-outline-pink-pill {
+    border: 1.5px solid #f43f5e;
+    color: #f43f5e;
+    background: #ffffff;
+    font-weight: 600;
+    font-size: 0.78rem;
+    padding: 8px 14px;
+    border-radius: 20px;
+    width: 100%;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin-top: 10px;
+}
+
+.btn-outline-pink-pill:hover {
+    background: #fff0f5;
+}
+
+/* Fertility Signals */
+.signals-rows-v2 {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin: 12px 0;
+}
+
+.sig-row-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 12px;
+    background: #f8fafc;
+    border-radius: 12px;
+    gap: 8px;
+    min-width: 0;
+}
+
+.sig-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+}
+
+.sig-icon { font-size: 0.95rem; flex-shrink: 0; }
+.sig-label { font-size: 0.78rem; font-weight: 600; color: #334155; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+.sig-pill {
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 10px;
+    flex-shrink: 0;
+    white-space: nowrap;
+}
+
+.pill-soft-green { background: #ecfdf5; color: #047857; }
+.pill-soft-pink { background: #fff1f2; color: #be123c; }
+.pill-soft-blue { background: #eff6ff; color: #1d4ed8; }
+
+/* Calendar Compact */
+.cal-nav-controls {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.cal-month-title {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: #1e293b;
+    white-space: nowrap;
+}
+
+.btn-cal-arrow {
+    background: none;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    width: 22px;
+    height: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 0.85rem;
+    color: #475569;
+}
+
+.btn-cal-arrow:hover {
+    background: #f1f5f9;
+}
+
+.cal-compact-weekdays {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    text-align: center;
+    font-size: 0.62rem;
+    font-weight: 700;
+    color: #94a3b8;
+    margin-top: 8px;
+    margin-bottom: 4px;
+}
+
+.ttc-cal-grid-compact {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    gap: 4px;
+    margin: 6px 0;
+    width: 100%;
+}
+
+.ttc-cal-day {
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border-radius: 6px;
+    color: #334155;
+    background: #ffffff;
+    position: relative;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.ttc-cal-day.is-other-month { color: #cbd5e1; background: transparent; }
+.ttc-cal-day.is-period { background: #ffe4e6; color: #be123c; font-weight: 700; }
+.ttc-cal-day.is-fertile { background: #d1fae5; color: #047857; font-weight: 700; }
+.ttc-cal-day.is-ovulation { background: #ffffff; color: #7e22ce; font-weight: 800; }
+.ttc-cal-day.is-today { border: 1.5px solid #059669; font-weight: 800; border-radius: 6px; }
+
+.ov-star-badge {
+    color: #8b5cf6;
+    font-size: 0.65rem;
+    margin-left: 2px;
+}
+
+.cal-compact-legend {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 0.65rem;
+    color: #64748b;
+    margin-top: 8px;
+    flex-wrap: wrap;
+    gap: 4px;
+}
+
+.cal-compact-legend .dot-period { color: #f43f5e; }
+.cal-compact-legend .dot-fertile { color: #10b981; }
+.cal-compact-legend .star-ov { color: #8b5cf6; }
+
+/* 4. Right Information Column */
+.ttc-right-sidebar {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    min-width: 0;
+}
+
+.ttc-sidebar-card {
+    background: #ffffff;
+    border: 1px solid #f1f5f9;
+    border-radius: 16px;
+    padding: 18px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+    min-width: 0;
+    box-sizing: border-box;
+}
+
+.log-date-label {
+    font-size: 0.72rem;
+    color: #94a3b8;
+    font-weight: 600;
+}
+
+.today-log-rows {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin: 14px 0;
+}
+
+.tlog-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 0.82rem;
+}
+
+.tlog-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #334155;
+}
+
+.tlog-right strong { font-weight: 700; color: #0f172a; margin-right: 4px; }
+.check-green { color: #10b981; font-weight: 800; }
+.dot-red { color: #ef4444; }
+
+.btn-add-more-logs {
+    background: #fff1f2;
+    color: #e11d48;
+    border: 1px solid #fecdd3;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 0.78rem;
+    padding: 8px;
+    width: 100%;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-add-more-logs:hover {
+    background: #ffe4e6;
+}
+
+.card-ai-insight {
+    background: linear-gradient(135deg, #ffffff 0%, #faf5ff 100%);
+    border: 1px solid #f3e8ff;
+}
+
+.ai-insight-text {
+    font-size: 0.78rem;
+    color: #4c1d95;
+    line-height: 1.45;
+    margin: 8px 0 12px 0;
+}
+
+.btn-ask-ai {
+    background: #ffffff;
+    border: 1.5px solid #d8b4fe;
+    color: #9333ea;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 0.78rem;
+    padding: 7px 14px;
+    width: 100%;
+    cursor: pointer;
+}
+
+.card-helpful-tip {
+    background: #fffbeb;
+    border: 1px solid #fef3c7;
+    position: relative;
+    top: auto;
+    left: auto;
+    right: auto;
+    bottom: auto;
+    transform: none;
+    margin: 0;
+}
+
+.helpful-tip-text {
+    font-size: 0.78rem;
+    color: #92400e;
+    line-height: 1.45;
+    margin: 6px 0 0 0;
+}
+
+/* 5. Fertility Journey Card (Full Width 5 Metrics Grid) */
+.ttc-journey-card {
+    background: #ffffff;
+    border: 1px solid #f1f5f9;
+    border-radius: 16px;
+    padding: 18px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.journey-title-wrap h3 {
+    margin: 0;
+    font-size: 0.98rem;
+    font-weight: 700;
+    color: #0f172a;
+}
+
+.journey-sub {
+    margin: 2px 0 0 0;
+    font-size: 0.75rem;
+    color: #64748b;
+}
+
+.ttc-journey-5grid {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 12px;
+    margin-top: 14px;
+    width: 100%;
+}
+
+.jcard {
+    background: #f8fafc;
+    border: 1px solid #f1f5f9;
+    border-radius: 10px;
+    padding: 12px 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+    overflow: hidden;
+}
+
+.jcard-icon { font-size: 1rem; flex-shrink: 0; }
+.jcard-info { display: flex; flex-direction: column; min-width: 0; }
+.jcard-label { font-size: 0.65rem; color: #64748b; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.jcard-val { font-size: 0.85rem; font-weight: 700; color: #0f172a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.jcard-val.text-green { color: #059669; }
+
+/* Responsive Breakdown Rules */
+@media (max-width: 1300px) {
+    .ttc-analytics-4col {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 990px) {
+    .ttc-overview-6grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+    .ttc-journey-5grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 768px) {
+    .ttc-analytics-4col {
+        grid-template-columns: 1fr;
+    }
+    .ttc-overview-6grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .ttc-journey-5grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .ttc-hero-card {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+}
+
+

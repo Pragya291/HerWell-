@@ -11,18 +11,23 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/css/style.css?v=1010">
     <style>
-        /* ===== COMMUNITY PAGE VISIBILITY FIX ===== */
-        /* style.css was setting overflow:hidden !important on .app-main-content
-           when community view is active, clipping all content to zero height.
-           This override restores scrollability and removes the clip. */
-        body:has(#view-community:not(.hidden)) .app-main-content {
-            overflow: auto !important;
-            padding: 0 !important;
+        /* ===== COMMUNITY & TTC PAGE VISIBILITY FIX ===== */
+        body:has(#view-community:not(.hidden)) .app-main-content,
+        body:has(#view-ttc-dashboard:not(.hidden)) .app-main-content {
+            overflow-y: auto !important;
+            overflow-x: hidden !important;
+            padding: 20px !important;
             background: #f8fafc !important;
         }
-        /* Ensure community section uses block layout, not the flex forced by navigate() */
         #view-community {
             width: 100% !important;
+            height: auto !important;
+            min-height: 100% !important;
+        }
+        #view-ttc-dashboard:not(.hidden) {
+            width: 100% !important;
+            display: block !important;
+            height: auto !important;
         }
     </style>
 </head>
@@ -54,11 +59,17 @@
                 <button class="nav-btn" data-view="fitness" onclick="navigate('fitness')">
                     <span class="nav-icon">🧘‍♀️</span> Fitness
                 </button>
+                <button class="nav-btn" data-view="ttc-dashboard" onclick="switchTrackingMode('ttc')">
+                    <span class="nav-icon">🌱</span> Trying to Conceive (TTC)
+                </button>
                 <button class="nav-btn" data-view="library" onclick="navigate('library')">
                     <span class="nav-icon">📚</span> Library
                 </button>
                 <button class="nav-btn" data-view="community" onclick="navigate('community')">
                     <span class="nav-icon">💬</span> Community
+                </button>
+                <button class="nav-btn" data-view="ai-companion" onclick="toggleVeraFloat()">
+                    <span class="nav-icon">✨</span> AI Companion
                 </button>
             </nav>
 
@@ -68,36 +79,32 @@
                     <span class="tip-header-icon">💡</span>
                     <h4>Daily Tip</h4>
                 </div>
-                <p class="tip-content">Small steps every day lead to big changes. You've got this! 💜</p>
+                <p class="tip-content">Consistency is key! Logging your daily data helps improve your fertile window accuracy.</p>
                 <div class="sidebar-tip-illustration">
-                    <svg viewBox="0 0 200 120" xmlns="http://www.w3.org/2000/svg" class="tip-meditate-svg">
-                        <!-- Left Plant -->
-                        <path d="M25 110 L35 110 L33 90 L27 90 Z" fill="#E2E8F0" />
-                        <path d="M30 90 Q15 65 10 50 Q25 60 30 90 Z" fill="#86EFAC" />
-                        <path d="M30 90 Q35 55 45 45 Q40 65 30 90 Z" fill="#4ADE80" />
-                        <ellipse cx="30" cy="90" rx="6" ry="2" fill="#CBD5E1" />
-                        <path d="M22 90 L38 90 L35 110 L25 110 Z" fill="#F87171" />
-                        <!-- Right Plant -->
-                        <path d="M165 110 L175 110 L173 90 L167 90 Z" fill="#E2E8F0" />
-                        <path d="M170 90 Q155 65 150 50 Q165 60 170 90 Z" fill="#4ADE80" />
-                        <path d="M170 90 Q175 55 185 45 Q180 65 170 90 Z" fill="#86EFAC" />
-                        <ellipse cx="170" cy="90" rx="6" ry="2" fill="#CBD5E1" />
-                        <path d="M162 90 L178 90 L175 110 L165 110 Z" fill="#F87171" />
-                        <!-- Meditating Woman -->
-                        <path d="M85 105 Q100 108 115 105 Q125 100 110 92 Q100 90 90 92 Q75 100 85 105 Z" fill="#334155" />
-                        <path d="M92 62 Q100 60 108 62 L112 88 Q100 92 88 88 Z" fill="#E11D48" />
-                        <circle cx="100" cy="46" r="10" fill="#FCA5A5" />
-                        <!-- Hair -->
-                        <path d="M90 44 Q100 34 110 44 Q114 54 108 56 Q100 58 92 56 Z" fill="#475569" />
-                        <!-- Arms -->
-                        <path d="M88 66 Q72 75 80 84 Q88 82 92 72 Z" fill="#FCA5A5" />
-                        <path d="M112 66 Q128 75 120 84 Q112 82 108 72 Z" fill="#FCA5A5" />
-                        <!-- Sparkles -->
-                        <circle cx="65" cy="35" r="2" fill="#F43F5E" opacity="0.6"/>
-                        <circle cx="135" cy="40" r="2" fill="#A855F7" opacity="0.6"/>
-                        <circle cx="100" cy="25" r="1.5" fill="#F59E0B" opacity="0.8"/>
+                    <svg viewBox="0 0 200 80" xmlns="http://www.w3.org/2000/svg" class="tip-meditate-svg">
+                        <!-- Sprout plant illustration -->
+                        <path d="M95 70 L105 70 L102 45 L98 45 Z" fill="#94A3B8" />
+                        <path d="M100 45 Q80 25 70 15 Q90 20 100 45 Z" fill="#86EFAC" />
+                        <path d="M100 45 Q120 20 130 10 Q110 25 100 45 Z" fill="#4ADE80" />
+                        <circle cx="70" cy="15" r="4" fill="#F43F5E" />
+                        <circle cx="130" cy="10" r="4" fill="#F43F5E" />
                     </svg>
                 </div>
+            </div>
+
+            <!-- Cycle Progress Sidebar Card -->
+            <div class="sidebar-cycle-progress-card">
+                <div class="progress-title-row">
+                    <span class="progress-title">Cycle Progress</span>
+                </div>
+                <div class="progress-stats-row">
+                    <span class="progress-days">Day <span id="sidebar-day-val">15</span> / <span id="sidebar-total-val">28</span></span>
+                    <span class="progress-pct" id="sidebar-pct-val">53%</span>
+                </div>
+                <div class="sidebar-progress-bar-track">
+                    <div class="sidebar-progress-bar-fill" id="sidebar-progress-fill" style="width: 53%;"></div>
+                </div>
+                <span class="progress-phase-tag" id="sidebar-phase-tag">Follicular Phase</span>
             </div>
         </aside>
 
@@ -153,6 +160,16 @@
                     <button class="btn-header-action" title="Partner Share Link" onclick="openShareModal()"><span class="action-icon">🔗</span> Share</button>
                     <button class="btn-header-action" title="AI Settings" onclick="toggleVeraFloat()"><span class="action-icon">✨</span> AI</button>
                     <button class="btn-header-action btn-helpline-action" title="Crisis Helpline" onclick="openHelplineModal()"><span class="action-icon">📋</span> Helpline</button>
+
+                    <!-- HerWell Life Stage / Tracking Mode Switcher Pill -->
+                    <div class="header-mode-toggle-pills" id="header-mode-switcher">
+                        <button class="mode-pill-btn active" id="pill-mode-cycle" onclick="switchTrackingMode('regular')" title="Cycle Tracking Mode">
+                            🌸 Cycle Tracking
+                        </button>
+                        <button class="mode-pill-btn" id="pill-mode-ttc" onclick="switchTrackingMode('ttc')" title="Trying to Conceive Mode">
+                            🌱 Trying to Conceive (TTC)
+                        </button>
+                    </div>
 
                     <div class="user-action-area" id="user-action-area">
                         <span class="user-badge" id="user-email-display" onclick="openProfileModal()" style="cursor: pointer;" title="View Profile">priya@gmail.com</span>
@@ -556,9 +573,344 @@
                             </div>
                         </div>
 
-                    </div><!-- /db-bottom-row -->
-
                 </section>
+
+                <!-- ================= VIEW: TTC FERTILITY DASHBOARD ================= -->
+                <section id="view-ttc-dashboard" class="app-view hidden">
+                    <div class="ttc-layout-wrapper">
+
+                        <!-- 1. Hero Banner Card (Full Width) -->
+                        <div class="ttc-hero-card">
+                            <div class="ttc-hero-left">
+                                <div class="ttc-sprout-circle">🌱</div>
+                                <div class="ttc-hero-text">
+                                    <h2>Trying to Conceive (TTC) & Fertility Intelligence</h2>
+                                    <p>Track your BBT, LH surges, and cervical mucus to better understand your fertile window.</p>
+                                </div>
+                            </div>
+                            <div class="ttc-hero-right">
+                                <div class="ttc-mode-switcher-toggle">
+                                    <button class="mode-pill-btn" onclick="switchTrackingMode('regular')">🌸 Cycle Tracking</button>
+                                    <button class="mode-pill-btn active" onclick="switchTrackingMode('ttc')">🌱 TTC Mode</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 2. Fertility Overview Card (Full Width 6 Metrics Grid) -->
+                        <div class="ttc-card ttc-overview-card-v2">
+                            <div class="ttc-card-header-v2">
+                                <div class="header-title-info">
+                                    <span class="card-header-icon">🌱</span>
+                                    <h3>Fertility Overview</h3>
+                                    <span class="info-circle-icon" title="Based on baseline cycle calculations and logged fertility signals">ⓘ</span>
+                                </div>
+                                <span id="ttc-status-badge" class="ttc-status-pill pill-green">🟢 Peak fertile window</span>
+                            </div>
+
+                            <div class="ttc-overview-6grid">
+                                <!-- Metric 1: Cycle Day -->
+                                <div class="ttc-mcard">
+                                    <span class="mcard-label">CYCLE DAY</span>
+                                    <div class="mcard-val" id="ttc-metric-day">15</div>
+                                    <div class="mcard-sub-phase" id="ttc-metric-phase">Follicular Phase</div>
+                                    <div class="mcard-progress-track">
+                                        <div class="mcard-progress-fill" id="ttc-metric-progress" style="width: 53%;"></div>
+                                    </div>
+                                </div>
+
+                                <!-- Metric 2: Cycle Length -->
+                                <div class="ttc-mcard">
+                                    <span class="mcard-label">CYCLE LENGTH</span>
+                                    <div class="mcard-val" id="ttc-metric-cycle-len">28 <span class="val-unit">days</span></div>
+                                    <div class="mcard-sub-muted">Average</div>
+                                </div>
+
+                                <!-- Metric 3: Fertile Window -->
+                                <div class="ttc-mcard">
+                                    <span class="mcard-label">ESTIMATED FERTILE WINDOW</span>
+                                    <div class="mcard-val text-pink" id="ttc-metric-fertile-window">Aug 27 – Sep 02</div>
+                                    <span class="mcard-tag-est">Estimated</span>
+                                </div>
+
+                                <!-- Metric 4: Ovulation -->
+                                <div class="ttc-mcard">
+                                    <span class="mcard-label">ESTIMATED OVULATION</span>
+                                    <div class="mcard-val text-purple" id="ttc-metric-ovulation">Aug 31</div>
+                                    <span class="mcard-tag-est">Estimated</span>
+                                </div>
+
+                                <!-- Metric 5: Days to Fertile Window -->
+                                <div class="ttc-mcard">
+                                    <span class="mcard-label">DAYS TO FERTILE WINDOW</span>
+                                    <div class="mcard-val" id="ttc-metric-days-until-fw">0 <span class="val-unit">days</span></div>
+                                    <div class="mcard-sub-green" id="ttc-metric-days-sub">Peak begins today!</div>
+                                </div>
+
+                                <!-- Metric 6: Days Since Period Start -->
+                                <div class="ttc-mcard">
+                                    <span class="mcard-label">DAYS SINCE PERIOD START</span>
+                                    <div class="mcard-val" id="ttc-metric-days-since-period">14 <span class="val-unit">days</span></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 3. Four-Column Row (BBT Chart | Signals | Calendar | Right Info Column) -->
+                        <div class="ttc-analytics-4col">
+
+                            <!-- Col 1: BBT Chart -->
+                            <div class="ttc-card ttc-col-card">
+                                <div class="ttc-card-header-v2">
+                                    <div class="header-title-info">
+                                        <span class="card-header-icon">🌡️</span>
+                                        <h3>BBT Chart</h3>
+                                    </div>
+                                    <select class="select-dropdown-sm" onchange="renderBBTChart(state.bbtLogs)">
+                                        <option value="chart">Chart View ▼</option>
+                                    </select>
+                                </div>
+
+                                <div class="bbt-chart-canvas-wrap">
+                                    <canvas id="bbtChartCanvas" height="190"></canvas>
+                                    <div class="bbt-annotation-pill" id="bbt-pattern-annotation">Possible Ovulation Around CD 15</div>
+                                </div>
+
+                                <button class="btn-outline-pink-pill" onclick="openLogModal(getTodayString())">View Full Chart</button>
+                            </div>
+
+                            <!-- Col 2: Fertility Signals -->
+                            <div class="ttc-card ttc-col-card">
+                                <div class="ttc-card-header-v2">
+                                    <div class="header-title-info">
+                                        <span class="card-header-icon">⚡</span>
+                                        <h3>Fertility Signals</h3>
+                                        <span class="info-circle-icon" title="Combined biological markers">ⓘ</span>
+                                    </div>
+                                </div>
+
+                                <div class="signals-rows-v2">
+                                    <div class="sig-row-item">
+                                        <div class="sig-left">
+                                            <span class="sig-icon">📈</span>
+                                            <span class="sig-label">BBT Trend</span>
+                                        </div>
+                                        <span class="sig-pill pill-soft-green" id="sig-bbt-status">↗ Rising</span>
+                                    </div>
+
+                                    <div class="sig-row-item">
+                                        <div class="sig-left">
+                                            <span class="sig-icon">🔥</span>
+                                            <span class="sig-label">LH Test</span>
+                                        </div>
+                                        <span class="sig-pill pill-soft-pink" id="sig-lh-status">🔴 Surge</span>
+                                    </div>
+
+                                    <div class="sig-row-item">
+                                        <div class="sig-left">
+                                            <span class="sig-icon">💧</span>
+                                            <span class="sig-label">Cervical Mucus</span>
+                                        </div>
+                                        <span class="sig-pill pill-soft-blue" id="sig-cm-status">💧 Watery</span>
+                                    </div>
+
+                                    <div class="sig-row-item">
+                                        <div class="sig-left">
+                                            <span class="sig-icon">🌱</span>
+                                            <span class="sig-label">Fertile Window</span>
+                                        </div>
+                                        <span class="sig-pill pill-soft-green" id="sig-fw-status">🌱 Peak</span>
+                                    </div>
+                                </div>
+
+                                <button class="btn-outline-pink-pill" onclick="openLogModal(getTodayString())">View Timeline</button>
+                            </div>
+
+                            <!-- Col 3: Calendar -->
+                            <div class="ttc-card ttc-col-card">
+                                <div class="ttc-card-header-v2">
+                                    <div class="header-title-info">
+                                        <span class="card-header-icon">📅</span>
+                                        <h3>Calendar</h3>
+                                    </div>
+                                    <div class="cal-nav-controls">
+                                        <span class="cal-month-title" id="ttc-cal-month-title">August 2025</span>
+                                        <button class="btn-cal-arrow" onclick="changeMonth(-1)">‹</button>
+                                        <button class="btn-cal-arrow" onclick="changeMonth(1)">›</button>
+                                    </div>
+                                </div>
+
+                                <div class="cal-compact-weekdays">
+                                    <span>MON</span><span>TUE</span><span>WED</span><span>THU</span><span>FRI</span><span>SAT</span><span>SUN</span>
+                                </div>
+
+                                <div id="ttc-calendar-grid" class="ttc-cal-grid-compact">
+                                    <!-- Rendered dynamically -->
+                                </div>
+
+                                <div class="cal-compact-legend">
+                                    <span><span class="dot dot-period">●</span> Period</span>
+                                    <span><span class="dot dot-fertile">●</span> Fertile Window</span>
+                                    <span><span class="star-ov">★</span> Ovulation (Est.)</span>
+                                    <span><span class="box-today">□</span> Today</span>
+                                </div>
+                            </div>
+
+                            <!-- Col 4: Right Information Column -->
+                            <aside class="ttc-right-sidebar">
+
+                                <!-- Widget 1: Today's Log Card -->
+                                <div class="ttc-sidebar-card">
+                                    <div class="ttc-card-header-v2">
+                                        <h3>Today's Log</h3>
+                                        <span class="log-date-label" id="today-log-date">Aug 25, 2025</span>
+                                    </div>
+
+                                    <div class="today-log-rows">
+                                        <div class="tlog-row">
+                                            <div class="tlog-left">
+                                                <span class="tlog-icon">🌡️</span>
+                                                <span class="tlog-label">BBT</span>
+                                            </div>
+                                            <div class="tlog-right">
+                                                <strong id="today-bbt-val">36.52 °C</strong>
+                                                <span class="check-green">✓</span>
+                                            </div>
+                                        </div>
+
+                                        <div class="tlog-row">
+                                            <div class="tlog-left">
+                                                <span class="tlog-icon">🧪</span>
+                                                <span class="tlog-label">LH Test</span>
+                                            </div>
+                                            <div class="tlog-right">
+                                                <strong id="today-lh-val">Surge</strong>
+                                                <span class="dot-red">🔴</span>
+                                            </div>
+                                        </div>
+
+                                        <div class="tlog-row">
+                                            <div class="tlog-left">
+                                                <span class="tlog-icon">💧</span>
+                                                <span class="tlog-label">Cervical Mucus</span>
+                                            </div>
+                                            <div class="tlog-right">
+                                                <strong id="today-cm-val">Watery</strong>
+                                                <span class="check-green">✓</span>
+                                            </div>
+                                        </div>
+
+                                        <div class="tlog-row">
+                                            <div class="tlog-left">
+                                                <span class="tlog-icon">💖</span>
+                                                <span class="tlog-label">Intercourse</span>
+                                            </div>
+                                            <div class="tlog-right">
+                                                <strong id="today-sex-val">Yes</strong>
+                                                <span class="check-green">✓</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <button class="btn-add-more-logs" onclick="openLogModal(getTodayString())">+ Add More Logs</button>
+                                </div>
+
+                                <!-- Widget 2: AI Insight Card -->
+                                <div class="ttc-sidebar-card card-ai-insight">
+                                    <div class="ttc-card-header-v2">
+                                        <div class="header-title-info">
+                                            <span class="card-header-icon">✨</span>
+                                            <h3>AI Insight</h3>
+                                        </div>
+                                    </div>
+
+                                    <p class="ai-insight-text" id="ttc-ai-insight-body">
+                                        Your LH surge and fertile-type cervical mucus suggest you're in your peak fertile window. Ovulation may occur in the next 24–48 hours.
+                                    </p>
+
+                                    <button class="btn-ask-ai" onclick="toggleVeraFloat()">Ask AI Companion</button>
+                                </div>
+
+                                <!-- Widget 3: Helpful Tip Card -->
+                                <div class="ttc-sidebar-card card-helpful-tip">
+                                    <div class="ttc-card-header-v2">
+                                        <div class="header-title-info">
+                                            <span class="card-header-icon">💡</span>
+                                            <h3>Helpful Tip</h3>
+                                        </div>
+                                    </div>
+
+                                    <p class="helpful-tip-text">
+                                        Stay hydrated and maintain a balanced diet. Light exercise and stress management can support your fertility journey.
+                                    </p>
+                                </div>
+
+                            </aside>
+
+                        </div>
+
+                        <!-- 4. Your Fertility Journey Section (Full Width 5 Cards Row) -->
+                        <div class="ttc-card ttc-journey-card">
+                            <div class="ttc-card-header-v2">
+                                <div class="journey-title-wrap">
+                                    <span class="card-header-icon">🌱</span>
+                                    <div>
+                                        <h3>Your Fertility Journey</h3>
+                                        <p class="journey-sub">A quick view of your recent logs</p>
+                                    </div>
+                                </div>
+                                <select class="select-dropdown-sm">
+                                    <option value="7">Last 7 Days ▼</option>
+                                    <option value="14">Last 14 Days</option>
+                                    <option value="30">Last 30 Days</option>
+                                </select>
+                            </div>
+
+                            <div class="ttc-journey-5grid">
+                                <div class="jcard">
+                                    <span class="jcard-icon">🌡️</span>
+                                    <div class="jcard-info">
+                                        <span class="jcard-label">BBT Logged</span>
+                                        <strong class="jcard-val text-green" id="fj-bbt-val">7/7 days</strong>
+                                    </div>
+                                </div>
+
+                                <div class="jcard">
+                                    <span class="jcard-icon">🧪</span>
+                                    <div class="jcard-info">
+                                        <span class="jcard-label">LH Tests</span>
+                                        <strong class="jcard-val" id="fj-lh-val">5 tests</strong>
+                                    </div>
+                                </div>
+
+                                <div class="jcard">
+                                    <span class="jcard-icon">🧪</span>
+                                    <div class="jcard-info">
+                                        <span class="jcard-label">Peak LH Surge</span>
+                                        <strong class="jcard-val" id="fj-surge-val">Aug 25</strong>
+                                    </div>
+                                </div>
+
+                                <div class="jcard">
+                                    <span class="jcard-icon">💖</span>
+                                    <div class="jcard-info">
+                                        <span class="jcard-label">Intercourse Logged</span>
+                                        <strong class="jcard-val" id="fj-sex-val">3 days</strong>
+                                    </div>
+                                </div>
+
+                                <div class="jcard">
+                                    <span class="jcard-icon">💧</span>
+                                    <div class="jcard-info">
+                                        <span class="jcard-label">CM Observations</span>
+                                        <strong class="jcard-val" id="fj-cm-val">6 days</strong>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </section>
+
+
 
 
 
