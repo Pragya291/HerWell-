@@ -86,10 +86,15 @@ function setupModalClosing() {
         }
     });
 
-    // Click outside to close modals
+    // Click outside to close modals and dropdowns
     document.addEventListener('click', (e) => {
         if (e.target.classList.contains('modal-overlay')) {
             e.target.classList.add('hidden');
+        }
+        const profileMenu = document.querySelector('.user-profile-menu-wrapper');
+        const profileDropdown = document.getElementById('user-profile-dropdown');
+        if (profileDropdown && !profileDropdown.classList.contains('hidden') && profileMenu && !profileMenu.contains(e.target)) {
+            profileDropdown.classList.add('hidden');
         }
     });
 }
@@ -289,6 +294,12 @@ function enableDemoMode() {
     navigate('dashboard');
 }
 
+function toggleProfileDropdown(event) {
+    if (event) event.stopPropagation();
+    const dropdown = document.getElementById('user-profile-dropdown');
+    if (dropdown) dropdown.classList.toggle('hidden');
+}
+
 function handleAuthAction() {
     if (state.token) {
         // Logout
@@ -306,14 +317,28 @@ function updateUserUI() {
     const userDisplay = document.getElementById('user-email-display');
     const authBtn = document.getElementById('auth-action-btn');
     const dashEmail = document.getElementById('dash-user-email');
+    const userDisplayName = document.getElementById('user-display-name');
+    const userAvatarInitial = document.getElementById('user-avatar-initial');
+    const profileModeBadge = document.getElementById('profile-current-mode-badge');
 
     if (state.token && state.user) {
-        userDisplay.textContent = state.user.email;
-        authBtn.textContent = 'Logout';
-        if (dashEmail) dashEmail.textContent = state.user.email.split('@')[0];
+        const email = state.user.email || 'priya@gmail.com';
+        const name = email.split('@')[0];
+        const capName = name.charAt(0).toUpperCase() + name.slice(1);
+        if (userDisplay) userDisplay.textContent = email;
+        if (authBtn) authBtn.textContent = '🚪 Logout';
+        if (dashEmail) dashEmail.textContent = name;
+        if (userDisplayName) userDisplayName.textContent = capName;
+        if (userAvatarInitial) userAvatarInitial.textContent = capName.charAt(0);
+        if (profileModeBadge) {
+            profileModeBadge.textContent = (state.user.tracking_mode === 'ttc') ? 'TTC Mode Active' : 'Cycle Tracking';
+        }
     } else {
-        userDisplay.textContent = 'Guest';
-        authBtn.textContent = 'Login';
+        if (userDisplay) userDisplay.textContent = 'Guest';
+        if (authBtn) authBtn.textContent = '🔑 Login';
+        if (userDisplayName) userDisplayName.textContent = 'Guest';
+        if (userAvatarInitial) userAvatarInitial.textContent = 'G';
+        if (profileModeBadge) profileModeBadge.textContent = 'Guest Mode';
     }
 }
 
@@ -2397,9 +2422,18 @@ function getTodayString() {
 
 function updateDateBadge() {
     const badge = document.getElementById('current-date-badge');
+    const options = { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' };
+    const curFormatted = new Date().toLocaleDateString('en-US', options);
     if (badge) {
-        const options = { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' };
-        badge.textContent = new Date().toLocaleDateString('en-US', options);
+        badge.textContent = curFormatted;
+    }
+    const dbDateLabel = document.getElementById('db-date-label');
+    if (dbDateLabel) {
+        dbDateLabel.textContent = curFormatted;
+    }
+    const todayLogLabel = document.getElementById('today-log-date');
+    if (todayLogLabel) {
+        todayLogLabel.textContent = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
     }
 }
 
@@ -3540,7 +3574,8 @@ async function loadTTCData() {
 
         // Fetch Calendar
         const calendarEvents = await apiCall('/fertility/calendar');
-        renderTTCCalendar(calendarEvents);
+        state.fertilityCalendarEvents = calendarEvents;
+        renderTTCCalendar(calendarEvents, state.currentTTCYear, state.currentTTCMonth);
 
         // Fetch Insights
         const insightsData = await apiCall('/fertility/insights');
@@ -3588,8 +3623,8 @@ function renderTTCOverview(overview) {
 
     if (dayEl) dayEl.textContent = curDay;
     if (cycleLenEl) cycleLenEl.innerHTML = `${totalDays} <span class="val-unit">days</span>`;
-    if (fwEl) fwEl.textContent = overview.estimated_fertile_window || 'Aug 27 – Sep 02';
-    if (ovEl) ovEl.textContent = overview.estimated_ovulation_date || 'Aug 31';
+    if (fwEl) fwEl.textContent = overview.estimated_fertile_window || '--';
+    if (ovEl) ovEl.textContent = overview.estimated_ovulation_date || '--';
     if (daysUntilFwEl) daysUntilFwEl.innerHTML = `${overview.days_until_fertile_window || 0} <span class="val-unit">days</span>`;
     if (daysSincePeriodEl) daysSincePeriodEl.innerHTML = `${overview.days_since_period_start || 14} <span class="val-unit">days</span>`;
     if (badgeEl) badgeEl.textContent = overview.status_badge || '🟢 Peak fertile window';
@@ -3610,10 +3645,46 @@ function renderTTCSignals(signals) {
     const cmSig = document.getElementById('sig-cm-status');
     const fwSig = document.getElementById('sig-fw-status');
 
-    if (bbtSig) bbtSig.textContent = signals.bbt_status.includes('Rising') || signals.bbt_status.includes('Logged') ? '↗ Rising' : '🟢 Logged';
-    if (lhSig) lhSig.textContent = signals.lh_status.includes('Surge') ? '● Surge' : '🟢 Normal';
-    if (cmSig) cmSig.textContent = signals.cervical_mucus_status.includes('Watery') ? '💧 Watery' : (signals.cervical_mucus_status.includes('Egg') ? '🥚 Egg-white' : '⚪ Observed');
-    if (fwSig) fwSig.textContent = '🌱 Peak';
+    if (bbtSig) {
+        if (signals.bbt_status.includes('Rising')) {
+            bbtSig.textContent = '✓ Logged (↗ Rising)';
+            bbtSig.className = 'sig-pill pill-soft-green';
+        } else if (signals.bbt_status.includes('Logged')) {
+            bbtSig.textContent = '✓ Logged';
+            bbtSig.className = 'sig-pill pill-soft-green';
+        } else {
+            bbtSig.textContent = '✓ Baseline Logged';
+            bbtSig.className = 'sig-pill pill-soft-green';
+        }
+    }
+
+    if (lhSig) {
+        if (signals.lh_status.includes('Surge')) {
+            lhSig.textContent = '🔴 Surge';
+            lhSig.className = 'sig-pill pill-soft-pink';
+        } else {
+            lhSig.textContent = '● Normal';
+            lhSig.className = 'sig-pill pill-soft-green';
+        }
+    }
+
+    if (cmSig) {
+        if (signals.cervical_mucus_status.includes('Watery')) {
+            cmSig.textContent = '💧 Watery';
+            cmSig.className = 'sig-pill pill-soft-blue';
+        } else if (signals.cervical_mucus_status.includes('Egg')) {
+            cmSig.textContent = '🥚 Egg-white';
+            cmSig.className = 'sig-pill pill-soft-blue';
+        } else {
+            cmSig.textContent = '⚪ Observed';
+            cmSig.className = 'sig-pill pill-soft-blue';
+        }
+    }
+
+    if (fwSig) {
+        fwSig.textContent = '🌱 Peak';
+        fwSig.className = 'sig-pill pill-soft-green';
+    }
 }
 
 function renderBBTChart(logs) {
@@ -3623,6 +3694,23 @@ function renderBBTChart(logs) {
 
     if (emptyMsg) emptyMsg.classList.add('hidden');
     canvas.style.display = 'block';
+
+    // Update today's BBT stat badge in header
+    const todayStatVal = document.getElementById('bbt-today-stat-val');
+    if (todayStatVal) {
+        if (logs && logs.length > 0) {
+            const todayStr = getTodayString();
+            const todayLog = logs.find(l => l.date === todayStr);
+            if (todayLog) {
+                todayStatVal.textContent = `${todayLog.temperature} ${todayLog.unit || '°C'}`;
+            } else {
+                const lastLog = logs[logs.length - 1];
+                todayStatVal.textContent = `${lastLog.temperature} ${lastLog.unit || '°C'}`;
+            }
+        } else {
+            todayStatVal.textContent = '36.52 °C';
+        }
+    }
 
     // Generate 28 cycle days data matching reference BBT biphasic curve
     let labels = Array.from({length: 28}, (_, i) => i + 1);
@@ -3645,33 +3733,52 @@ function renderBBTChart(logs) {
         });
     }
 
+    const coverlineVal = (state.bbtUnit === '°F') ? 97.6 : 36.45;
+    const coverlineData = Array(labels.length).fill(coverlineVal);
+
     if (state.bbtChart) {
         state.bbtChart.destroy();
     }
 
     const ctx = canvas.getContext('2d');
     const purpleGradient = ctx.createLinearGradient(0, 0, 0, 180);
-    purpleGradient.addColorStop(0, 'rgba(168, 85, 247, 0.25)');
+    purpleGradient.addColorStop(0, 'rgba(168, 85, 247, 0.28)');
     purpleGradient.addColorStop(1, 'rgba(168, 85, 247, 0.0)');
 
     state.bbtChart = new Chart(ctx, {
         type: 'line',
         data: {
             labels: labels,
-            datasets: [{
-                label: `BBT (${state.bbtUnit})`,
-                data: dataVals,
-                borderColor: '#9333ea',
-                backgroundColor: purpleGradient,
-                borderWidth: 2.5,
-                tension: 0.35,
-                fill: true,
-                pointBackgroundColor: '#9333ea',
-                pointBorderColor: '#ffffff',
-                pointBorderWidth: 1.5,
-                pointRadius: 4.5,
-                pointHoverRadius: 6
-            }]
+            datasets: [
+                {
+                    label: `BBT (${state.bbtUnit || '°C'})`,
+                    data: dataVals,
+                    borderColor: '#9333ea',
+                    backgroundColor: purpleGradient,
+                    borderWidth: 2.5,
+                    tension: 0.35,
+                    fill: true,
+                    pointBackgroundColor: function(context) {
+                        return (context.dataIndex === 14 || context.dataIndex === 15) ? '#7c3aed' : '#9333ea';
+                    },
+                    pointBorderColor: '#ffffff',
+                    pointBorderWidth: 1.5,
+                    pointRadius: function(context) {
+                        return (context.dataIndex === 14 || context.dataIndex === 15) ? 6 : 4;
+                    },
+                    pointHoverRadius: 7
+                },
+                {
+                    label: `Coverline (${coverlineVal} ${state.bbtUnit || '°C'})`,
+                    data: coverlineData,
+                    borderColor: '#94a3b8',
+                    borderWidth: 1.5,
+                    borderDash: [5, 5],
+                    fill: false,
+                    pointRadius: 0,
+                    pointHoverRadius: 0
+                }
+            ]
         },
         options: {
             responsive: true,
@@ -3681,7 +3788,8 @@ function renderBBTChart(logs) {
                 tooltip: {
                     callbacks: {
                         label: function(context) {
-                            return ` Temp: ${context.parsed.y} °C`;
+                            if (context.datasetIndex === 1) return ` Coverline: ${context.parsed.y} °C`;
+                            return ` Temp: ${context.parsed.y} °C ${context.dataIndex === 14 ? '(★ Est. Ovulation Shift)' : ''}`;
                         }
                     }
                 }
@@ -3691,7 +3799,7 @@ function renderBBTChart(logs) {
                     min: 35.4,
                     max: 37.2,
                     ticks: {
-                        stepSize: 0.4,
+                        stepSize: 0.3,
                         font: { size: 10 },
                         color: '#64748b'
                     },
@@ -3704,7 +3812,7 @@ function renderBBTChart(logs) {
                         color: '#64748b',
                         callback: function(val, index) {
                             const day = labels[index];
-                            return [1, 5, 10, 15, 20, 25, 28].includes(Number(day)) ? day : '';
+                            return [1, 5, 10, 14, 15, 20, 25, 28].includes(Number(day)) ? day : '';
                         }
                     },
                     grid: { display: false }
@@ -3714,35 +3822,133 @@ function renderBBTChart(logs) {
     });
 }
 
-function renderTTCCalendar(events) {
+function renderTTCCalendar(events, year, month) {
     const grid = document.getElementById('ttc-calendar-grid');
     if (!grid) return;
 
-    // Fixed August 2025 Calendar Grid matching target image
-    const calDays = [
-        { num: 28, isOtherMonth: true }, { num: 29, isOtherMonth: true }, { num: 30, isOtherMonth: true }, { num: 31, isOtherMonth: true },
-        { num: 1 }, { num: 2 }, { num: 3 }, { num: 4 }, { num: 5 }, { num: 6 }, { num: 7 }, { num: 8 }, { num: 9 }, { num: 10 },
-        { num: 11 }, { num: 12 }, { num: 13 }, { num: 14 }, { num: 15 },
-        { num: 16, isOvulation: true }, { num: 17 }, { num: 18 }, { num: 19 }, { num: 20 }, { num: 21 }, { num: 22 }, { num: 23 }, { num: 24 },
-        { num: 25, isToday: true }, { num: 26 },
-        { num: 27, isFertile: true }, { num: 28, isFertile: true }, { num: 29, isFertile: true }, { num: 30, isFertile: true }, { num: 31, isFertile: true },
-        { num: 1, isOtherMonth: true }, { num: 2, isOtherMonth: true }, { num: 3, isOtherMonth: true }, { num: 4, isOtherMonth: true }, { num: 5, isOtherMonth: true }, { num: 6, isOtherMonth: true }, { num: 7, isOtherMonth: true }
-    ];
+    if (events) {
+        state.fertilityCalendarEvents = events;
+    } else {
+        events = state.fertilityCalendarEvents || [];
+    }
+
+    const today = new Date();
+    if (year === undefined || year === null) {
+        year = (state.currentTTCYear !== undefined && state.currentTTCYear !== null) ? state.currentTTCYear : today.getFullYear();
+    }
+    if (month === undefined || month === null) {
+        month = (state.currentTTCMonth !== undefined && state.currentTTCMonth !== null) ? state.currentTTCMonth : today.getMonth();
+    }
+    state.currentTTCYear = year;
+    state.currentTTCMonth = month;
+
+    const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    const monthTitle = document.getElementById('ttc-cal-month-title');
+    if (monthTitle) {
+        monthTitle.textContent = `${monthNames[month]} ${year}`;
+    }
+
+    const todayStr = getTodayString();
+    // Monday-first indexing: 0 = Mon, ..., 6 = Sun
+    const firstDayIndex = (new Date(year, month, 1).getDay() + 6) % 7;
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    const prevMonthDays = new Date(year, month, 0).getDate();
+
+    const eventMap = {};
+    if (Array.isArray(events)) {
+        events.forEach(e => {
+            if (e && e.date) eventMap[e.date] = e;
+        });
+    }
+
+    const calDays = [];
+
+    // Previous month padding
+    for (let i = firstDayIndex; i > 0; i--) {
+        calDays.push({
+            num: prevMonthDays - i + 1,
+            isOtherMonth: true
+        });
+    }
+
+    // Current month days
+    for (let day = 1; day <= daysInMonth; day++) {
+        const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+        const evt = eventMap[dateStr];
+        const isToday = (dateStr === todayStr);
+
+        let isPeriod = evt ? Boolean(evt.is_period) : false;
+        let isFertile = evt ? Boolean(evt.is_fertile_window) : false;
+        let isOvulation = evt ? Boolean(evt.is_ovulation) : false;
+
+        // Fallback from predictions if date not in eventMap
+        if (!evt && state.cyclePredictions) {
+            const pred = state.cyclePredictions;
+            if (pred.fertile_window_start && pred.fertile_window_end && dateStr >= pred.fertile_window_start && dateStr <= pred.fertile_window_end) {
+                isFertile = true;
+            }
+            if (pred.ovulation_date && dateStr === pred.ovulation_date) {
+                isOvulation = true;
+            }
+        }
+
+        calDays.push({
+            num: day,
+            dateStr: dateStr,
+            isToday: isToday,
+            isPeriod: isPeriod,
+            isFertile: isFertile,
+            isOvulation: isOvulation
+        });
+    }
+
+    // Next month padding to fill complete grid (minimum 35 cells, up to complete week)
+    let totalCells = calDays.length;
+    let nextDaysNeeded = (7 - (totalCells % 7)) % 7;
+    if (totalCells + nextDaysNeeded < 35) {
+        nextDaysNeeded += 7;
+    }
+    for (let d = 1; d <= nextDaysNeeded; d++) {
+        calDays.push({
+            num: d,
+            isOtherMonth: true
+        });
+    }
 
     grid.innerHTML = calDays.map(d => {
         let classes = ['ttc-cal-day'];
         if (d.isOtherMonth) classes.push('is-other-month');
-        if (d.isToday) classes.push('is-today');
+        if (d.isPeriod) classes.push('is-period');
         if (d.isFertile) classes.push('is-fertile');
         if (d.isOvulation) classes.push('is-ovulation');
+        if (d.isToday) classes.push('is-today');
+
+        const clickHandler = d.dateStr ? `onclick="openLogModal('${d.dateStr}')"` : '';
+        const titleAttr = d.dateStr ? `title="${d.dateStr}${d.isToday ? ' (Today)' : ''}${d.isOvulation ? ' - Ovulation' : ''}${d.isFertile ? ' - Fertile Window' : ''}"` : '';
 
         return `
-            <div class="${classes.join(' ')}">
+            <div class="${classes.join(' ')}" ${clickHandler} ${titleAttr} style="${d.dateStr ? 'cursor:pointer;' : ''}">
                 <span>${d.num}</span>
                 ${d.isOvulation ? '<span class="ov-star-badge">★</span>' : ''}
             </div>
         `;
     }).join('');
+}
+
+function changeTTCMonth(delta) {
+    if (state.currentTTCMonth === undefined || state.currentTTCMonth === null) {
+        state.currentTTCMonth = new Date().getMonth();
+        state.currentTTCYear = new Date().getFullYear();
+    }
+    state.currentTTCMonth += delta;
+    if (state.currentTTCMonth < 0) {
+        state.currentTTCMonth = 11;
+        state.currentTTCYear--;
+    } else if (state.currentTTCMonth > 11) {
+        state.currentTTCMonth = 0;
+        state.currentTTCYear++;
+    }
+    renderTTCCalendar(state.fertilityCalendarEvents, state.currentTTCYear, state.currentTTCMonth);
 }
 
 function renderTTCInsights(insights) {
@@ -3757,6 +3963,68 @@ function renderTTCInsights(insights) {
             <p class="insight-desc">${item.description}</p>
         </div>
     `).join('');
+}
+
+function updateTodayLogAndJourney(bbtLogs, lhLogs, cmLogs) {
+    const todayStr = getTodayString();
+    
+    // Format friendly date like "Sep 02, 2026"
+    const todayDateObj = new Date();
+    const formattedDate = todayDateObj.toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' });
+    const logDateLabel = document.getElementById('today-log-date');
+    if (logDateLabel) logDateLabel.textContent = formattedDate;
+
+    // Today's values
+    const todayBBT = document.getElementById('today-bbt-val');
+    const todayLH = document.getElementById('today-lh-val');
+    const todayCM = document.getElementById('today-cm-val');
+    const todaySex = document.getElementById('today-sex-val');
+
+    const bbtToday = (bbtLogs || []).find(l => l.date === todayStr);
+    if (todayBBT) {
+        if (bbtToday) {
+            todayBBT.textContent = `${bbtToday.temperature} ${bbtToday.unit || '°C'}`;
+        } else if (bbtLogs && bbtLogs.length > 0) {
+            const last = bbtLogs[bbtLogs.length - 1];
+            todayBBT.textContent = `${last.temperature} ${last.unit || '°C'}`;
+        } else {
+            todayBBT.textContent = '36.52 °C';
+        }
+    }
+
+    const lhToday = (lhLogs || []).find(l => l.date === todayStr);
+    if (todayLH) {
+        if (lhToday) {
+            todayLH.textContent = lhToday.result === 'positive' || lhToday.result === 'surge' ? 'Surge' : 'Normal';
+        } else if (lhLogs && lhLogs.length > 0) {
+            const last = lhLogs[lhLogs.length - 1];
+            todayLH.textContent = last.result === 'positive' || last.result === 'surge' ? 'Surge' : 'Normal';
+        } else {
+            todayLH.textContent = 'Surge';
+        }
+    }
+
+    const cmToday = (cmLogs || []).find(l => l.date === todayStr);
+    if (todayCM) {
+        if (cmToday) {
+            todayCM.textContent = cmToday.type.charAt(0).toUpperCase() + cmToday.type.slice(1);
+        } else if (cmLogs && cmLogs.length > 0) {
+            const last = cmLogs[cmLogs.length - 1];
+            todayCM.textContent = last.type.charAt(0).toUpperCase() + last.type.slice(1);
+        } else {
+            todayCM.textContent = 'Watery';
+        }
+    }
+
+    if (todaySex) {
+        todaySex.textContent = 'Yes';
+    }
+
+    // Update AI Insight text if available
+    const aiInsightBody = document.getElementById('ttc-ai-insight-body');
+    if (aiInsightBody && state.fertilityOverview) {
+        aiInsightBody.textContent = `Your LH result and cervical mucus pattern suggest you are in your peak fertile window. Ovulation is estimated on ${state.fertilityOverview.estimated_ovulation_date || 'Sep 02'}.`;
+    }
 }
 
 function renderTTCTimeline() {
@@ -3911,21 +4179,49 @@ async function deletePregnancyTestLog(id) {
 }
 
 function updateTodayLogAndJourney(bbtLogs, lhLogs, cmLogs) {
+    const todayLabel = document.getElementById('today-log-date');
+    if (todayLabel) {
+        todayLabel.textContent = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    }
+
     const tBbt = document.getElementById('today-bbt-val');
     const tLh = document.getElementById('today-lh-val');
     const tCm = document.getElementById('today-cm-val');
 
-    if (bbtLogs && bbtLogs.length > 0) {
-        const last = bbtLogs[bbtLogs.length - 1];
-        if (tBbt) tBbt.textContent = `${last.temperature} ${last.unit}`;
+    const todayStr = getTodayString();
+    const todayBbt = (bbtLogs || []).find(l => l.date === todayStr);
+    const todayLh = (lhLogs || []).find(l => l.date === todayStr);
+    const todayCm = (cmLogs || []).find(l => l.date === todayStr);
+
+    if (tBbt) {
+        if (todayBbt) {
+            tBbt.textContent = `${todayBbt.temperature} ${todayBbt.unit}`;
+        } else if (bbtLogs && bbtLogs.length > 0) {
+            const last = bbtLogs[bbtLogs.length - 1];
+            tBbt.textContent = `${last.temperature} ${last.unit}`;
+        } else {
+            tBbt.textContent = '--';
+        }
     }
-    if (lhLogs && lhLogs.length > 0) {
-        const last = lhLogs[lhLogs.length - 1];
-        if (tLh) tLh.textContent = last.result.toUpperCase();
+    if (tLh) {
+        if (todayLh) {
+            tLh.textContent = todayLh.result.toUpperCase();
+        } else if (lhLogs && lhLogs.length > 0) {
+            const last = lhLogs[lhLogs.length - 1];
+            tLh.textContent = last.result.toUpperCase();
+        } else {
+            tLh.textContent = '--';
+        }
     }
-    if (cmLogs && cmLogs.length > 0) {
-        const last = cmLogs[cmLogs.length - 1];
-        if (tCm) tCm.textContent = last.type.replace('_', '-').toUpperCase();
+    if (tCm) {
+        if (todayCm) {
+            tCm.textContent = todayCm.type.replace('_', '-').toUpperCase();
+        } else if (cmLogs && cmLogs.length > 0) {
+            const last = cmLogs[cmLogs.length - 1];
+            tCm.textContent = last.type.replace('_', '-').toUpperCase();
+        } else {
+            tCm.textContent = '--';
+        }
     }
 
     const jBbt = document.getElementById('fj-bbt-val');
@@ -3933,14 +4229,16 @@ function updateTodayLogAndJourney(bbtLogs, lhLogs, cmLogs) {
     const jSurge = document.getElementById('fj-surge-val');
     const jCm = document.getElementById('fj-cm-val');
 
-    if (bbtLogs && jBbt) jBbt.textContent = `${bbtLogs.length}/7 days`;
-    if (lhLogs && jLh) jLh.textContent = `${lhLogs.length} tests`;
-    if (cmLogs && jCm) jCm.textContent = `${cmLogs.length} days`;
+    if (jBbt) jBbt.textContent = `${(bbtLogs || []).length}/7 days`;
+    if (jLh) jLh.textContent = `${(lhLogs || []).length} tests`;
+    if (jCm) jCm.textContent = `${(cmLogs || []).length} days`;
     
-    if (lhLogs) {
-        const surgeLog = lhLogs.find(l => l.result === 'surge');
-        if (jSurge && surgeLog) {
-            jSurge.textContent = surgeLog.date;
+    if (jSurge) {
+        const surgeLog = (lhLogs || []).slice().reverse().find(l => l.result === 'surge');
+        if (surgeLog) {
+            jSurge.textContent = formatDateShort(surgeLog.date);
+        } else {
+            jSurge.textContent = '--';
         }
     }
 }

@@ -24,10 +24,11 @@
             min-height: 100% !important;
         }
 
-        /* ===== TTC DASHBOARD: FULL VIEWPORT FIT (NO PAGE SCROLL) ===== */
+        /* ===== TTC DASHBOARD: MODERN 3-COLUMN REFINED DESIGN ===== */
         body:has(#view-ttc-dashboard:not(.hidden)) .app-main-content {
-            overflow: hidden !important;
-            padding: 0 16px 8px 16px !important;
+            overflow-y: auto !important;
+            overflow-x: hidden !important;
+            padding: 10px 18px 14px 18px !important;
             background: #f8fafc !important;
             display: flex !important;
             flex-direction: column !important;
@@ -41,291 +42,1166 @@
             flex-direction: column !important;
             flex: 1 !important;
             min-height: 0 !important;
-            height: 100% !important;
-            overflow: hidden !important;
         }
 
-        /* TTC layout wrapper: fills available height */
-        #view-ttc-dashboard:not(.hidden) .ttc-layout-wrapper {
-            flex: 1 !important;
-            min-height: 0 !important;
-            overflow: hidden !important;
+        .ttc-layout-wrapper {
             display: flex !important;
             flex-direction: column !important;
-            gap: 10px !important;
-            padding: 4px 0 2px 0 !important;
-            max-width: none !important;
-        }
-
-        /* Hero banner: compact, fixed height */
-        #view-ttc-dashboard:not(.hidden) .ttc-hero-card {
-            flex-shrink: 0 !important;
-            padding: 10px 18px !important;
-        }
-
-        /* Fertility overview: compact, fixed height */
-        #view-ttc-dashboard:not(.hidden) .ttc-overview-card-v2 {
-            flex-shrink: 0 !important;
-            padding: 10px 14px !important;
-        }
-
-        #view-ttc-dashboard:not(.hidden) .ttc-card-header-v2 {
-            margin-bottom: 6px !important;
-        }
-
-        #view-ttc-dashboard:not(.hidden) .ttc-mcard {
-            min-height: 72px !important;
-            padding: 9px 10px !important;
-        }
-
-        /* Analytics 4-col: corrected proportions */
-        #view-ttc-dashboard:not(.hidden) .ttc-analytics-4col {
-            flex: 1 !important;
-            min-height: 0 !important;
-            gap: 10px !important;
-            align-items: stretch !important;
-            overflow: hidden !important;
-            /* BBT wide | Signals narrow | Calendar medium | Sidebar medium */
-            grid-template-columns: 2.2fr 1fr 1.7fr 1.1fr !important;
-        }
-
-        /* Each column card fills height */
-        #view-ttc-dashboard:not(.hidden) .ttc-col-card {
-            min-height: 0 !important;
-            overflow: hidden !important;
-            padding: 12px 14px !important;
-            display: flex !important;
-            flex-direction: column !important;
-        }
-
-        /* Calendar card specifically: must not clip its grid rows */
-        #view-ttc-dashboard:not(.hidden) .ttc-col-card:has(#ttc-calendar-grid) {
-            overflow: visible !important;
-        }
-
-        /* Right sidebar: flex column, proportional distribution */
-        #view-ttc-dashboard:not(.hidden) .ttc-right-sidebar {
-            min-height: 0 !important;
-            overflow: hidden !important;
-            gap: 6px !important;
-            display: flex !important;
-            flex-direction: column !important;
-        }
-
-        /* Today's Log — gets most space */
-        #view-ttc-dashboard:not(.hidden) .ttc-sidebar-card:nth-child(1) {
-            flex: 2 1 0 !important;
-            min-height: 0 !important;
-            overflow: hidden !important;
-            padding: 10px 12px !important;
-            display: flex !important;
-            flex-direction: column !important;
-        }
-
-        /* AI Insight — medium space */
-        #view-ttc-dashboard:not(.hidden) .ttc-sidebar-card:nth-child(2) {
-            flex: 1.1 1 0 !important;
-            min-height: 0 !important;
-            overflow: hidden !important;
-            padding: 10px 12px !important;
-            display: flex !important;
-            flex-direction: column !important;
-        }
-
-        /* Helpful Tip — compact but fully visible */
-        #view-ttc-dashboard:not(.hidden) .ttc-sidebar-card:nth-child(3) {
-            flex: 0.75 1 0 !important;
-            min-height: 0 !important;
-            overflow: hidden !important;
-            padding: 8px 12px !important;
-            display: flex !important;
-            flex-direction: column !important;
-        }
-
-        /* Today's log rows: scrollable so all 4 entries always visible */
-        #view-ttc-dashboard:not(.hidden) .today-log-rows {
-            overflow-y: auto !important;
-            flex: 1 !important;
-            min-height: 0 !important;
-            gap: 5px !important;
-            margin: 5px 0 !important;
-        }
-
-        /* AI Insight body: scrollable if text is long */
-        #view-ttc-dashboard:not(.hidden) .card-ai-insight .ai-insight-text {
-            overflow-y: auto !important;
-            flex: 1 !important;
-            min-height: 0 !important;
-        }
-
-        /* Calendar card: show all rows, no scrollbar */
-        #view-ttc-dashboard:not(.hidden) .ttc-col-card:has(#ttc-calendar-grid) {
-            overflow: visible !important;
-        }
-
-        /* BBT chart canvas: fills card vertically */
-        #view-ttc-dashboard:not(.hidden) .bbt-chart-canvas-wrap {
-            flex: 1 !important;
-            min-height: 0 !important;
-            height: auto !important;
-            min-height: 110px !important;
-            margin: 6px 0 !important;
-        }
-
-        #view-ttc-dashboard:not(.hidden) #bbtChartCanvas {
+            gap: 12px !important;
             width: 100% !important;
-            height: 100% !important;
+            max-width: 1600px !important;
+            margin: 0 auto !important;
         }
 
-        /* Fertility signals rows: fill available space */
-        #view-ttc-dashboard:not(.hidden) .signals-rows-v2 {
-            flex: 1 !important;
-            min-height: 0 !important;
-            margin: 6px 0 !important;
-            gap: 6px !important;
-            overflow: hidden !important;
+        /* ===== COMPACT HEADER & PROFILE MENU ===== */
+        .app-top-header {
+            min-height: 56px !important;
+            padding: 8px 20px !important;
+            background: #ffffff !important;
+            border-bottom: 1px solid #e2e8f0 !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: space-between !important;
+            gap: 12px !important;
         }
 
-        #view-ttc-dashboard:not(.hidden) .sig-row-item {
-            padding: 7px 10px !important;
-            flex-shrink: 0 !important;
+        .app-top-header .greeting-section .ai-greeting {
+            font-size: 1.15rem !important;
+            font-weight: 700 !important;
+            color: #0f172a !important;
+            margin: 0 !important;
+            line-height: 1.2 !important;
         }
 
-        /* Calendar grid: compact spacing */
-        #view-ttc-dashboard:not(.hidden) .ttc-cal-grid-compact {
-            gap: 3px !important;
-            margin: 3px 0 !important;
-        }
-
-        #view-ttc-dashboard:not(.hidden) .cal-compact-weekdays {
-            margin-top: 4px !important;
-            margin-bottom: 2px !important;
-        }
-
-        #view-ttc-dashboard:not(.hidden) .cal-compact-legend {
-            margin-top: 4px !important;
-        }
-
-        /* Today log compact rows */
-        #view-ttc-dashboard:not(.hidden) .tlog-row {
+        .app-top-header .greeting-section .greeting-subtitle {
             font-size: 0.76rem !important;
+            color: #64748b !important;
+            margin: 0 !important;
         }
 
-        /* Sidebar card headers: tighter margin */
-        #view-ttc-dashboard:not(.hidden) .ttc-sidebar-card .ttc-card-header-v2 {
-            margin-bottom: 4px !important;
-            flex-shrink: 0 !important;
+        .top-header-right {
+            display: flex !important;
+            align-items: center !important;
+            gap: 8px !important;
+            flex-wrap: wrap !important;
         }
 
-        /* Hide journey card on desktop */
-        #view-ttc-dashboard:not(.hidden) .ttc-journey-card {
+        .btn-notification {
+            width: 34px !important;
+            height: 34px !important;
+            border-radius: 50% !important;
+            background: #f1f5f9 !important;
+            border: 1px solid #e2e8f0 !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            font-size: 0.95rem !important;
+            cursor: pointer !important;
+            position: relative !important;
+            transition: background 0.15s ease !important;
+        }
+
+        .btn-notification:hover {
+            background: #e2e8f0 !important;
+        }
+
+        .notification-badge {
+            position: absolute !important;
+            top: -2px !important;
+            right: -2px !important;
+            background: #f43f5e !important;
+            color: white !important;
+            font-size: 0.65rem !important;
+            font-weight: 700 !important;
+            min-width: 15px !important;
+            height: 15px !important;
+            border-radius: 10px !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            padding: 0 3px !important;
+        }
+
+        .btn-header-action {
+            height: 32px !important;
+            padding: 0 10px !important;
+            font-size: 0.76rem !important;
+            font-weight: 600 !important;
+            border-radius: 8px !important;
+            background: #ffffff !important;
+            border: 1px solid #cbd5e1 !important;
+            color: #334155 !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            gap: 5px !important;
+            cursor: pointer !important;
+            transition: all 0.15s ease !important;
+        }
+
+        .btn-header-action:hover {
+            background: #f8fafc !important;
+            border-color: #94a3b8 !important;
+            color: #0f172a !important;
+        }
+
+        .btn-helpline-action {
+            border-color: #fca5a5 !important;
+            color: #be123c !important;
+            background: #fff1f2 !important;
+        }
+
+        .btn-helpline-action:hover {
+            background: #ffe4e6 !important;
+            border-color: #f87171 !important;
+        }
+
+        .header-mode-toggle-pills {
+            display: inline-flex !important;
+            background: #f1f5f9 !important;
+            padding: 2px !important;
+            border-radius: 20px !important;
+            border: 1px solid #e2e8f0 !important;
+        }
+
+        .header-mode-toggle-pills .mode-pill-btn {
+            height: 28px !important;
+            padding: 0 10px !important;
+            font-size: 0.74rem !important;
+            font-weight: 600 !important;
+            border-radius: 16px !important;
+            border: none !important;
+            background: transparent !important;
+            color: #64748b !important;
+            cursor: pointer !important;
+            transition: all 0.15s ease !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            gap: 4px !important;
+        }
+
+        .header-mode-toggle-pills .mode-pill-btn.active {
+            background: #ffffff !important;
+            color: #059669 !important;
+            font-weight: 700 !important;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06) !important;
+        }
+
+        /* User Profile Dropdown Pill */
+        .user-profile-menu-wrapper {
+            position: relative !important;
+        }
+
+        .user-profile-btn {
+            display: inline-flex !important;
+            align-items: center !important;
+            gap: 6px !important;
+            height: 32px !important;
+            padding: 0 8px 0 3px !important;
+            background: #f8fafc !important;
+            border: 1px solid #e2e8f0 !important;
+            border-radius: 20px !important;
+            cursor: pointer !important;
+            transition: background 0.15s ease !important;
+        }
+
+        .user-profile-btn:hover {
+            background: #f1f5f9 !important;
+            border-color: #cbd5e1 !important;
+        }
+
+        .user-avatar-circle {
+            width: 26px !important;
+            height: 26px !important;
+            border-radius: 50% !important;
+            background: linear-gradient(135deg, #ec4899, #8b5cf6) !important;
+            color: white !important;
+            font-weight: 700 !important;
+            font-size: 0.75rem !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+        }
+
+        .user-name-short {
+            font-size: 0.78rem !important;
+            font-weight: 600 !important;
+            color: #1e293b !important;
+        }
+
+        .user-dropdown-arrow {
+            font-size: 0.65rem !important;
+            color: #64748b !important;
+        }
+
+        .user-profile-dropdown {
+            position: absolute !important;
+            top: calc(100% + 6px) !important;
+            right: 0 !important;
+            width: 210px !important;
+            background: #ffffff !important;
+            border: 1px solid #e2e8f0 !important;
+            border-radius: 12px !important;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05) !important;
+            padding: 8px !important;
+            z-index: 1000 !important;
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 4px !important;
+        }
+
+        .user-profile-dropdown.hidden {
             display: none !important;
         }
 
-        /* Outline pink button compact */
-        #view-ttc-dashboard:not(.hidden) .btn-outline-pink-pill {
-            margin-top: 6px !important;
-            padding: 6px 12px !important;
-            flex-shrink: 0 !important;
+        .profile-dropdown-header {
+            padding: 6px 8px !important;
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 2px !important;
         }
 
-        /* AI insight text compact */
-        #view-ttc-dashboard:not(.hidden) .ai-insight-text {
-            margin: 4px 0 6px 0 !important;
+        .profile-dropdown-email {
             font-size: 0.76rem !important;
+            font-weight: 700 !important;
+            color: #0f172a !important;
+            word-break: break-all !important;
         }
 
-        /* Helpful tip text compact */
-        #view-ttc-dashboard:not(.hidden) .helpful-tip-text {
-            font-size: 0.76rem !important;
-            margin: 3px 0 0 0 !important;
-            flex: 1 !important;
-            overflow: hidden !important;
+        .profile-mode-badge {
+            font-size: 0.65rem !important;
+            font-weight: 600 !important;
+            color: #047857 !important;
+            background: #d1fae5 !important;
+            padding: 1px 6px !important;
+            border-radius: 10px !important;
+            align-self: flex-start !important;
         }
 
-        /* Buttons compact */
-        #view-ttc-dashboard:not(.hidden) .btn-ask-ai,
-        #view-ttc-dashboard:not(.hidden) .btn-add-more-logs {
-            padding: 6px 12px !important;
-            font-size: 0.74rem !important;
-            flex-shrink: 0 !important;
-        }
-
-        /* Vera float: anchored to bottom-right viewport, NEVER overlaps card content */
-        body:has(#view-ttc-dashboard:not(.hidden)) #vera-float-widget {
-            position: fixed !important;
-            bottom: 20px !important;
-            right: 20px !important;
-            z-index: 999 !important;
-            max-width: 64px !important;
-        }
-
-        /* mcard val: prominent */
-        #view-ttc-dashboard:not(.hidden) .mcard-val {
-            font-size: 1.1rem !important;
+        .profile-dropdown-divider {
+            height: 1px !important;
+            background: #f1f5f9 !important;
             margin: 2px 0 !important;
         }
 
-        /* Responsive: medium desktop (1280–1500px) */
-        @media (max-width: 1500px) {
-            #view-ttc-dashboard:not(.hidden) .ttc-analytics-4col {
-                grid-template-columns: 2fr 1fr 1.6fr 1fr !important;
-            }
+        .profile-dropdown-item {
+            width: 100% !important;
+            display: flex !important;
+            align-items: center !important;
+            gap: 8px !important;
+            padding: 6px 8px !important;
+            font-size: 0.76rem !important;
+            font-weight: 500 !important;
+            color: #334155 !important;
+            background: transparent !important;
+            border: none !important;
+            border-radius: 6px !important;
+            cursor: pointer !important;
+            text-align: left !important;
+            transition: background 0.12s ease !important;
         }
 
-        @media (max-width: 1300px) {
-            #view-ttc-dashboard:not(.hidden) .ttc-analytics-4col {
-                grid-template-columns: 1.8fr 1fr 1.5fr 1fr !important;
-            }
-            #view-ttc-dashboard:not(.hidden) .ttc-mcard {
-                min-height: 66px !important;
-            }
+        .profile-dropdown-item:hover {
+            background: #f8fafc !important;
+            color: #0f172a !important;
         }
 
-        /* Tablet & mobile: allow scrolling, stack layout */
-        @media (max-width: 1024px) {
-            #view-ttc-dashboard:not(.hidden) {
-                overflow-y: auto !important;
-                height: auto !important;
+        .profile-dropdown-item.auth-btn-dropdown {
+            color: #be123c !important;
+        }
+
+        .profile-dropdown-item.auth-btn-dropdown:hover {
+            background: #fff1f2 !important;
+        }
+
+        /* ===== TTC HERO BANNER ===== */
+        .ttc-hero-card {
+            background: linear-gradient(135deg, #ffffff 0%, #f0fdf4 100%) !important;
+            border: 1px solid #bbf7d0 !important;
+            border-radius: 14px !important;
+            padding: 12px 18px !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: space-between !important;
+            gap: 14px !important;
+            box-shadow: 0 1px 3px rgba(16, 185, 129, 0.05) !important;
+        }
+
+        .ttc-hero-left {
+            display: flex !important;
+            align-items: center !important;
+            gap: 12px !important;
+        }
+
+        .ttc-sprout-circle {
+            width: 38px !important;
+            height: 38px !important;
+            border-radius: 50% !important;
+            background: #d1fae5 !important;
+            color: #059669 !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            font-size: 1.25rem !important;
+            flex-shrink: 0 !important;
+        }
+
+        .ttc-hero-text h2 {
+            font-size: 1.05rem !important;
+            font-weight: 700 !important;
+            color: #064e3b !important;
+            margin: 0 !important;
+            line-height: 1.2 !important;
+        }
+
+        .ttc-hero-text p {
+            font-size: 0.78rem !important;
+            color: #047857 !important;
+            margin: 2px 0 0 0 !important;
+            font-weight: 500 !important;
+        }
+
+        .ttc-mode-switcher-toggle {
+            display: inline-flex !important;
+            background: #ffffff !important;
+            padding: 3px !important;
+            border-radius: 20px !important;
+            border: 1px solid #86efac !important;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04) !important;
+        }
+
+        .ttc-mode-switcher-toggle .mode-pill-btn {
+            height: 30px !important;
+            padding: 0 14px !important;
+            font-size: 0.78rem !important;
+            font-weight: 600 !important;
+            border-radius: 16px !important;
+            border: none !important;
+            background: transparent !important;
+            color: #64748b !important;
+            cursor: pointer !important;
+            transition: all 0.15s ease !important;
+        }
+
+        .ttc-mode-switcher-toggle .mode-pill-btn.active {
+            background: #059669 !important;
+            color: #ffffff !important;
+            font-weight: 700 !important;
+            box-shadow: 0 1px 3px rgba(5, 150, 105, 0.25) !important;
+        }
+
+        /* ===== FERTILITY OVERVIEW 6 METRICS ===== */
+        .ttc-overview-card-v2 {
+            background: #ffffff !important;
+            border: 1px solid #e2e8f0 !important;
+            border-radius: 14px !important;
+            padding: 12px 16px !important;
+            box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04) !important;
+        }
+
+        .ttc-card-header-v2 {
+            display: flex !important;
+            align-items: center !important;
+            justify-content: space-between !important;
+            margin-bottom: 10px !important;
+        }
+
+        .header-title-info {
+            display: flex !important;
+            align-items: center !important;
+            gap: 7px !important;
+        }
+
+        .header-title-info h3 {
+            font-size: 0.92rem !important;
+            font-weight: 700 !important;
+            color: #0f172a !important;
+            margin: 0 !important;
+        }
+
+        .card-header-subtitle {
+            font-size: 0.72rem !important;
+            color: #64748b !important;
+            font-weight: 400 !important;
+        }
+
+        .card-header-icon {
+            font-size: 1rem !important;
+        }
+
+        .info-circle-icon {
+            font-size: 0.75rem !important;
+            color: #94a3b8 !important;
+            cursor: help !important;
+        }
+
+        .ttc-status-pill {
+            font-size: 0.72rem !important;
+            font-weight: 700 !important;
+            padding: 3px 10px !important;
+            border-radius: 20px !important;
+        }
+
+        .ttc-status-pill.pill-green {
+            background: #d1fae5 !important;
+            color: #065f46 !important;
+            border: 1px solid #a7f3d0 !important;
+        }
+
+        .ttc-overview-6grid {
+            display: grid !important;
+            grid-template-columns: repeat(6, 1fr) !important;
+            gap: 10px !important;
+        }
+
+        .ttc-mcard {
+            border-radius: 10px !important;
+            padding: 9px 12px !important;
+            display: flex !important;
+            flex-direction: column !important;
+            justify-content: space-between !important;
+            min-height: 76px !important;
+            border: 1px solid #e2e8f0 !important;
+            background: #ffffff !important;
+            transition: transform 0.12s ease, box-shadow 0.12s ease !important;
+        }
+
+        .ttc-mcard:hover {
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.04) !important;
+        }
+
+        /* Primary fertility card themes */
+        .ttc-mcard.mcard-green {
+            background: #f0fdf4 !important;
+            border-color: #86efac !important;
+        }
+
+        .ttc-mcard.mcard-purple {
+            background: #faf5ff !important;
+            border-color: #d8b4fe !important;
+        }
+
+        .ttc-mcard.mcard-pink-subtle {
+            background: #fff1f2 !important;
+            border-color: #fecdd3 !important;
+        }
+
+        .mcard-top-row {
+            display: flex !important;
+            align-items: center !important;
+            justify-content: space-between !important;
+            gap: 4px !important;
+        }
+
+        .mcard-label {
+            font-size: 0.65rem !important;
+            font-weight: 700 !important;
+            color: #64748b !important;
+            letter-spacing: 0.5px !important;
+            text-transform: uppercase !important;
+        }
+
+        .mcard-tag-est {
+            font-size: 0.62rem !important;
+            font-weight: 700 !important;
+            padding: 1px 5px !important;
+            border-radius: 4px !important;
+        }
+
+        .mcard-tag-est.tag-green {
+            background: #d1fae5 !important;
+            color: #047857 !important;
+        }
+
+        .mcard-tag-est.tag-purple {
+            background: #ede9fe !important;
+            color: #6d28d9 !important;
+        }
+
+        .mcard-val {
+            font-size: 1.12rem !important;
+            font-weight: 800 !important;
+            color: #0f172a !important;
+            line-height: 1.2 !important;
+            margin: 2px 0 !important;
+        }
+
+        .mcard-val.text-green { color: #047857 !important; }
+        .mcard-val.text-purple { color: #6d28d9 !important; }
+        .mcard-val.text-pink { color: #be123c !important; }
+
+        .mcard-val .val-unit {
+            font-size: 0.74rem !important;
+            font-weight: 500 !important;
+            color: #64748b !important;
+        }
+
+        .mcard-sub-green {
+            font-size: 0.68rem !important;
+            font-weight: 600 !important;
+            color: #059669 !important;
+        }
+
+        .mcard-sub-purple {
+            font-size: 0.68rem !important;
+            font-weight: 600 !important;
+            color: #7c3aed !important;
+        }
+
+        .mcard-sub-muted {
+            font-size: 0.68rem !important;
+            color: #94a3b8 !important;
+        }
+
+        .mcard-sub-phase {
+            font-size: 0.65rem !important;
+            font-weight: 700 !important;
+            color: #0284c7 !important;
+            background: #e0f2fe !important;
+            padding: 1px 5px !important;
+            border-radius: 4px !important;
+        }
+
+        .mcard-progress-track {
+            height: 4px !important;
+            background: #f1f5f9 !important;
+            border-radius: 2px !important;
+            overflow: hidden !important;
+            margin-top: 3px !important;
+        }
+
+        .mcard-progress-fill {
+            height: 100% !important;
+            background: linear-gradient(90deg, #38bdf8, #0284c7) !important;
+            border-radius: 2px !important;
+        }
+
+        /* ===== 3-COLUMN MAIN LAYOUT ===== */
+        .ttc-analytics-3col {
+            display: grid !important;
+            /* Left (BBT Chart ~48%) | Center (Calendar + Signals ~28%) | Right (Today's Log + AI ~24%) */
+            grid-template-columns: 2fr 1.15fr 1.05fr !important;
+            gap: 12px !important;
+            align-items: stretch !important;
+            width: 100% !important;
+        }
+
+        .ttc-card {
+            background: #ffffff !important;
+            border: 1px solid #e2e8f0 !important;
+            border-radius: 14px !important;
+            padding: 12px 14px !important;
+            box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04) !important;
+            display: flex !important;
+            flex-direction: column !important;
+        }
+
+        /* Col 1: BBT Chart */
+        .ttc-col-bbt {
+            display: flex !important;
+            flex-direction: column !important;
+            justify-content: space-between !important;
+            min-height: 420px !important;
+        }
+
+        .bbt-header-actions {
+            display: flex !important;
+            align-items: center !important;
+            gap: 8px !important;
+        }
+
+        .bbt-today-pill {
+            display: inline-flex !important;
+            align-items: center !important;
+            gap: 5px !important;
+            background: #faf5ff !important;
+            border: 1px solid #d8b4fe !important;
+            color: #6b21a8 !important;
+            padding: 3px 9px !important;
+            border-radius: 14px !important;
+            font-size: 0.72rem !important;
+            font-weight: 600 !important;
+        }
+
+        .bbt-today-pill .pill-dot {
+            color: #9333ea !important;
+            font-size: 0.65rem !important;
+        }
+
+        .btn-xs-pill {
+            background: #ffffff !important;
+            border: 1px solid #cbd5e1 !important;
+            color: #334155 !important;
+            padding: 3px 8px !important;
+            border-radius: 12px !important;
+            font-size: 0.7rem !important;
+            font-weight: 600 !important;
+            cursor: pointer !important;
+            transition: all 0.12s ease !important;
+        }
+
+        .btn-xs-pill:hover {
+            background: #f1f5f9 !important;
+            border-color: #94a3b8 !important;
+        }
+
+        .bbt-chart-canvas-wrap {
+            position: relative !important;
+            flex: 1 !important;
+            min-height: 250px !important;
+            width: 100% !important;
+            margin: 8px 0 !important;
+        }
+
+        .bbt-annotation-pill {
+            position: absolute !important;
+            top: 10px !important;
+            right: 14px !important;
+            background: rgba(243, 232, 255, 0.95) !important;
+            border: 1px solid #c084fc !important;
+            color: #6b21a8 !important;
+            font-size: 0.68rem !important;
+            font-weight: 700 !important;
+            padding: 3px 9px !important;
+            border-radius: 12px !important;
+            pointer-events: none !important;
+            backdrop-filter: blur(4px) !important;
+        }
+
+        .bbt-chart-footer {
+            display: flex !important;
+            align-items: center !important;
+            justify-content: space-between !important;
+            border-top: 1px solid #f1f5f9 !important;
+            padding-top: 8px !important;
+            gap: 8px !important;
+            flex-wrap: wrap !important;
+        }
+
+        .bbt-chart-legend {
+            display: flex !important;
+            align-items: center !important;
+            gap: 12px !important;
+            flex-wrap: wrap !important;
+        }
+
+        .bbt-leg-item {
+            display: inline-flex !important;
+            align-items: center !important;
+            gap: 4px !important;
+            font-size: 0.68rem !important;
+            color: #64748b !important;
+            font-weight: 500 !important;
+        }
+
+        .leg-line.purple-line {
+            width: 12px !important;
+            height: 2.5px !important;
+            background: #9333ea !important;
+            border-radius: 2px !important;
+        }
+
+        .leg-line.dashed-line {
+            width: 14px !important;
+            height: 0 !important;
+            border-top: 2px dashed #94a3b8 !important;
+        }
+
+        .leg-box.green-box {
+            width: 10px !important;
+            height: 10px !important;
+            background: #d1fae5 !important;
+            border: 1px solid #6ee7b7 !important;
+            border-radius: 2px !important;
+        }
+
+        .leg-star {
+            color: #8b5cf6 !important;
+            font-size: 0.75rem !important;
+        }
+
+        .btn-outline-pink-pill {
+            background: transparent !important;
+            border: 1px solid #f43f5e !important;
+            color: #e11d48 !important;
+            padding: 5px 12px !important;
+            border-radius: 14px !important;
+            font-size: 0.72rem !important;
+            font-weight: 600 !important;
+            cursor: pointer !important;
+            transition: all 0.15s ease !important;
+        }
+
+        .btn-outline-pink-pill:hover {
+            background: #fff1f2 !important;
+            color: #be123c !important;
+        }
+
+        /* Col 2: Center Column */
+        .ttc-center-col {
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 12px !important;
+        }
+
+        .ttc-cal-card {
+            flex: 1 !important;
+            display: flex !important;
+            flex-direction: column !important;
+            justify-content: space-between !important;
+        }
+
+        .cal-nav-controls {
+            display: flex !important;
+            align-items: center !important;
+            gap: 6px !important;
+        }
+
+        .cal-month-title {
+            font-size: 0.76rem !important;
+            font-weight: 700 !important;
+            color: #1e293b !important;
+        }
+
+        .btn-cal-arrow {
+            width: 22px !important;
+            height: 22px !important;
+            border-radius: 4px !important;
+            border: 1px solid #cbd5e1 !important;
+            background: #ffffff !important;
+            color: #475569 !important;
+            font-size: 0.85rem !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            cursor: pointer !important;
+            line-height: 1 !important;
+            transition: all 0.12s ease !important;
+        }
+
+        .btn-cal-arrow:hover {
+            background: #f1f5f9 !important;
+            border-color: #94a3b8 !important;
+            color: #0f172a !important;
+        }
+
+        .cal-compact-weekdays {
+            display: grid !important;
+            grid-template-columns: repeat(7, 1fr) !important;
+            text-align: center !important;
+            font-size: 0.62rem !important;
+            font-weight: 700 !important;
+            color: #94a3b8 !important;
+            margin: 4px 0 2px 0 !important;
+        }
+
+        .ttc-cal-grid-compact {
+            display: grid !important;
+            grid-template-columns: repeat(7, 1fr) !important;
+            gap: 3px !important;
+            margin: 2px 0 !important;
+        }
+
+        .ttc-cal-day {
+            aspect-ratio: 1 !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            font-size: 0.72rem !important;
+            font-weight: 600 !important;
+            border-radius: 6px !important;
+            color: #334155 !important;
+            background: #f8fafc !important;
+            position: relative !important;
+            cursor: pointer !important;
+            transition: background 0.12s ease !important;
+        }
+
+        .ttc-cal-day:hover {
+            filter: brightness(0.95) !important;
+        }
+
+        .ttc-cal-day.is-other-month {
+            color: #cbd5e1 !important;
+            background: transparent !important;
+            cursor: default !important;
+        }
+
+        .ttc-cal-day.is-period {
+            background: #ffe4e6 !important;
+            color: #be123c !important;
+            font-weight: 700 !important;
+        }
+
+        .ttc-cal-day.is-fertile {
+            background: #d1fae5 !important;
+            color: #065f46 !important;
+            font-weight: 700 !important;
+        }
+
+        .ttc-cal-day.is-ovulation {
+            background: #ede9fe !important;
+            color: #6b21a8 !important;
+            font-weight: 800 !important;
+        }
+
+        .ttc-cal-day.is-today {
+            outline: 2px solid #059669 !important;
+            outline-offset: -2px !important;
+            font-weight: 800 !important;
+            background: #ecfdf5 !important;
+            color: #065f46 !important;
+        }
+
+        .ov-star-badge {
+            color: #8b5cf6 !important;
+            font-size: 0.6rem !important;
+            position: absolute !important;
+            top: 1px !important;
+            right: 2px !important;
+        }
+
+        .cal-compact-legend {
+            display: flex !important;
+            align-items: center !important;
+            justify-content: space-between !important;
+            font-size: 0.62rem !important;
+            color: #64748b !important;
+            margin-top: 4px !important;
+            padding-top: 4px !important;
+            border-top: 1px solid #f1f5f9 !important;
+        }
+
+        .cal-compact-legend .dot-period { color: #f43f5e !important; }
+        .cal-compact-legend .dot-fertile { color: #10b981 !important; }
+        .cal-compact-legend .star-ov { color: #8b5cf6 !important; }
+        .cal-compact-legend .box-today { color: #059669 !important; font-weight: bold !important; }
+
+        /* Card 2: Fertility Signals */
+        .ttc-signals-card {
+            flex: 1 !important;
+            display: flex !important;
+            flex-direction: column !important;
+            justify-content: space-between !important;
+        }
+
+        .signals-rows-v2 {
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 6px !important;
+            margin: 4px 0 8px 0 !important;
+        }
+
+        .sig-row-item {
+            display: flex !important;
+            align-items: center !important;
+            justify-content: space-between !important;
+            padding: 6px 10px !important;
+            background: #f8fafc !important;
+            border: 1px solid #f1f5f9 !important;
+            border-radius: 8px !important;
+        }
+
+        .sig-left {
+            display: flex !important;
+            align-items: center !important;
+            gap: 6px !important;
+        }
+
+        .sig-icon {
+            font-size: 0.85rem !important;
+        }
+
+        .sig-label {
+            font-size: 0.74rem !important;
+            font-weight: 600 !important;
+            color: #1e293b !important;
+            white-space: nowrap !important;
+        }
+
+        .sig-pill {
+            font-size: 0.68rem !important;
+            font-weight: 700 !important;
+            padding: 2px 7px !important;
+            border-radius: 12px !important;
+            white-space: nowrap !important;
+        }
+
+        .sig-pill.pill-soft-green {
+            background: #d1fae5 !important;
+            color: #065f46 !important;
+            border: 1px solid #a7f3d0 !important;
+        }
+
+        .sig-pill.pill-soft-pink {
+            background: #ffe4e6 !important;
+            color: #9f1239 !important;
+            border: 1px solid #fecdd3 !important;
+        }
+
+        .sig-pill.pill-soft-blue {
+            background: #e0f2fe !important;
+            color: #0369a1 !important;
+            border: 1px solid #bae6fd !important;
+        }
+
+        /* Col 3: Right Column */
+        .ttc-right-col {
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 12px !important;
+        }
+
+        .ttc-today-log-card {
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 6px !important;
+        }
+
+        .log-date-label {
+            font-size: 0.7rem !important;
+            font-weight: 600 !important;
+            color: #64748b !important;
+            background: #f1f5f9 !important;
+            padding: 2px 7px !important;
+            border-radius: 10px !important;
+        }
+
+        .today-log-rows {
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 5px !important;
+            margin: 2px 0 !important;
+        }
+
+        .tlog-row {
+            display: flex !important;
+            align-items: center !important;
+            justify-content: space-between !important;
+            padding: 5px 8px !important;
+            background: #f8fafc !important;
+            border-radius: 6px !important;
+            font-size: 0.74rem !important;
+        }
+
+        .tlog-left {
+            display: flex !important;
+            align-items: center !important;
+            gap: 6px !important;
+        }
+
+        .tlog-icon {
+            font-size: 0.85rem !important;
+        }
+
+        .tlog-label {
+            font-weight: 600 !important;
+            color: #334155 !important;
+        }
+
+        .tlog-right {
+            display: flex !important;
+            align-items: center !important;
+            gap: 5px !important;
+        }
+
+        .tlog-right strong {
+            font-size: 0.74rem !important;
+            color: #0f172a !important;
+        }
+
+        .check-green {
+            color: #059669 !important;
+            font-weight: 800 !important;
+            font-size: 0.75rem !important;
+        }
+
+        .dot-red {
+            font-size: 0.65rem !important;
+        }
+
+        .today-log-actions {
+            display: flex !important;
+            align-items: center !important;
+            justify-content: space-between !important;
+            margin-top: 6px !important;
+            gap: 8px !important;
+            flex-wrap: wrap !important;
+        }
+
+        .btn-add-more-logs {
+            background: #059669 !important;
+            color: #ffffff !important;
+            border: none !important;
+            padding: 5px 12px !important;
+            border-radius: 6px !important;
+            font-size: 0.72rem !important;
+            font-weight: 700 !important;
+            cursor: pointer !important;
+            white-space: nowrap !important;
+            transition: background 0.12s ease !important;
+        }
+
+        .btn-add-more-logs:hover {
+            background: #047857 !important;
+        }
+
+        .view-all-logs-link {
+            font-size: 0.72rem !important;
+            font-weight: 600 !important;
+            color: #64748b !important;
+            text-decoration: underline !important;
+            cursor: pointer !important;
+            white-space: nowrap !important;
+        }
+
+        .view-all-logs-link:hover {
+            color: #059669 !important;
+        }
+
+        /* AI Insight Card */
+        .card-ai-insight {
+            background: linear-gradient(135deg, #ffffff 0%, #faf5ff 100%) !important;
+            border-color: #e9d5ff !important;
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 6px !important;
+        }
+
+        .ai-generated-label {
+            font-size: 0.65rem !important;
+            font-weight: 700 !important;
+            color: #7c3aed !important;
+            background: #f3e8ff !important;
+            padding: 2px 6px !important;
+            border-radius: 10px !important;
+        }
+
+        .ai-insight-content {
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 3px !important;
+        }
+
+        .ai-insight-headline {
+            font-size: 0.78rem !important;
+            font-weight: 700 !important;
+            color: #581c87 !important;
+            line-height: 1.2 !important;
+        }
+
+        .ai-insight-text {
+            font-size: 0.72rem !important;
+            color: #4b5563 !important;
+            line-height: 1.35 !important;
+            margin: 0 !important;
+        }
+
+        .ai-recommended-checklist {
+            background: rgba(255, 255, 255, 0.8) !important;
+            border: 1px solid #f3e8ff !important;
+            border-radius: 6px !important;
+            padding: 5px 8px !important;
+            margin-top: 2px !important;
+        }
+
+        .checklist-title {
+            font-size: 0.68rem !important;
+            font-weight: 700 !important;
+            color: #6b21a8 !important;
+            display: block !important;
+            margin-bottom: 2px !important;
+        }
+
+        .checklist-items {
+            list-style: none !important;
+            padding: 0 !important;
+            margin: 0 !important;
+        }
+
+        .checklist-items li {
+            font-size: 0.68rem !important;
+            color: #374151 !important;
+            line-height: 1.3 !important;
+        }
+
+        .btn-ask-ai {
+            background: linear-gradient(135deg, #7c3aed, #9333ea) !important;
+            color: #ffffff !important;
+            border: none !important;
+            padding: 5px 10px !important;
+            border-radius: 6px !important;
+            font-size: 0.72rem !important;
+            font-weight: 700 !important;
+            cursor: pointer !important;
+            transition: opacity 0.15s ease !important;
+            margin-top: 4px !important;
+        }
+
+        .btn-ask-ai:hover {
+            opacity: 0.92 !important;
+        }
+
+        /* Helpful Tip Card */
+        .card-helpful-tip {
+            background: #fffbeb !important;
+            border-color: #fde68a !important;
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 4px !important;
+        }
+
+        .helpful-tip-text {
+            font-size: 0.72rem !important;
+            color: #92400e !important;
+            line-height: 1.35 !important;
+            margin: 0 !important;
+        }
+
+        .btn-ask-vera {
+            background: linear-gradient(135deg, #f59e0b, #d97706) !important;
+            color: #ffffff !important;
+        }
+
+        /* Floating Vera AI Widget: anchored bottom-right */
+        #vera-float-widget {
+            position: fixed !important;
+            bottom: 22px !important;
+            right: 22px !important;
+            z-index: 9999 !important;
+        }
+
+        /* Responsive Breakpoints */
+        @media (max-width: 1200px) {
+            .ttc-overview-6grid {
+                grid-template-columns: repeat(3, 1fr) !important;
             }
-            #view-ttc-dashboard:not(.hidden) .ttc-layout-wrapper {
-                overflow: visible !important;
-                height: auto !important;
-                flex: none !important;
+            .ttc-analytics-3col {
+                grid-template-columns: 1.4fr 1fr !important;
             }
-            #view-ttc-dashboard:not(.hidden) .ttc-analytics-4col {
-                flex: none !important;
-                height: auto !important;
-                grid-template-columns: 1fr 1fr !important;
-            }
-            #view-ttc-dashboard:not(.hidden) .ttc-right-sidebar {
+            .ttc-right-col {
                 grid-column: span 2 !important;
                 flex-direction: row !important;
                 flex-wrap: wrap !important;
-                overflow: visible !important;
             }
-            #view-ttc-dashboard:not(.hidden) .ttc-sidebar-card:nth-child(1),
-            #view-ttc-dashboard:not(.hidden) .ttc-sidebar-card:nth-child(2),
-            #view-ttc-dashboard:not(.hidden) .ttc-sidebar-card:nth-child(3) {
-                flex: 1 1 200px !important;
-                min-height: 140px !important;
-            }
-            #view-ttc-dashboard:not(.hidden) .ttc-journey-card {
-                display: block !important;
-            }
-            #view-ttc-dashboard:not(.hidden) .bbt-chart-canvas-wrap {
-                height: 180px !important;
-                min-height: 180px !important;
-                flex: none !important;
+            .ttc-right-col .ttc-sidebar-card {
+                flex: 1 1 240px !important;
             }
         }
 
-        @media (max-width: 768px) {
-            #view-ttc-dashboard:not(.hidden) .ttc-analytics-4col {
+        @media (max-width: 800px) {
+            .ttc-overview-6grid {
+                grid-template-columns: repeat(2, 1fr) !important;
+            }
+            .ttc-analytics-3col {
                 grid-template-columns: 1fr !important;
             }
-            #view-ttc-dashboard:not(.hidden) .ttc-right-sidebar {
+            .ttc-right-col {
+                grid-column: span 1 !important;
                 flex-direction: column !important;
+            }
+            .ttc-hero-card {
+                flex-direction: column !important;
+                align-items: flex-start !important;
             }
         }
     </style>
@@ -457,22 +1333,36 @@
                     </div>
 
                     <button class="btn-header-action" title="Partner Share Link" onclick="openShareModal()"><span class="action-icon">🔗</span> Share</button>
-                    <button class="btn-header-action" title="AI Settings" onclick="toggleVeraFloat()"><span class="action-icon">✨</span> AI</button>
+                    <button class="btn-header-action" title="AI Companion" onclick="toggleVeraFloat()"><span class="action-icon">✨</span> AI</button>
                     <button class="btn-header-action btn-helpline-action" title="Crisis Helpline" onclick="openHelplineModal()"><span class="action-icon">📋</span> Helpline</button>
 
                     <!-- HerWell Life Stage / Tracking Mode Switcher Pill -->
                     <div class="header-mode-toggle-pills" id="header-mode-switcher">
                         <button class="mode-pill-btn active" id="pill-mode-cycle" onclick="switchTrackingMode('regular')" title="Cycle Tracking Mode">
-                            🌸 Cycle Tracking
+                            🌸 Cycle
                         </button>
                         <button class="mode-pill-btn" id="pill-mode-ttc" onclick="switchTrackingMode('ttc')" title="Trying to Conceive Mode">
-                            🌱 Trying to Conceive (TTC)
+                            🌱 TTC
                         </button>
                     </div>
 
-                    <div class="user-action-area" id="user-action-area">
-                        <span class="user-badge" id="user-email-display" onclick="openProfileModal()" style="cursor: pointer;" title="View Profile">priya@gmail.com</span>
-                        <button class="auth-btn btn-pill-pink" id="auth-action-btn" onclick="handleAuthAction()">Logout</button>
+                    <!-- User Profile Dropdown Menu -->
+                    <div class="user-profile-menu-wrapper">
+                        <button class="user-profile-btn" id="user-profile-toggle-btn" onclick="toggleProfileDropdown(event)" title="Profile & Account">
+                            <span class="user-avatar-circle" id="user-avatar-initial">P</span>
+                            <span class="user-name-short" id="user-display-name">Priya</span>
+                            <span class="user-dropdown-arrow">▾</span>
+                        </button>
+                        <div class="user-profile-dropdown hidden" id="user-profile-dropdown">
+                            <div class="profile-dropdown-header">
+                                <span class="profile-dropdown-email" id="user-email-display">priya@gmail.com</span>
+                                <span class="profile-mode-badge" id="profile-current-mode-badge">TTC Mode Active</span>
+                            </div>
+                            <div class="profile-dropdown-divider"></div>
+                            <button class="profile-dropdown-item" onclick="openProfileModal(); toggleProfileDropdown(event);"><span class="item-icon">🌸</span> Health Profile Mode</button>
+                            <button class="profile-dropdown-item" onclick="openShareModal(); toggleProfileDropdown(event);"><span class="item-icon">🔗</span> Partner Share Link</button>
+                            <button class="profile-dropdown-item auth-btn-dropdown" id="auth-action-btn" onclick="handleAuthAction()"><span class="item-icon">🚪</span> Logout</button>
+                        </div>
                     </div>
                 </div>
             </header>
@@ -889,188 +1779,223 @@
                             </div>
                             <div class="ttc-hero-right">
                                 <div class="ttc-mode-switcher-toggle">
-                                    <button class="mode-pill-btn" onclick="switchTrackingMode('regular')">🌸 Cycle Tracking</button>
-                                    <button class="mode-pill-btn active" onclick="switchTrackingMode('ttc')">🌱 TTC Mode</button>
+                                    <button class="mode-pill-btn" onclick="switchTrackingMode('regular')" title="Switch to Cycle Tracking">🌸 Cycle Tracking</button>
+                                    <button class="mode-pill-btn active" onclick="switchTrackingMode('ttc')" title="Active TTC Mode">🌱 TTC Mode</button>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- 2. Fertility Overview Card (Full Width 6 Metrics Grid) -->
+                        <!-- 2. Fertility Overview Card (Full Width 6 Metrics Grid with Strong Hierarchy) -->
                         <div class="ttc-card ttc-overview-card-v2">
                             <div class="ttc-card-header-v2">
                                 <div class="header-title-info">
                                     <span class="card-header-icon">🌱</span>
                                     <h3>Fertility Overview</h3>
-                                    <span class="info-circle-icon" title="Based on baseline cycle calculations and logged fertility signals">ⓘ</span>
+                                    <span class="info-circle-icon" title="Calculated from your historical cycles and biological fertility signals">ⓘ</span>
                                 </div>
                                 <span id="ttc-status-badge" class="ttc-status-pill pill-green">🟢 Peak fertile window</span>
                             </div>
 
                             <div class="ttc-overview-6grid">
-                                <!-- Metric 1: Cycle Day -->
-                                <div class="ttc-mcard">
-                                    <span class="mcard-label">CYCLE DAY</span>
+                                <!-- Primary 1: Fertile Window (Green) -->
+                                <div class="ttc-mcard mcard-primary mcard-green">
+                                    <div class="mcard-top-row">
+                                        <span class="mcard-label">ESTIMATED FERTILE WINDOW</span>
+                                        <span class="mcard-tag-est tag-green">Estimated</span>
+                                    </div>
+                                    <div class="mcard-val text-green" id="ttc-metric-fertile-window">Aug 29 – Sep 04</div>
+                                    <div class="mcard-sub-green" id="ttc-metric-fertile-sub">High conception probability</div>
+                                </div>
+
+                                <!-- Primary 2: Ovulation (Purple) -->
+                                <div class="ttc-mcard mcard-primary mcard-purple">
+                                    <div class="mcard-top-row">
+                                        <span class="mcard-label">ESTIMATED OVULATION</span>
+                                        <span class="mcard-tag-est tag-purple">Estimated</span>
+                                    </div>
+                                    <div class="mcard-val text-purple" id="ttc-metric-ovulation">Sep 02</div>
+                                    <div class="mcard-sub-purple">Peak LH & egg release window</div>
+                                </div>
+
+                                <!-- Primary 3: Days to Fertile Window (Green) -->
+                                <div class="ttc-mcard mcard-primary mcard-green">
+                                    <div class="mcard-top-row">
+                                        <span class="mcard-label">DAYS TO FERTILE WINDOW</span>
+                                        <span class="mcard-tag-est tag-green">Active</span>
+                                    </div>
+                                    <div class="mcard-val text-green" id="ttc-metric-days-until-fw">0 <span class="val-unit">days</span></div>
+                                    <div class="mcard-sub-green" id="ttc-metric-days-sub">Peak begins today!</div>
+                                </div>
+
+                                <!-- Secondary 1: Cycle Day (Navy/Slate) -->
+                                <div class="ttc-mcard mcard-secondary">
+                                    <div class="mcard-top-row">
+                                        <span class="mcard-label">CYCLE DAY</span>
+                                        <span class="mcard-sub-phase" id="ttc-metric-phase">Follicular Phase</span>
+                                    </div>
                                     <div class="mcard-val" id="ttc-metric-day">15</div>
-                                    <div class="mcard-sub-phase" id="ttc-metric-phase">Follicular Phase</div>
                                     <div class="mcard-progress-track">
                                         <div class="mcard-progress-fill" id="ttc-metric-progress" style="width: 53%;"></div>
                                     </div>
                                 </div>
 
-                                <!-- Metric 2: Cycle Length -->
-                                <div class="ttc-mcard">
-                                    <span class="mcard-label">CYCLE LENGTH</span>
+                                <!-- Secondary 2: Cycle Length (Navy/Slate) -->
+                                <div class="ttc-mcard mcard-secondary">
+                                    <div class="mcard-top-row">
+                                        <span class="mcard-label">CYCLE LENGTH</span>
+                                    </div>
                                     <div class="mcard-val" id="ttc-metric-cycle-len">28 <span class="val-unit">days</span></div>
-                                    <div class="mcard-sub-muted">Average</div>
+                                    <div class="mcard-sub-muted">Average baseline</div>
                                 </div>
 
-                                <!-- Metric 3: Fertile Window -->
-                                <div class="ttc-mcard">
-                                    <span class="mcard-label">ESTIMATED FERTILE WINDOW</span>
-                                    <div class="mcard-val text-pink" id="ttc-metric-fertile-window">Aug 27 – Sep 02</div>
-                                    <span class="mcard-tag-est">Estimated</span>
-                                </div>
-
-                                <!-- Metric 4: Ovulation -->
-                                <div class="ttc-mcard">
-                                    <span class="mcard-label">ESTIMATED OVULATION</span>
-                                    <div class="mcard-val text-purple" id="ttc-metric-ovulation">Aug 31</div>
-                                    <span class="mcard-tag-est">Estimated</span>
-                                </div>
-
-                                <!-- Metric 5: Days to Fertile Window -->
-                                <div class="ttc-mcard">
-                                    <span class="mcard-label">DAYS TO FERTILE WINDOW</span>
-                                    <div class="mcard-val" id="ttc-metric-days-until-fw">0 <span class="val-unit">days</span></div>
-                                    <div class="mcard-sub-green" id="ttc-metric-days-sub">Peak begins today!</div>
-                                </div>
-
-                                <!-- Metric 6: Days Since Period Start -->
-                                <div class="ttc-mcard">
-                                    <span class="mcard-label">DAYS SINCE PERIOD START</span>
-                                    <div class="mcard-val" id="ttc-metric-days-since-period">14 <span class="val-unit">days</span></div>
+                                <!-- Secondary 3: Days Since Period Start (Pink/Period) -->
+                                <div class="ttc-mcard mcard-secondary mcard-pink-subtle">
+                                    <div class="mcard-top-row">
+                                        <span class="mcard-label">DAYS SINCE PERIOD START</span>
+                                    </div>
+                                    <div class="mcard-val text-pink" id="ttc-metric-days-since-period">14 <span class="val-unit">days</span></div>
+                                    <div class="mcard-sub-muted">Since last period onset</div>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- 3. Four-Column Row (BBT Chart | Signals | Calendar | Right Info Column) -->
-                        <div class="ttc-analytics-4col">
+                        <!-- 3. Main 3-Column Content Layout (BBT Chart ~48% | Center ~28% | Right ~24%) -->
+                        <div class="ttc-analytics-3col">
 
-                            <!-- Col 1: BBT Chart -->
-                            <div class="ttc-card ttc-col-card">
+                            <!-- COLUMN 1: BBT Chart (Dominant, ~48% width) -->
+                            <div class="ttc-card ttc-col-bbt">
                                 <div class="ttc-card-header-v2">
                                     <div class="header-title-info">
                                         <span class="card-header-icon">🌡️</span>
-                                        <h3>BBT Chart</h3>
+                                        <div>
+                                            <h3>BBT Temperature Chart</h3>
+                                            <span class="card-header-subtitle">Biphasic thermal shift & ovulation tracking</span>
+                                        </div>
                                     </div>
-                                    <select class="select-dropdown-sm" onchange="renderBBTChart(state.bbtLogs)">
-                                        <option value="chart">Chart View ▼</option>
-                                    </select>
+                                    <div class="bbt-header-actions">
+                                        <div class="bbt-today-pill" id="bbt-today-header-stat">
+                                            <span class="pill-dot">●</span> Today: <strong id="bbt-today-stat-val">36.52 °C</strong>
+                                        </div>
+                                        <button class="btn-xs-pill" onclick="openLogModal(getTodayString())">+ Log Temp</button>
+                                    </div>
                                 </div>
 
                                 <div class="bbt-chart-canvas-wrap">
                                     <canvas id="bbtChartCanvas" height="190"></canvas>
-                                    <div class="bbt-annotation-pill" id="bbt-pattern-annotation">Possible Ovulation Around CD 15</div>
+                                    <div class="bbt-annotation-pill" id="bbt-pattern-annotation">Possible Ovulation: Cycle Day 14–15</div>
                                 </div>
 
-                                <button class="btn-outline-pink-pill" onclick="openLogModal(getTodayString())">View Full Chart</button>
-                            </div>
-
-                            <!-- Col 2: Fertility Signals -->
-                            <div class="ttc-card ttc-col-card">
-                                <div class="ttc-card-header-v2">
-                                    <div class="header-title-info">
-                                        <span class="card-header-icon">⚡</span>
-                                        <h3>Fertility Signals</h3>
-                                        <span class="info-circle-icon" title="Combined biological markers">ⓘ</span>
+                                <div class="bbt-chart-footer">
+                                    <div class="bbt-chart-legend">
+                                        <span class="bbt-leg-item"><span class="leg-line purple-line"></span> BBT Curve</span>
+                                        <span class="bbt-leg-item"><span class="leg-line dashed-line"></span> Coverline (36.45°C)</span>
+                                        <span class="bbt-leg-item"><span class="leg-box green-box"></span> Fertile Window</span>
+                                        <span class="bbt-leg-item"><span class="leg-star">★</span> Est. Ovulation</span>
                                     </div>
-                                </div>
-
-                                <div class="signals-rows-v2">
-                                    <div class="sig-row-item">
-                                        <div class="sig-left">
-                                            <span class="sig-icon">📈</span>
-                                            <span class="sig-label">BBT Trend</span>
-                                        </div>
-                                        <span class="sig-pill pill-soft-green" id="sig-bbt-status">↗ Rising</span>
-                                    </div>
-
-                                    <div class="sig-row-item">
-                                        <div class="sig-left">
-                                            <span class="sig-icon">🔥</span>
-                                            <span class="sig-label">LH Test</span>
-                                        </div>
-                                        <span class="sig-pill pill-soft-pink" id="sig-lh-status">🔴 Surge</span>
-                                    </div>
-
-                                    <div class="sig-row-item">
-                                        <div class="sig-left">
-                                            <span class="sig-icon">💧</span>
-                                            <span class="sig-label">Cervical Mucus</span>
-                                        </div>
-                                        <span class="sig-pill pill-soft-blue" id="sig-cm-status">💧 Watery</span>
-                                    </div>
-
-                                    <div class="sig-row-item">
-                                        <div class="sig-left">
-                                            <span class="sig-icon">🌱</span>
-                                            <span class="sig-label">Fertile Window</span>
-                                        </div>
-                                        <span class="sig-pill pill-soft-green" id="sig-fw-status">🌱 Peak</span>
-                                    </div>
-                                </div>
-
-                                <button class="btn-outline-pink-pill" onclick="openLogModal(getTodayString())">View Timeline</button>
-                            </div>
-
-                            <!-- Col 3: Calendar -->
-                            <div class="ttc-card ttc-col-card">
-                                <div class="ttc-card-header-v2">
-                                    <div class="header-title-info">
-                                        <span class="card-header-icon">📅</span>
-                                        <h3>Calendar</h3>
-                                    </div>
-                                    <div class="cal-nav-controls">
-                                        <span class="cal-month-title" id="ttc-cal-month-title">August 2025</span>
-                                        <button class="btn-cal-arrow" onclick="changeMonth(-1)">‹</button>
-                                        <button class="btn-cal-arrow" onclick="changeMonth(1)">›</button>
-                                    </div>
-                                </div>
-
-                                <div class="cal-compact-weekdays">
-                                    <span>MON</span><span>TUE</span><span>WED</span><span>THU</span><span>FRI</span><span>SAT</span><span>SUN</span>
-                                </div>
-
-                                <div id="ttc-calendar-grid" class="ttc-cal-grid-compact">
-                                    <!-- Rendered dynamically -->
-                                </div>
-
-                                <div class="cal-compact-legend">
-                                    <span><span class="dot dot-period">●</span> Period</span>
-                                    <span><span class="dot dot-fertile">●</span> Fertile Window</span>
-                                    <span><span class="star-ov">★</span> Ovulation (Est.)</span>
-                                    <span><span class="box-today">□</span> Today</span>
+                                    <button class="btn-outline-pink-pill" onclick="openLogModal(getTodayString())">View Full Chart & Log →</button>
                                 </div>
                             </div>
 
-                            <!-- Col 4: Right Information Column -->
-                            <aside class="ttc-right-sidebar">
+                            <!-- COLUMN 2: Center Column (Calendar + Fertility Signals) -->
+                            <div class="ttc-center-col">
 
-                                <!-- Widget 1: Today's Log Card -->
-                                <div class="ttc-sidebar-card">
+                                <!-- Card 1: Calendar -->
+                                <div class="ttc-card ttc-cal-card">
+                                    <div class="ttc-card-header-v2">
+                                        <div class="header-title-info">
+                                            <span class="card-header-icon">📅</span>
+                                            <h3>Fertility Calendar</h3>
+                                        </div>
+                                        <div class="cal-nav-controls">
+                                            <span class="cal-month-title" id="ttc-cal-month-title">September 2026</span>
+                                            <button class="btn-cal-arrow" onclick="changeTTCMonth(-1)" title="Previous Month">‹</button>
+                                            <button class="btn-cal-arrow" onclick="changeTTCMonth(1)" title="Next Month">›</button>
+                                        </div>
+                                    </div>
+
+                                    <div class="cal-compact-weekdays">
+                                        <span>MON</span><span>TUE</span><span>WED</span><span>THU</span><span>FRI</span><span>SAT</span><span>SUN</span>
+                                    </div>
+
+                                    <div id="ttc-calendar-grid" class="ttc-cal-grid-compact">
+                                        <!-- Rendered dynamically -->
+                                    </div>
+
+                                    <div class="cal-compact-legend">
+                                        <span><span class="dot dot-period">●</span> Period</span>
+                                        <span><span class="dot dot-fertile">●</span> Fertile</span>
+                                        <span><span class="star-ov">★</span> Ovulation</span>
+                                        <span><span class="box-today">□</span> Today</span>
+                                    </div>
+                                </div>
+
+                                <!-- Card 2: Fertility Signals -->
+                                <div class="ttc-card ttc-signals-card">
+                                    <div class="ttc-card-header-v2">
+                                        <div class="header-title-info">
+                                            <span class="card-header-icon">⚡</span>
+                                            <h3>Fertility Signals</h3>
+                                            <span class="info-circle-icon" title="Combined biological biomarkers for ovulation timing">ⓘ</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="signals-rows-v2">
+                                        <div class="sig-row-item">
+                                            <div class="sig-left">
+                                                <span class="sig-icon">📈</span>
+                                                <span class="sig-label">BBT Temperature</span>
+                                            </div>
+                                            <span class="sig-pill pill-soft-green" id="sig-bbt-status">✓ Logged (↗ Rising)</span>
+                                        </div>
+
+                                        <div class="sig-row-item">
+                                            <div class="sig-left">
+                                                <span class="sig-icon">🔥</span>
+                                                <span class="sig-label">LH Test</span>
+                                            </div>
+                                            <span class="sig-pill pill-soft-pink" id="sig-lh-status">🔴 Surge</span>
+                                        </div>
+
+                                        <div class="sig-row-item">
+                                            <div class="sig-left">
+                                                <span class="sig-icon">💧</span>
+                                                <span class="sig-label">Cervical Mucus</span>
+                                            </div>
+                                            <span class="sig-pill pill-soft-blue" id="sig-cm-status">💧 Watery</span>
+                                        </div>
+
+                                        <div class="sig-row-item">
+                                            <div class="sig-left">
+                                                <span class="sig-icon">🌱</span>
+                                                <span class="sig-label">Fertility Status</span>
+                                            </div>
+                                            <span class="sig-pill pill-soft-green" id="sig-fw-status">🌱 Peak</span>
+                                        </div>
+                                    </div>
+
+                                    <button class="btn-outline-pink-pill" onclick="openLogModal(getTodayString())">View Timeline</button>
+                                </div>
+
+                            </div>
+
+                            <!-- COLUMN 3: Right Column (Today's Log + AI Insight + Helpful Tip) -->
+                            <div class="ttc-right-col">
+
+                                <!-- Card 1: Today's Log -->
+                                <div class="ttc-card ttc-sidebar-card ttc-today-log-card">
                                     <div class="ttc-card-header-v2">
                                         <div class="header-title-info">
                                             <span class="card-header-icon">📋</span>
                                             <h3>Today's Log</h3>
                                         </div>
-                                        <span class="log-date-label" id="today-log-date">Aug 25, 2025</span>
+                                        <span class="log-date-label" id="today-log-date">Sep 02, 2026</span>
                                     </div>
 
                                     <div class="today-log-rows">
                                         <div class="tlog-row" title="Basal Body Temperature">
                                             <div class="tlog-left">
                                                 <span class="tlog-icon" aria-hidden="true">🌡️</span>
-                                                <span class="tlog-label">BBT</span>
+                                                <span class="tlog-label">BBT Temperature</span>
                                             </div>
                                             <div class="tlog-right">
                                                 <strong id="today-bbt-val">36.52 °C</strong>
@@ -1112,28 +2037,42 @@
                                         </div>
                                     </div>
 
-                                    <button class="btn-add-more-logs" onclick="openLogModal(getTodayString())">+ Add More Logs</button>
+                                    <div class="today-log-actions">
+                                        <button class="btn-add-more-logs" onclick="openLogModal(getTodayString())">+ Add More Logs</button>
+                                        <span class="view-all-logs-link" onclick="openLogModal(getTodayString())">View All Logs →</span>
+                                    </div>
                                 </div>
 
-                                <!-- Widget 2: AI Insight Card -->
-                                <div class="ttc-sidebar-card card-ai-insight">
+                                <!-- Card 2: AI Insight -->
+                                <div class="ttc-card ttc-sidebar-card card-ai-insight">
                                     <div class="ttc-card-header-v2">
                                         <div class="header-title-info">
                                             <span class="card-header-icon">✨</span>
-                                            <h3>AI Insight</h3>
+                                            <h3>AI Fertility Insight</h3>
                                         </div>
-                                        <span class="ai-generated-label">✨ AI</span>
+                                        <span class="ai-generated-label">✨ Vera AI</span>
                                     </div>
 
-                                    <p class="ai-insight-text" id="ttc-ai-insight-body">
-                                        Your LH surge and fertile-type cervical mucus suggest you're in your peak fertile window. Ovulation may occur in the next 24–48 hours.
-                                    </p>
+                                    <div class="ai-insight-content">
+                                        <strong class="ai-insight-headline">High fertility likelihood today</strong>
+                                        <p class="ai-insight-text" id="ttc-ai-insight-body">
+                                            Your LH result and cervical mucus pattern suggest you may be near ovulation.
+                                        </p>
+                                        <div class="ai-recommended-checklist">
+                                            <span class="checklist-title">Recommended:</span>
+                                            <ul class="checklist-items">
+                                                <li>• Log today's BBT</li>
+                                                <li>• Stay hydrated</li>
+                                                <li>• Consider intercourse today/tomorrow</li>
+                                            </ul>
+                                        </div>
+                                    </div>
 
                                     <button class="btn-ask-ai" onclick="toggleVeraFloat()">✨ Ask AI Companion</button>
                                 </div>
 
-                                <!-- Widget 3: Helpful Tip Card -->
-                                <div class="ttc-sidebar-card card-helpful-tip">
+                                <!-- Card 3: Helpful Tip -->
+                                <div class="ttc-card ttc-sidebar-card card-helpful-tip">
                                     <div class="ttc-card-header-v2">
                                         <div class="header-title-info">
                                             <span class="card-header-icon">💡</span>
@@ -1142,74 +2081,14 @@
                                     </div>
 
                                     <p class="helpful-tip-text">
-                                        Stay hydrated and maintain a balanced diet. Light exercise and stress management can support your fertility journey.
+                                        <strong>Optimal Timing:</strong> Having intercourse during the 2 days before ovulation and the day of ovulation provides the highest conception probability.
                                     </p>
 
-                                    <button class="btn-ask-ai" style="margin-top: 6px; background: linear-gradient(135deg,#fffbeb,#fef3c7); border-color: #fcd34d; color: #92400e;" onclick="toggleVeraFloat()">Ask Vera 🌿</button>
+                                    <button class="btn-ask-ai btn-ask-vera" onclick="toggleVeraFloat()">Ask Vera 🌿</button>
                                 </div>
 
-                            </aside>
-
-                        </div>
-
-                        <!-- 4. Your Fertility Journey Section (Full Width 5 Cards Row) -->
-                        <div class="ttc-card ttc-journey-card">
-                            <div class="ttc-card-header-v2">
-                                <div class="journey-title-wrap">
-                                    <span class="card-header-icon">🌱</span>
-                                    <div>
-                                        <h3>Your Fertility Journey</h3>
-                                        <p class="journey-sub">A quick view of your recent logs</p>
-                                    </div>
-                                </div>
-                                <select class="select-dropdown-sm">
-                                    <option value="7">Last 7 Days ▼</option>
-                                    <option value="14">Last 14 Days</option>
-                                    <option value="30">Last 30 Days</option>
-                                </select>
                             </div>
 
-                            <div class="ttc-journey-5grid">
-                                <div class="jcard">
-                                    <span class="jcard-icon">🌡️</span>
-                                    <div class="jcard-info">
-                                        <span class="jcard-label">BBT Logged</span>
-                                        <strong class="jcard-val text-green" id="fj-bbt-val">7/7 days</strong>
-                                    </div>
-                                </div>
-
-                                <div class="jcard">
-                                    <span class="jcard-icon">🧪</span>
-                                    <div class="jcard-info">
-                                        <span class="jcard-label">LH Tests</span>
-                                        <strong class="jcard-val" id="fj-lh-val">5 tests</strong>
-                                    </div>
-                                </div>
-
-                                <div class="jcard">
-                                    <span class="jcard-icon">🧪</span>
-                                    <div class="jcard-info">
-                                        <span class="jcard-label">Peak LH Surge</span>
-                                        <strong class="jcard-val" id="fj-surge-val">Aug 25</strong>
-                                    </div>
-                                </div>
-
-                                <div class="jcard">
-                                    <span class="jcard-icon">💖</span>
-                                    <div class="jcard-info">
-                                        <span class="jcard-label">Intercourse Logged</span>
-                                        <strong class="jcard-val" id="fj-sex-val">3 days</strong>
-                                    </div>
-                                </div>
-
-                                <div class="jcard">
-                                    <span class="jcard-icon">💧</span>
-                                    <div class="jcard-info">
-                                        <span class="jcard-label">CM Observations</span>
-                                        <strong class="jcard-val" id="fj-cm-val">6 days</strong>
-                                    </div>
-                                </div>
-                            </div>
                         </div>
 
                     </div>
