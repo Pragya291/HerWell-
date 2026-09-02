@@ -9,11 +9,10 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/css/style.css?v=1010">
+    <link rel="stylesheet" href="/css/style.css?v=1015">
     <style>
-        /* ===== COMMUNITY & TTC PAGE VISIBILITY FIX ===== */
-        body:has(#view-community:not(.hidden)) .app-main-content,
-        body:has(#view-ttc-dashboard:not(.hidden)) .app-main-content {
+        /* ===== COMMUNITY PAGE SCROLLABLE FIX ===== */
+        body:has(#view-community:not(.hidden)) .app-main-content {
             overflow-y: auto !important;
             overflow-x: hidden !important;
             padding: 20px !important;
@@ -24,10 +23,310 @@
             height: auto !important;
             min-height: 100% !important;
         }
+
+        /* ===== TTC DASHBOARD: FULL VIEWPORT FIT (NO PAGE SCROLL) ===== */
+        body:has(#view-ttc-dashboard:not(.hidden)) .app-main-content {
+            overflow: hidden !important;
+            padding: 0 16px 8px 16px !important;
+            background: #f8fafc !important;
+            display: flex !important;
+            flex-direction: column !important;
+            flex: 1 !important;
+            min-height: 0 !important;
+        }
+
         #view-ttc-dashboard:not(.hidden) {
             width: 100% !important;
-            display: block !important;
+            display: flex !important;
+            flex-direction: column !important;
+            flex: 1 !important;
+            min-height: 0 !important;
+            height: 100% !important;
+            overflow: hidden !important;
+        }
+
+        /* TTC layout wrapper: fills available height */
+        #view-ttc-dashboard:not(.hidden) .ttc-layout-wrapper {
+            flex: 1 !important;
+            min-height: 0 !important;
+            overflow: hidden !important;
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 10px !important;
+            padding: 4px 0 2px 0 !important;
+            max-width: none !important;
+        }
+
+        /* Hero banner: compact, fixed height */
+        #view-ttc-dashboard:not(.hidden) .ttc-hero-card {
+            flex-shrink: 0 !important;
+            padding: 10px 18px !important;
+        }
+
+        /* Fertility overview: compact, fixed height */
+        #view-ttc-dashboard:not(.hidden) .ttc-overview-card-v2 {
+            flex-shrink: 0 !important;
+            padding: 10px 14px !important;
+        }
+
+        #view-ttc-dashboard:not(.hidden) .ttc-card-header-v2 {
+            margin-bottom: 6px !important;
+        }
+
+        #view-ttc-dashboard:not(.hidden) .ttc-mcard {
+            min-height: 72px !important;
+            padding: 9px 10px !important;
+        }
+
+        /* Analytics 4-col: corrected proportions */
+        #view-ttc-dashboard:not(.hidden) .ttc-analytics-4col {
+            flex: 1 !important;
+            min-height: 0 !important;
+            gap: 10px !important;
+            align-items: stretch !important;
+            overflow: hidden !important;
+            /* BBT wide | Signals narrow | Calendar medium | Sidebar medium */
+            grid-template-columns: 2.2fr 1fr 1.7fr 1.1fr !important;
+        }
+
+        /* Each column card fills height */
+        #view-ttc-dashboard:not(.hidden) .ttc-col-card {
+            min-height: 0 !important;
+            overflow: hidden !important;
+            padding: 12px 14px !important;
+            display: flex !important;
+            flex-direction: column !important;
+        }
+
+        /* Calendar card specifically: must not clip its grid rows */
+        #view-ttc-dashboard:not(.hidden) .ttc-col-card:has(#ttc-calendar-grid) {
+            overflow: visible !important;
+        }
+
+        /* Right sidebar: flex column, proportional distribution */
+        #view-ttc-dashboard:not(.hidden) .ttc-right-sidebar {
+            min-height: 0 !important;
+            overflow: hidden !important;
+            gap: 6px !important;
+            display: flex !important;
+            flex-direction: column !important;
+        }
+
+        /* Today's Log — gets most space */
+        #view-ttc-dashboard:not(.hidden) .ttc-sidebar-card:nth-child(1) {
+            flex: 2 1 0 !important;
+            min-height: 0 !important;
+            overflow: hidden !important;
+            padding: 10px 12px !important;
+            display: flex !important;
+            flex-direction: column !important;
+        }
+
+        /* AI Insight — medium space */
+        #view-ttc-dashboard:not(.hidden) .ttc-sidebar-card:nth-child(2) {
+            flex: 1.1 1 0 !important;
+            min-height: 0 !important;
+            overflow: hidden !important;
+            padding: 10px 12px !important;
+            display: flex !important;
+            flex-direction: column !important;
+        }
+
+        /* Helpful Tip — compact but fully visible */
+        #view-ttc-dashboard:not(.hidden) .ttc-sidebar-card:nth-child(3) {
+            flex: 0.75 1 0 !important;
+            min-height: 0 !important;
+            overflow: hidden !important;
+            padding: 8px 12px !important;
+            display: flex !important;
+            flex-direction: column !important;
+        }
+
+        /* Today's log rows: scrollable so all 4 entries always visible */
+        #view-ttc-dashboard:not(.hidden) .today-log-rows {
+            overflow-y: auto !important;
+            flex: 1 !important;
+            min-height: 0 !important;
+            gap: 5px !important;
+            margin: 5px 0 !important;
+        }
+
+        /* AI Insight body: scrollable if text is long */
+        #view-ttc-dashboard:not(.hidden) .card-ai-insight .ai-insight-text {
+            overflow-y: auto !important;
+            flex: 1 !important;
+            min-height: 0 !important;
+        }
+
+        /* Calendar card: show all rows, no scrollbar */
+        #view-ttc-dashboard:not(.hidden) .ttc-col-card:has(#ttc-calendar-grid) {
+            overflow: visible !important;
+        }
+
+        /* BBT chart canvas: fills card vertically */
+        #view-ttc-dashboard:not(.hidden) .bbt-chart-canvas-wrap {
+            flex: 1 !important;
+            min-height: 0 !important;
             height: auto !important;
+            min-height: 110px !important;
+            margin: 6px 0 !important;
+        }
+
+        #view-ttc-dashboard:not(.hidden) #bbtChartCanvas {
+            width: 100% !important;
+            height: 100% !important;
+        }
+
+        /* Fertility signals rows: fill available space */
+        #view-ttc-dashboard:not(.hidden) .signals-rows-v2 {
+            flex: 1 !important;
+            min-height: 0 !important;
+            margin: 6px 0 !important;
+            gap: 6px !important;
+            overflow: hidden !important;
+        }
+
+        #view-ttc-dashboard:not(.hidden) .sig-row-item {
+            padding: 7px 10px !important;
+            flex-shrink: 0 !important;
+        }
+
+        /* Calendar grid: compact spacing */
+        #view-ttc-dashboard:not(.hidden) .ttc-cal-grid-compact {
+            gap: 3px !important;
+            margin: 3px 0 !important;
+        }
+
+        #view-ttc-dashboard:not(.hidden) .cal-compact-weekdays {
+            margin-top: 4px !important;
+            margin-bottom: 2px !important;
+        }
+
+        #view-ttc-dashboard:not(.hidden) .cal-compact-legend {
+            margin-top: 4px !important;
+        }
+
+        /* Today log compact rows */
+        #view-ttc-dashboard:not(.hidden) .tlog-row {
+            font-size: 0.76rem !important;
+        }
+
+        /* Sidebar card headers: tighter margin */
+        #view-ttc-dashboard:not(.hidden) .ttc-sidebar-card .ttc-card-header-v2 {
+            margin-bottom: 4px !important;
+            flex-shrink: 0 !important;
+        }
+
+        /* Hide journey card on desktop */
+        #view-ttc-dashboard:not(.hidden) .ttc-journey-card {
+            display: none !important;
+        }
+
+        /* Outline pink button compact */
+        #view-ttc-dashboard:not(.hidden) .btn-outline-pink-pill {
+            margin-top: 6px !important;
+            padding: 6px 12px !important;
+            flex-shrink: 0 !important;
+        }
+
+        /* AI insight text compact */
+        #view-ttc-dashboard:not(.hidden) .ai-insight-text {
+            margin: 4px 0 6px 0 !important;
+            font-size: 0.76rem !important;
+        }
+
+        /* Helpful tip text compact */
+        #view-ttc-dashboard:not(.hidden) .helpful-tip-text {
+            font-size: 0.76rem !important;
+            margin: 3px 0 0 0 !important;
+            flex: 1 !important;
+            overflow: hidden !important;
+        }
+
+        /* Buttons compact */
+        #view-ttc-dashboard:not(.hidden) .btn-ask-ai,
+        #view-ttc-dashboard:not(.hidden) .btn-add-more-logs {
+            padding: 6px 12px !important;
+            font-size: 0.74rem !important;
+            flex-shrink: 0 !important;
+        }
+
+        /* Vera float: anchored to bottom-right viewport, NEVER overlaps card content */
+        body:has(#view-ttc-dashboard:not(.hidden)) #vera-float-widget {
+            position: fixed !important;
+            bottom: 20px !important;
+            right: 20px !important;
+            z-index: 999 !important;
+            max-width: 64px !important;
+        }
+
+        /* mcard val: prominent */
+        #view-ttc-dashboard:not(.hidden) .mcard-val {
+            font-size: 1.1rem !important;
+            margin: 2px 0 !important;
+        }
+
+        /* Responsive: medium desktop (1280–1500px) */
+        @media (max-width: 1500px) {
+            #view-ttc-dashboard:not(.hidden) .ttc-analytics-4col {
+                grid-template-columns: 2fr 1fr 1.6fr 1fr !important;
+            }
+        }
+
+        @media (max-width: 1300px) {
+            #view-ttc-dashboard:not(.hidden) .ttc-analytics-4col {
+                grid-template-columns: 1.8fr 1fr 1.5fr 1fr !important;
+            }
+            #view-ttc-dashboard:not(.hidden) .ttc-mcard {
+                min-height: 66px !important;
+            }
+        }
+
+        /* Tablet & mobile: allow scrolling, stack layout */
+        @media (max-width: 1024px) {
+            #view-ttc-dashboard:not(.hidden) {
+                overflow-y: auto !important;
+                height: auto !important;
+            }
+            #view-ttc-dashboard:not(.hidden) .ttc-layout-wrapper {
+                overflow: visible !important;
+                height: auto !important;
+                flex: none !important;
+            }
+            #view-ttc-dashboard:not(.hidden) .ttc-analytics-4col {
+                flex: none !important;
+                height: auto !important;
+                grid-template-columns: 1fr 1fr !important;
+            }
+            #view-ttc-dashboard:not(.hidden) .ttc-right-sidebar {
+                grid-column: span 2 !important;
+                flex-direction: row !important;
+                flex-wrap: wrap !important;
+                overflow: visible !important;
+            }
+            #view-ttc-dashboard:not(.hidden) .ttc-sidebar-card:nth-child(1),
+            #view-ttc-dashboard:not(.hidden) .ttc-sidebar-card:nth-child(2),
+            #view-ttc-dashboard:not(.hidden) .ttc-sidebar-card:nth-child(3) {
+                flex: 1 1 200px !important;
+                min-height: 140px !important;
+            }
+            #view-ttc-dashboard:not(.hidden) .ttc-journey-card {
+                display: block !important;
+            }
+            #view-ttc-dashboard:not(.hidden) .bbt-chart-canvas-wrap {
+                height: 180px !important;
+                min-height: 180px !important;
+                flex: none !important;
+            }
+        }
+
+        @media (max-width: 768px) {
+            #view-ttc-dashboard:not(.hidden) .ttc-analytics-4col {
+                grid-template-columns: 1fr !important;
+            }
+            #view-ttc-dashboard:not(.hidden) .ttc-right-sidebar {
+                flex-direction: column !important;
+            }
         }
     </style>
 </head>
@@ -760,47 +1059,50 @@
                                 <!-- Widget 1: Today's Log Card -->
                                 <div class="ttc-sidebar-card">
                                     <div class="ttc-card-header-v2">
-                                        <h3>Today's Log</h3>
+                                        <div class="header-title-info">
+                                            <span class="card-header-icon">📋</span>
+                                            <h3>Today's Log</h3>
+                                        </div>
                                         <span class="log-date-label" id="today-log-date">Aug 25, 2025</span>
                                     </div>
 
                                     <div class="today-log-rows">
-                                        <div class="tlog-row">
+                                        <div class="tlog-row" title="Basal Body Temperature">
                                             <div class="tlog-left">
-                                                <span class="tlog-icon">🌡️</span>
+                                                <span class="tlog-icon" aria-hidden="true">🌡️</span>
                                                 <span class="tlog-label">BBT</span>
                                             </div>
                                             <div class="tlog-right">
                                                 <strong id="today-bbt-val">36.52 °C</strong>
-                                                <span class="check-green">✓</span>
+                                                <span class="check-green" title="Logged">✓</span>
                                             </div>
                                         </div>
 
-                                        <div class="tlog-row">
+                                        <div class="tlog-row" title="Luteinizing Hormone Test">
                                             <div class="tlog-left">
-                                                <span class="tlog-icon">🧪</span>
+                                                <span class="tlog-icon" aria-hidden="true">🧪</span>
                                                 <span class="tlog-label">LH Test</span>
                                             </div>
                                             <div class="tlog-right">
                                                 <strong id="today-lh-val">Surge</strong>
-                                                <span class="dot-red">🔴</span>
+                                                <span class="dot-red" title="LH Surge detected">🔴</span>
                                             </div>
                                         </div>
 
-                                        <div class="tlog-row">
+                                        <div class="tlog-row" title="Cervical Mucus observation">
                                             <div class="tlog-left">
-                                                <span class="tlog-icon">💧</span>
+                                                <span class="tlog-icon" aria-hidden="true">💧</span>
                                                 <span class="tlog-label">Cervical Mucus</span>
                                             </div>
                                             <div class="tlog-right">
                                                 <strong id="today-cm-val">Watery</strong>
-                                                <span class="check-green">✓</span>
+                                                <span class="check-green" title="Logged">✓</span>
                                             </div>
                                         </div>
 
-                                        <div class="tlog-row">
+                                        <div class="tlog-row" title="Intercourse logged">
                                             <div class="tlog-left">
-                                                <span class="tlog-icon">💖</span>
+                                                <span class="tlog-icon" aria-hidden="true">💖</span>
                                                 <span class="tlog-label">Intercourse</span>
                                             </div>
                                             <div class="tlog-right">
@@ -820,13 +1122,14 @@
                                             <span class="card-header-icon">✨</span>
                                             <h3>AI Insight</h3>
                                         </div>
+                                        <span class="ai-generated-label">✨ AI</span>
                                     </div>
 
                                     <p class="ai-insight-text" id="ttc-ai-insight-body">
                                         Your LH surge and fertile-type cervical mucus suggest you're in your peak fertile window. Ovulation may occur in the next 24–48 hours.
                                     </p>
 
-                                    <button class="btn-ask-ai" onclick="toggleVeraFloat()">Ask AI Companion</button>
+                                    <button class="btn-ask-ai" onclick="toggleVeraFloat()">✨ Ask AI Companion</button>
                                 </div>
 
                                 <!-- Widget 3: Helpful Tip Card -->
@@ -841,6 +1144,8 @@
                                     <p class="helpful-tip-text">
                                         Stay hydrated and maintain a balanced diet. Light exercise and stress management can support your fertility journey.
                                     </p>
+
+                                    <button class="btn-ask-ai" style="margin-top: 6px; background: linear-gradient(135deg,#fffbeb,#fef3c7); border-color: #fcd34d; color: #92400e;" onclick="toggleVeraFloat()">Ask Vera 🌿</button>
                                 </div>
 
                             </aside>
