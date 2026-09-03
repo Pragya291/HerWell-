@@ -24,272 +24,527 @@
             min-height: 100% !important;
         }
 
-        /* ===== TTC DASHBOARD: MODERN 3-COLUMN REFINED DESIGN ===== */
-        body:has(#view-ttc-dashboard:not(.hidden)) .app-main-content {
-            overflow-y: auto !important;
-            overflow-x: hidden !important;
-            padding: 10px 18px 14px 18px !important;
+        /* ===== TTC DASHBOARD: VIEWPORT FIT, ZERO SCROLLING & PIXEL-PERFECT UI ===== */
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100dvh;
+            width: 100vw;
+            overflow: hidden;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #f8fafc;
+            box-sizing: border-box;
+        }
+
+        /* Viewport Lock for TTC mode */
+        body:has(#view-ttc-dashboard:not(.hidden)),
+        body.is-ttc-active {
+            height: 100dvh !important;
+            width: 100vw !important;
+            overflow: hidden !important;
+        }
+
+        /* App Layout Shell */
+        .app-layout {
+            display: flex !important;
+            height: 100dvh !important;
+            width: 100vw !important;
+            overflow: hidden !important;
+            box-sizing: border-box !important;
+        }
+
+        /* ==========================================================================
+           1. MINIMAL SIDEBAR (248px width, clean, compact, no scrolling)
+           ========================================================================== */
+        .app-sidebar {
+            width: 248px !important;
+            min-width: 248px !important;
+            max-width: 248px !important;
+            height: 100dvh !important;
+            max-height: 100dvh !important;
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            bottom: 0 !important;
+            background: #ffffff !important;
+            border-right: 1px solid #f1f5f9 !important;
+            padding: 8px 12px !important;
+            box-sizing: border-box !important;
+            display: flex !important;
+            flex-direction: column !important;
+            justify-content: space-between !important;
+            gap: 4px !important;
+            overflow: hidden !important;
+            z-index: 100 !important;
+        }
+
+        .sidebar-brand {
+            display: flex !important;
+            align-items: center !important;
+            gap: 9px !important;
+            padding: 2px 4px 4px 4px !important;
+            flex-shrink: 0 !important;
+        }
+        .brand-logo-icon {
+            font-size: 1.15rem !important;
+            line-height: 1 !important;
+        }
+        .brand-text-wrap {
+            display: flex !important;
+            flex-direction: column !important;
+        }
+        .brand-name {
+            font-size: 0.92rem !important;
+            font-weight: 800 !important;
+            color: #0f172a !important;
+            line-height: 1.15 !important;
+        }
+        .brand-name .logo-accent {
+            color: #e11d48 !important;
+        }
+        .brand-tagline {
+            font-size: 0.6rem !important;
+            color: #94a3b8 !important;
+            font-weight: 500 !important;
+        }
+
+        .sidebar-divider {
+            height: 1px !important;
+            background: #f1f5f9 !important;
+            margin: 1px 0 2px 0 !important;
+            flex-shrink: 0 !important;
+        }
+
+        /* Nav List - Minimal with outline SVG icons */
+        .sidebar-nav {
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 2px !important;
+            flex-shrink: 0 !important;
+        }
+        .sidebar-nav .nav-btn {
+            display: flex !important;
+            align-items: center !important;
+            gap: 10px !important;
+            padding: 5px 10px !important;
+            font-size: 0.76rem !important;
+            font-weight: 500 !important;
+            color: #475569 !important;
+            background: transparent !important;
+            border: 1px solid transparent !important;
+            border-radius: 11px !important;
+            cursor: pointer !important;
+            text-align: left !important;
+            transition: all 0.12s ease !important;
+            white-space: nowrap !important;
+            height: 32px !important;
+            box-sizing: border-box !important;
+            position: relative !important;
+        }
+        .sidebar-nav .nav-btn:hover {
             background: #f8fafc !important;
+            color: #0f172a !important;
+        }
+        /* Active TTC item: soft mint/green bg, dark green text, small left green indicator, 10-12px rounded corners, subtle highlight */
+        .sidebar-nav .nav-btn.active,
+        .sidebar-nav .nav-btn[data-view="ttc-dashboard"].active {
+            background: #ecfdf5 !important;
+            color: #047857 !important;
+            font-weight: 600 !important;
+            border-color: rgba(5, 150, 105, 0.15) !important;
+            padding-left: 14px !important;
+            box-shadow: 0 1px 2px rgba(5, 150, 105, 0.08) !important;
+        }
+        .sidebar-nav .nav-btn.active::before,
+        .sidebar-nav .nav-btn[data-view="ttc-dashboard"].active::before {
+            content: '' !important;
+            position: absolute !important;
+            left: 3px !important;
+            top: 7px !important;
+            bottom: 7px !important;
+            width: 3px !important;
+            background: #059669 !important;
+            border-radius: 2px !important;
+        }
+        .nav-svg-icon {
+            width: 16px !important;
+            height: 16px !important;
+            stroke-width: 1.8 !important;
+            stroke: currentColor !important;
+            fill: none !important;
+            flex-shrink: 0 !important;
+        }
+
+        /* SIDEBAR LOWER SECTION: compact Daily Tip + Cycle Progress + Log Data */
+        .sidebar-lower-wrap {
             display: flex !important;
             flex-direction: column !important;
+            gap: 5px !important;
+            flex-shrink: 0 !important;
+        }
+        .sidebar-tip-card {
+            background: #fffdf5 !important;
+            border: 1px solid #fef08a !important;
+            border-radius: 11px !important;
+            padding: 5px 8px !important;
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 2px !important;
+            flex-shrink: 0 !important;
+        }
+        .tip-header-row {
+            display: flex !important;
+            align-items: center !important;
+            gap: 4px !important;
+        }
+        .tip-header-icon {
+            font-size: 0.72rem !important;
+        }
+        .tip-header-row h4 {
+            font-size: 0.68rem !important;
+            font-weight: 700 !important;
+            color: #92400e !important;
+            margin: 0 !important;
+        }
+        .sidebar-tip-card .tip-content {
+            font-size: 0.58rem !important;
+            color: #78350f !important;
+            line-height: 1.25 !important;
+            margin: 0 !important;
+        }
+        .sidebar-tip-illustration {
+            display: flex !important;
+            justify-content: center !important;
+            align-items: center !important;
+            height: 14px !important;
+            margin-top: 1px !important;
+        }
+        .tip-meditate-svg {
+            height: 14px !important;
+            max-width: 70px !important;
+        }
+
+        /* Sidebar Cycle Progress Card */
+        .sidebar-cycle-progress-card {
+            background: #ffffff !important;
+            border: 1px solid #e2e8f0 !important;
+            border-radius: 11px !important;
+            padding: 5px 8px !important;
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 2px !important;
+            flex-shrink: 0 !important;
+        }
+        .progress-title-row .progress-title {
+            font-size: 0.66rem !important;
+            font-weight: 700 !important;
+            color: #0f172a !important;
+        }
+        .progress-stats-row {
+            display: flex !important;
+            justify-content: space-between !important;
+            align-items: baseline !important;
+        }
+        .progress-days {
+            font-size: 0.68rem !important;
+            font-weight: 700 !important;
+            color: #0f172a !important;
+        }
+        .progress-pct {
+            font-size: 0.64rem !important;
+            font-weight: 700 !important;
+            color: #059669 !important;
+        }
+        .sidebar-progress-bar-track {
+            height: 4px !important;
+            background: #f1f5f9 !important;
+            border-radius: 2px !important;
+            overflow: hidden !important;
+            margin: 1px 0 !important;
+        }
+        .sidebar-progress-bar-fill {
+            height: 100% !important;
+            background: #10b981 !important;
+            border-radius: 2px !important;
+        }
+        .sidebar-cycle-breakdown {
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 1px !important;
+            margin-top: 2px !important;
+        }
+        .sc-item {
+            display: flex !important;
+            align-items: center !important;
+            justify-content: space-between !important;
+            font-size: 0.56rem !important;
+            color: #64748b !important;
+        }
+        .sc-item .sc-dot {
+            font-size: 0.5rem !important;
+            margin-right: 3px !important;
+        }
+        .sc-item .sc-label {
             flex: 1 !important;
-            min-height: 0 !important;
+        }
+        .sc-item .sc-val {
+            font-weight: 600 !important;
+            color: #334155 !important;
+        }
+        .dot-fertile { color: #10b981 !important; }
+        .dot-ovulation { color: #8b5cf6 !important; }
+        .dot-luteal { color: #3b82f6 !important; }
+
+        /* Compact Green Log Your Data Action Button */
+        .sidebar-log-btn {
+            background: #059669 !important;
+            color: #ffffff !important;
+            border: none !important;
+            border-radius: 16px !important;
+            padding: 5px 12px !important;
+            font-size: 0.74rem !important;
+            font-weight: 600 !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: space-between !important;
+            cursor: pointer !important;
+            box-shadow: 0 1px 2px rgba(5, 150, 105, 0.2) !important;
+            transition: all 0.12s ease !important;
+            flex-shrink: 0 !important;
+            height: 31px !important;
+        }
+        .sidebar-log-btn:hover {
+            background: #047857 !important;
+        }
+        .sidebar-plus-circle {
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            width: 16px !important;
+            height: 16px !important;
+            background: rgba(255, 255, 255, 0.25) !important;
+            color: #ffffff !important;
+            border-radius: 50% !important;
+            font-size: 0.75rem !important;
+            font-weight: 800 !important;
+            line-height: 1 !important;
         }
 
-        #view-ttc-dashboard:not(.hidden) {
-            width: 100% !important;
+        /* ==========================================================================
+           2. MAIN WRAPPER & TOP HEADER
+           ========================================================================== */
+        .app-main-wrapper {
+            margin-left: 248px !important;
+            width: calc(100vw - 248px) !important;
+            height: 100dvh !important;
+            max-height: 100dvh !important;
             display: flex !important;
             flex-direction: column !important;
-            flex: 1 !important;
-            min-height: 0 !important;
+            overflow: hidden !important;
         }
 
-        .ttc-layout-wrapper {
-            display: flex !important;
-            flex-direction: column !important;
-            gap: 12px !important;
-            width: 100% !important;
-            max-width: 1600px !important;
-            margin: 0 auto !important;
-        }
-
-        /* ===== COMPACT HEADER & PROFILE MENU ===== */
         .app-top-header {
-            min-height: 56px !important;
-            padding: 8px 20px !important;
+            height: 52px !important;
+            min-height: 52px !important;
+            max-height: 52px !important;
+            padding: 0 16px !important;
             background: #ffffff !important;
             border-bottom: 1px solid #e2e8f0 !important;
             display: flex !important;
             align-items: center !important;
             justify-content: space-between !important;
-            gap: 12px !important;
+            box-sizing: border-box !important;
+            flex-shrink: 0 !important;
         }
-
-        .app-top-header .greeting-section .ai-greeting {
-            font-size: 1.15rem !important;
-            font-weight: 700 !important;
+        .greeting-section .ai-greeting {
+            font-size: 1.05rem !important;
+            font-weight: 800 !important;
             color: #0f172a !important;
             margin: 0 !important;
             line-height: 1.2 !important;
         }
-
-        .app-top-header .greeting-section .greeting-subtitle {
-            font-size: 0.76rem !important;
+        .greeting-section .greeting-subtitle {
+            font-size: 0.68rem !important;
             color: #64748b !important;
             margin: 0 !important;
         }
-
         .top-header-right {
             display: flex !important;
             align-items: center !important;
-            gap: 8px !important;
-            flex-wrap: wrap !important;
+            gap: 7px !important;
+            flex-wrap: nowrap !important;
         }
 
         .btn-notification {
-            width: 34px !important;
-            height: 34px !important;
+            width: 32px !important;
+            height: 32px !important;
             border-radius: 50% !important;
-            background: #f1f5f9 !important;
+            background: #ffffff !important;
             border: 1px solid #e2e8f0 !important;
             display: flex !important;
             align-items: center !important;
             justify-content: center !important;
-            font-size: 0.95rem !important;
+            font-size: 0.88rem !important;
             cursor: pointer !important;
             position: relative !important;
-            transition: background 0.15s ease !important;
+            transition: background 0.12s ease !important;
         }
-
-        .btn-notification:hover {
-            background: #e2e8f0 !important;
-        }
-
+        .btn-notification:hover { background: #f1f5f9 !important; }
         .notification-badge {
             position: absolute !important;
             top: -2px !important;
             right: -2px !important;
-            background: #f43f5e !important;
-            color: white !important;
-            font-size: 0.65rem !important;
+            background: #e11d48 !important;
+            color: #ffffff !important;
+            font-size: 0.55rem !important;
             font-weight: 700 !important;
-            min-width: 15px !important;
-            height: 15px !important;
-            border-radius: 10px !important;
+            width: 14px !important;
+            height: 14px !important;
+            border-radius: 50% !important;
             display: flex !important;
             align-items: center !important;
             justify-content: center !important;
-            padding: 0 3px !important;
         }
-
         .btn-header-action {
-            height: 32px !important;
+            height: 30px !important;
             padding: 0 10px !important;
-            font-size: 0.76rem !important;
+            font-size: 0.72rem !important;
             font-weight: 600 !important;
-            border-radius: 8px !important;
-            background: #ffffff !important;
-            border: 1px solid #cbd5e1 !important;
-            color: #334155 !important;
+            border-radius: 15px !important;
+            cursor: pointer !important;
             display: inline-flex !important;
             align-items: center !important;
-            gap: 5px !important;
-            cursor: pointer !important;
-            transition: all 0.15s ease !important;
+            gap: 4px !important;
+            border: 1px solid #e2e8f0 !important;
+            background: #ffffff !important;
+            color: #334155 !important;
+            transition: all 0.12s ease !important;
+            white-space: nowrap !important;
         }
-
-        .btn-header-action:hover {
-            background: #f8fafc !important;
-            border-color: #94a3b8 !important;
-            color: #0f172a !important;
-        }
-
+        .btn-header-action:hover { background: #f8fafc !important; border-color: #cbd5e1 !important; color: #0f172a !important; }
         .btn-helpline-action {
-            border-color: #fca5a5 !important;
             color: #be123c !important;
             background: #fff1f2 !important;
+            border-color: #fecdd3 !important;
         }
-
-        .btn-helpline-action:hover {
-            background: #ffe4e6 !important;
-            border-color: #f87171 !important;
-        }
+        .btn-helpline-action:hover { background: #ffe4e6 !important; border-color: #f87171 !important; }
 
         .header-mode-toggle-pills {
             display: inline-flex !important;
             background: #f1f5f9 !important;
             padding: 2px !important;
-            border-radius: 20px !important;
+            border-radius: 16px !important;
             border: 1px solid #e2e8f0 !important;
         }
-
         .header-mode-toggle-pills .mode-pill-btn {
-            height: 28px !important;
+            height: 26px !important;
             padding: 0 10px !important;
-            font-size: 0.74rem !important;
+            font-size: 0.7rem !important;
             font-weight: 600 !important;
-            border-radius: 16px !important;
+            border-radius: 14px !important;
             border: none !important;
             background: transparent !important;
             color: #64748b !important;
             cursor: pointer !important;
-            transition: all 0.15s ease !important;
             display: inline-flex !important;
             align-items: center !important;
-            gap: 4px !important;
+            gap: 3px !important;
+            transition: all 0.12s ease !important;
         }
-
         .header-mode-toggle-pills .mode-pill-btn.active {
             background: #ffffff !important;
             color: #059669 !important;
             font-weight: 700 !important;
-            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06) !important;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
         }
 
-        /* User Profile Dropdown Pill */
         .user-profile-menu-wrapper {
             position: relative !important;
         }
-
         .user-profile-btn {
-            display: inline-flex !important;
+            display: flex !important;
             align-items: center !important;
-            gap: 6px !important;
-            height: 32px !important;
-            padding: 0 8px 0 3px !important;
+            gap: 5px !important;
+            padding: 2px 8px 2px 3px !important;
             background: #f8fafc !important;
             border: 1px solid #e2e8f0 !important;
-            border-radius: 20px !important;
+            border-radius: 16px !important;
             cursor: pointer !important;
-            transition: background 0.15s ease !important;
+            font-size: 0.72rem !important;
+            font-weight: 600 !important;
+            color: #1e293b !important;
+            height: 30px !important;
+            box-sizing: border-box !important;
         }
-
-        .user-profile-btn:hover {
-            background: #f1f5f9 !important;
-            border-color: #cbd5e1 !important;
-        }
-
         .user-avatar-circle {
-            width: 26px !important;
-            height: 26px !important;
+            width: 22px !important;
+            height: 22px !important;
             border-radius: 50% !important;
-            background: linear-gradient(135deg, #ec4899, #8b5cf6) !important;
-            color: white !important;
-            font-weight: 700 !important;
-            font-size: 0.75rem !important;
+            background: #7c3aed !important;
+            color: #ffffff !important;
             display: flex !important;
             align-items: center !important;
             justify-content: center !important;
+            font-size: 0.68rem !important;
+            font-weight: 700 !important;
         }
-
         .user-name-short {
-            font-size: 0.78rem !important;
+            font-size: 0.74rem !important;
             font-weight: 600 !important;
             color: #1e293b !important;
         }
-
         .user-dropdown-arrow {
-            font-size: 0.65rem !important;
+            font-size: 0.62rem !important;
             color: #64748b !important;
         }
-
         .user-profile-dropdown {
             position: absolute !important;
             top: calc(100% + 6px) !important;
             right: 0 !important;
-            width: 210px !important;
+            width: 200px !important;
             background: #ffffff !important;
             border: 1px solid #e2e8f0 !important;
-            border-radius: 12px !important;
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05) !important;
-            padding: 8px !important;
+            border-radius: 10px !important;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08) !important;
+            padding: 6px !important;
             z-index: 1000 !important;
             display: flex !important;
             flex-direction: column !important;
-            gap: 4px !important;
+            gap: 3px !important;
         }
-
-        .user-profile-dropdown.hidden {
-            display: none !important;
-        }
-
+        .user-profile-dropdown.hidden { display: none !important; }
         .profile-dropdown-header {
-            padding: 6px 8px !important;
+            padding: 4px 6px !important;
             display: flex !important;
             flex-direction: column !important;
             gap: 2px !important;
         }
-
         .profile-dropdown-email {
-            font-size: 0.76rem !important;
+            font-size: 0.72rem !important;
             font-weight: 700 !important;
             color: #0f172a !important;
-            word-break: break-all !important;
         }
-
         .profile-mode-badge {
-            font-size: 0.65rem !important;
+            font-size: 0.62rem !important;
             font-weight: 600 !important;
             color: #047857 !important;
             background: #d1fae5 !important;
-            padding: 1px 6px !important;
-            border-radius: 10px !important;
+            padding: 1px 5px !important;
+            border-radius: 8px !important;
             align-self: flex-start !important;
         }
-
         .profile-dropdown-divider {
             height: 1px !important;
             background: #f1f5f9 !important;
             margin: 2px 0 !important;
         }
-
         .profile-dropdown-item {
             width: 100% !important;
             display: flex !important;
             align-items: center !important;
-            gap: 8px !important;
-            padding: 6px 8px !important;
-            font-size: 0.76rem !important;
+            gap: 7px !important;
+            padding: 5px 7px !important;
+            font-size: 0.74rem !important;
             font-weight: 500 !important;
             color: #334155 !important;
             background: transparent !important;
@@ -297,682 +552,619 @@
             border-radius: 6px !important;
             cursor: pointer !important;
             text-align: left !important;
-            transition: background 0.12s ease !important;
+        }
+        .profile-dropdown-item:hover { background: #f8fafc !important; color: #0f172a !important; }
+        .profile-dropdown-item.auth-btn-dropdown { color: #be123c !important; }
+
+        /* Notification Dropdown Panel */
+        .notification-dropdown-panel {
+            position: absolute !important;
+            top: calc(100% + 8px) !important;
+            right: 0 !important;
+            width: 280px !important;
+            background: #ffffff !important;
+            border: 1px solid #e2e8f0 !important;
+            border-radius: 10px !important;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1) !important;
+            padding: 10px !important;
+            z-index: 1000 !important;
+        }
+        .notification-dropdown-panel.hidden { display: none !important; }
+
+        /* ==========================================================================
+           3. MAIN TTC CONTENT CONTAINER
+           ========================================================================== */
+        .app-main-content {
+            height: calc(100dvh - 52px) !important;
+            max-height: calc(100dvh - 52px) !important;
+            overflow: hidden !important;
+            padding: 7px 14px !important;
+            box-sizing: border-box !important;
+            display: flex !important;
+            flex-direction: column !important;
         }
 
-        .profile-dropdown-item:hover {
-            background: #f8fafc !important;
-            color: #0f172a !important;
+        #view-ttc-dashboard {
+            height: 100% !important;
+            max-height: 100% !important;
+            width: 100% !important;
+            display: flex !important;
+            flex-direction: column !important;
+            overflow: hidden !important;
+            box-sizing: border-box !important;
         }
 
-        .profile-dropdown-item.auth-btn-dropdown {
-            color: #be123c !important;
+        .ttc-layout-wrapper {
+            height: 100% !important;
+            max-height: 100% !important;
+            width: 100% !important;
+            display: grid !important;
+            grid-template-rows: auto auto 1fr auto !important;
+            gap: clamp(5px, 0.85vh, 9px) !important;
+            overflow: hidden !important;
+            box-sizing: border-box !important;
         }
 
-        .profile-dropdown-item.auth-btn-dropdown:hover {
-            background: #fff1f2 !important;
-        }
-
-        /* ===== TTC HERO BANNER ===== */
+        /* ==========================================================================
+           4. TTC BANNER (Horizontal, Icon -> Title/Subtitle -> Actions, Short)
+           ========================================================================== */
         .ttc-hero-card {
-            background: linear-gradient(135deg, #ffffff 0%, #f0fdf4 100%) !important;
-            border: 1px solid #bbf7d0 !important;
-            border-radius: 14px !important;
-            padding: 12px 18px !important;
+            background: #ecfdf5 !important;
+            border: 1px solid #a7f3d0 !important;
+            border-radius: 12px !important;
+            padding: 6px 14px !important;
             display: flex !important;
             align-items: center !important;
             justify-content: space-between !important;
-            gap: 14px !important;
-            box-shadow: 0 1px 3px rgba(16, 185, 129, 0.05) !important;
+            flex-shrink: 0 !important;
+            min-height: 40px !important;
+            box-shadow: 0 1px 2px rgba(16, 185, 129, 0.04) !important;
+            box-sizing: border-box !important;
         }
-
         .ttc-hero-left {
             display: flex !important;
             align-items: center !important;
-            gap: 12px !important;
+            gap: 10px !important;
         }
-
         .ttc-sprout-circle {
-            width: 38px !important;
-            height: 38px !important;
+            width: 28px !important;
+            height: 28px !important;
             border-radius: 50% !important;
             background: #d1fae5 !important;
             color: #059669 !important;
             display: flex !important;
             align-items: center !important;
             justify-content: center !important;
-            font-size: 1.25rem !important;
+            font-size: 1rem !important;
             flex-shrink: 0 !important;
         }
-
         .ttc-hero-text h2 {
-            font-size: 1.05rem !important;
-            font-weight: 700 !important;
+            font-size: 0.88rem !important;
+            font-weight: 800 !important;
             color: #064e3b !important;
             margin: 0 !important;
-            line-height: 1.2 !important;
+            line-height: 1.15 !important;
         }
-
         .ttc-hero-text p {
-            font-size: 0.78rem !important;
+            font-size: 0.65rem !important;
             color: #047857 !important;
-            margin: 2px 0 0 0 !important;
+            margin: 0 !important;
             font-weight: 500 !important;
         }
-
         .ttc-mode-switcher-toggle {
             display: inline-flex !important;
-            background: #ffffff !important;
-            padding: 3px !important;
-            border-radius: 20px !important;
-            border: 1px solid #86efac !important;
-            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04) !important;
-        }
-
-        .ttc-mode-switcher-toggle .mode-pill-btn {
-            height: 30px !important;
-            padding: 0 14px !important;
-            font-size: 0.78rem !important;
-            font-weight: 600 !important;
-            border-radius: 16px !important;
-            border: none !important;
+            align-items: center !important;
+            gap: 6px !important;
             background: transparent !important;
-            color: #64748b !important;
-            cursor: pointer !important;
-            transition: all 0.15s ease !important;
+            border: none !important;
+            padding: 0 !important;
         }
-
+        .ttc-mode-switcher-toggle .mode-pill-btn {
+            height: 26px !important;
+            padding: 0 11px !important;
+            font-size: 0.68rem !important;
+            font-weight: 600 !important;
+            border-radius: 14px !important;
+            cursor: pointer !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            gap: 4px !important;
+            border: 1px solid #cbd5e1 !important;
+            background: #ffffff !important;
+            color: #475569 !important;
+            transition: all 0.12s ease !important;
+        }
         .ttc-mode-switcher-toggle .mode-pill-btn.active {
             background: #059669 !important;
             color: #ffffff !important;
+            border-color: #059669 !important;
             font-weight: 700 !important;
-            box-shadow: 0 1px 3px rgba(5, 150, 105, 0.25) !important;
+            box-shadow: 0 1px 3px rgba(5, 150, 105, 0.2) !important;
         }
 
-        /* ===== FERTILITY OVERVIEW 6 METRICS ===== */
-        .ttc-overview-card-v2 {
-            background: #ffffff !important;
-            border: 1px solid #e2e8f0 !important;
-            border-radius: 14px !important;
-            padding: 12px 16px !important;
-            box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04) !important;
+        /* ==========================================================================
+           5. FERTILITY OVERVIEW (6 Metrics in One Clean Row)
+           ========================================================================== */
+        .ttc-overview-section {
+            flex-shrink: 0 !important;
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 3px !important;
         }
-
-        .ttc-card-header-v2 {
+        .ttc-overview-header-row {
             display: flex !important;
             align-items: center !important;
             justify-content: space-between !important;
-            margin-bottom: 10px !important;
+            padding: 0 2px !important;
         }
-
-        .header-title-info {
+        .ttc-ov-title-wrap {
             display: flex !important;
             align-items: center !important;
-            gap: 7px !important;
+            gap: 5px !important;
         }
-
-        .header-title-info h3 {
-            font-size: 0.92rem !important;
-            font-weight: 700 !important;
+        .ttc-ov-title-wrap h3 {
+            font-size: 0.82rem !important;
+            font-weight: 800 !important;
             color: #0f172a !important;
             margin: 0 !important;
         }
-
-        .card-header-subtitle {
-            font-size: 0.72rem !important;
-            color: #64748b !important;
-            font-weight: 400 !important;
+        .ttc-ov-title-wrap .card-header-icon {
+            font-size: 0.92rem !important;
         }
-
-        .card-header-icon {
-            font-size: 1rem !important;
-        }
-
-        .info-circle-icon {
-            font-size: 0.75rem !important;
+        .ttc-ov-title-wrap .info-circle-icon {
+            font-size: 0.68rem !important;
             color: #94a3b8 !important;
             cursor: help !important;
         }
-
-        .ttc-status-pill {
-            font-size: 0.72rem !important;
-            font-weight: 700 !important;
-            padding: 3px 10px !important;
-            border-radius: 20px !important;
-        }
-
         .ttc-status-pill.pill-green {
             background: #d1fae5 !important;
             color: #065f46 !important;
             border: 1px solid #a7f3d0 !important;
+            border-radius: 16px !important;
+            padding: 2px 9px !important;
+            font-size: 0.65rem !important;
+            font-weight: 700 !important;
         }
 
         .ttc-overview-6grid {
             display: grid !important;
-            grid-template-columns: repeat(6, 1fr) !important;
-            gap: 10px !important;
+            grid-template-columns: repeat(6, minmax(0, 1fr)) !important;
+            gap: clamp(6px, 0.75vw, 10px) !important;
         }
-
         .ttc-mcard {
-            border-radius: 10px !important;
-            padding: 9px 12px !important;
+            border-radius: 12px !important;
+            padding: 5px 9px !important;
             display: flex !important;
             flex-direction: column !important;
             justify-content: space-between !important;
-            min-height: 76px !important;
+            min-height: 0 !important;
+            height: 58px !important;
             border: 1px solid #e2e8f0 !important;
             background: #ffffff !important;
-            transition: transform 0.12s ease, box-shadow 0.12s ease !important;
+            box-sizing: border-box !important;
+            box-shadow: 0 1px 2px rgba(15, 23, 42, 0.02) !important;
         }
-
-        .ttc-mcard:hover {
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.04) !important;
-        }
-
-        /* Primary fertility card themes */
         .ttc-mcard.mcard-green {
             background: #f0fdf4 !important;
             border-color: #86efac !important;
         }
-
         .ttc-mcard.mcard-purple {
             background: #faf5ff !important;
             border-color: #d8b4fe !important;
         }
-
-        .ttc-mcard.mcard-pink-subtle {
-            background: #fff1f2 !important;
-            border-color: #fecdd3 !important;
-        }
-
         .mcard-top-row {
             display: flex !important;
             align-items: center !important;
             justify-content: space-between !important;
-            gap: 4px !important;
+            gap: 2px !important;
         }
-
         .mcard-label {
-            font-size: 0.65rem !important;
+            font-size: 0.55rem !important;
             font-weight: 700 !important;
             color: #64748b !important;
-            letter-spacing: 0.5px !important;
+            letter-spacing: 0.3px !important;
             text-transform: uppercase !important;
+            white-space: nowrap !important;
         }
-
         .mcard-tag-est {
-            font-size: 0.62rem !important;
+            font-size: 0.52rem !important;
             font-weight: 700 !important;
-            padding: 1px 5px !important;
+            padding: 1px 4px !important;
             border-radius: 4px !important;
+            white-space: nowrap !important;
         }
-
         .mcard-tag-est.tag-green {
             background: #d1fae5 !important;
             color: #047857 !important;
         }
-
         .mcard-tag-est.tag-purple {
             background: #ede9fe !important;
             color: #6d28d9 !important;
         }
-
+        .mcard-val-row {
+            display: flex !important;
+            align-items: center !important;
+            gap: 4px !important;
+        }
+        .mcard-val-icon {
+            font-size: 0.9rem !important;
+            line-height: 1 !important;
+        }
         .mcard-val {
-            font-size: 1.12rem !important;
+            font-size: 0.94rem !important;
             font-weight: 800 !important;
             color: #0f172a !important;
-            line-height: 1.2 !important;
-            margin: 2px 0 !important;
+            line-height: 1.1 !important;
+            margin: 0 !important;
+            white-space: nowrap !important;
         }
-
         .mcard-val.text-green { color: #047857 !important; }
         .mcard-val.text-purple { color: #6d28d9 !important; }
-        .mcard-val.text-pink { color: #be123c !important; }
-
+        .mcard-val.text-pink { color: #e11d48 !important; }
         .mcard-val .val-unit {
-            font-size: 0.74rem !important;
+            font-size: 0.65rem !important;
             font-weight: 500 !important;
             color: #64748b !important;
         }
-
         .mcard-sub-green {
-            font-size: 0.68rem !important;
+            font-size: 0.56rem !important;
             font-weight: 600 !important;
             color: #059669 !important;
+            white-space: nowrap !important;
         }
-
         .mcard-sub-purple {
-            font-size: 0.68rem !important;
+            font-size: 0.56rem !important;
             font-weight: 600 !important;
             color: #7c3aed !important;
+            white-space: nowrap !important;
         }
-
         .mcard-sub-muted {
-            font-size: 0.68rem !important;
+            font-size: 0.56rem !important;
             color: #94a3b8 !important;
+            white-space: nowrap !important;
         }
-
-        .mcard-sub-phase {
-            font-size: 0.65rem !important;
-            font-weight: 700 !important;
-            color: #0284c7 !important;
-            background: #e0f2fe !important;
-            padding: 1px 5px !important;
-            border-radius: 4px !important;
-        }
-
         .mcard-progress-track {
             height: 4px !important;
-            background: #f1f5f9 !important;
+            background: #e0f2fe !important;
             border-radius: 2px !important;
             overflow: hidden !important;
-            margin-top: 3px !important;
+            margin-top: 1px !important;
         }
-
         .mcard-progress-fill {
             height: 100% !important;
-            background: linear-gradient(90deg, #38bdf8, #0284c7) !important;
+            background: #0284c7 !important;
             border-radius: 2px !important;
         }
 
-        /* ===== 3-COLUMN MAIN LAYOUT ===== */
+        /* ==========================================================================
+           6. MAIN 3-COLUMN ANALYTICS GRID (45% | 32% | 23%, No Overlap, Aligned)
+           ========================================================================== */
         .ttc-analytics-3col {
+            flex: 1 !important;
+            min-height: 0 !important;
+            height: 100% !important;
             display: grid !important;
-            /* Left (BBT Chart ~48%) | Center (Calendar + Signals ~28%) | Right (Today's Log + AI ~24%) */
-            grid-template-columns: 2fr 1.15fr 1.05fr !important;
-            gap: 12px !important;
+            grid-template-columns: 45fr 32fr 23fr !important;
+            gap: 14px !important;
             align-items: stretch !important;
-            width: 100% !important;
+            box-sizing: border-box !important;
+            overflow: hidden !important;
         }
 
         .ttc-card {
             background: #ffffff !important;
             border: 1px solid #e2e8f0 !important;
-            border-radius: 14px !important;
-            padding: 12px 14px !important;
-            box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04) !important;
+            border-radius: 12px !important;
+            padding: 8px 11px !important;
+            box-shadow: 0 1px 3px rgba(15, 23, 42, 0.02) !important;
             display: flex !important;
             flex-direction: column !important;
+            box-sizing: border-box !important;
+            min-width: 0 !important;
+            min-height: 0 !important;
+            overflow: hidden !important;
         }
 
-        /* Col 1: BBT Chart */
+        /* Col 1: BBT Chart (Dominant element) */
         .ttc-col-bbt {
-            display: flex !important;
-            flex-direction: column !important;
+            height: 100% !important;
+            min-height: 0 !important;
+            min-width: 0 !important;
             justify-content: space-between !important;
-            min-height: 420px !important;
         }
-
+        .ttc-card-header-v2 {
+            display: flex !important;
+            align-items: center !important;
+            justify-content: space-between !important;
+            margin-bottom: 4px !important;
+            flex-shrink: 0 !important;
+        }
+        .header-title-info {
+            display: flex !important;
+            align-items: center !important;
+            gap: 6px !important;
+        }
+        .header-title-info h3 {
+            font-size: 0.82rem !important;
+            font-weight: 800 !important;
+            color: #0f172a !important;
+            margin: 0 !important;
+        }
+        .header-title-info .card-header-subtitle {
+            font-size: 0.62rem !important;
+            color: #64748b !important;
+        }
         .bbt-header-actions {
             display: flex !important;
             align-items: center !important;
-            gap: 8px !important;
+            gap: 5px !important;
         }
-
         .bbt-today-pill {
             display: inline-flex !important;
             align-items: center !important;
-            gap: 5px !important;
+            gap: 3px !important;
             background: #faf5ff !important;
             border: 1px solid #d8b4fe !important;
             color: #6b21a8 !important;
-            padding: 3px 9px !important;
-            border-radius: 14px !important;
-            font-size: 0.72rem !important;
+            padding: 2px 7px !important;
+            border-radius: 12px !important;
+            font-size: 0.65rem !important;
             font-weight: 600 !important;
+            white-space: nowrap !important;
         }
-
         .bbt-today-pill .pill-dot {
             color: #9333ea !important;
-            font-size: 0.65rem !important;
+            font-size: 0.52rem !important;
         }
-
         .btn-xs-pill {
             background: #ffffff !important;
             border: 1px solid #cbd5e1 !important;
             color: #334155 !important;
-            padding: 3px 8px !important;
-            border-radius: 12px !important;
-            font-size: 0.7rem !important;
+            padding: 2px 8px !important;
+            border-radius: 10px !important;
+            font-size: 0.65rem !important;
             font-weight: 600 !important;
             cursor: pointer !important;
+            white-space: nowrap !important;
             transition: all 0.12s ease !important;
         }
-
-        .btn-xs-pill:hover {
-            background: #f1f5f9 !important;
-            border-color: #94a3b8 !important;
-        }
+        .btn-xs-pill:hover { background: #f8fafc !important; border-color: #94a3b8 !important; }
 
         .bbt-chart-canvas-wrap {
             position: relative !important;
             flex: 1 !important;
-            min-height: 250px !important;
+            min-height: 0 !important;
+            min-width: 0 !important;
             width: 100% !important;
-            margin: 8px 0 !important;
+            margin: 2px 0 !important;
+            overflow: hidden !important;
         }
-
         .bbt-annotation-pill {
             position: absolute !important;
-            top: 10px !important;
-            right: 14px !important;
+            top: 4px !important;
+            right: 6px !important;
             background: rgba(243, 232, 255, 0.95) !important;
             border: 1px solid #c084fc !important;
             color: #6b21a8 !important;
-            font-size: 0.68rem !important;
+            font-size: 0.62rem !important;
             font-weight: 700 !important;
-            padding: 3px 9px !important;
-            border-radius: 12px !important;
+            padding: 2px 7px !important;
+            border-radius: 8px !important;
             pointer-events: none !important;
-            backdrop-filter: blur(4px) !important;
+            z-index: 5 !important;
+            white-space: nowrap !important;
         }
 
         .bbt-chart-footer {
             display: flex !important;
             align-items: center !important;
-            justify-content: space-between !important;
-            border-top: 1px solid #f1f5f9 !important;
-            padding-top: 8px !important;
-            gap: 8px !important;
-            flex-wrap: wrap !important;
+            justify-content: center !important;
+            border-top: 1px solid #f8fafc !important;
+            padding-top: 4px !important;
+            flex-shrink: 0 !important;
         }
-
         .bbt-chart-legend {
             display: flex !important;
             align-items: center !important;
-            gap: 12px !important;
-            flex-wrap: wrap !important;
+            gap: 16px !important;
         }
-
         .bbt-leg-item {
             display: inline-flex !important;
             align-items: center !important;
             gap: 4px !important;
-            font-size: 0.68rem !important;
+            font-size: 0.62rem !important;
             color: #64748b !important;
             font-weight: 500 !important;
+            white-space: nowrap !important;
         }
-
-        .leg-line.purple-line {
-            width: 12px !important;
-            height: 2.5px !important;
-            background: #9333ea !important;
-            border-radius: 2px !important;
+        .leg-dot.purple-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #9333ea;
         }
-
         .leg-line.dashed-line {
             width: 14px !important;
             height: 0 !important;
             border-top: 2px dashed #94a3b8 !important;
         }
 
-        .leg-box.green-box {
-            width: 10px !important;
-            height: 10px !important;
-            background: #d1fae5 !important;
-            border: 1px solid #6ee7b7 !important;
-            border-radius: 2px !important;
-        }
-
-        .leg-star {
-            color: #8b5cf6 !important;
-            font-size: 0.75rem !important;
-        }
-
-        .btn-outline-pink-pill {
-            background: transparent !important;
-            border: 1px solid #f43f5e !important;
-            color: #e11d48 !important;
-            padding: 5px 12px !important;
-            border-radius: 14px !important;
-            font-size: 0.72rem !important;
-            font-weight: 600 !important;
-            cursor: pointer !important;
-            transition: all 0.15s ease !important;
-        }
-
-        .btn-outline-pink-pill:hover {
-            background: #fff1f2 !important;
-            color: #be123c !important;
-        }
-
-        /* Col 2: Center Column */
+        /* Col 2: Calendar */
         .ttc-center-col {
+            height: 100% !important;
+            min-height: 0 !important;
+            min-width: 0 !important;
             display: flex !important;
             flex-direction: column !important;
-            gap: 12px !important;
+            overflow: hidden !important;
         }
-
         .ttc-cal-card {
-            flex: 1 !important;
+            height: 100% !important;
+            min-height: 0 !important;
+            min-width: 0 !important;
             display: flex !important;
             flex-direction: column !important;
             justify-content: space-between !important;
+            overflow: hidden !important;
         }
-
         .cal-nav-controls {
             display: flex !important;
             align-items: center !important;
-            gap: 6px !important;
+            gap: 4px !important;
         }
-
         .cal-month-title {
-            font-size: 0.76rem !important;
+            font-size: 0.72rem !important;
             font-weight: 700 !important;
             color: #1e293b !important;
+            white-space: nowrap !important;
         }
-
         .btn-cal-arrow {
-            width: 22px !important;
-            height: 22px !important;
+            width: 18px !important;
+            height: 18px !important;
             border-radius: 4px !important;
             border: 1px solid #cbd5e1 !important;
             background: #ffffff !important;
             color: #475569 !important;
-            font-size: 0.85rem !important;
+            font-size: 0.75rem !important;
             display: flex !important;
             align-items: center !important;
             justify-content: center !important;
             cursor: pointer !important;
             line-height: 1 !important;
-            transition: all 0.12s ease !important;
         }
-
-        .btn-cal-arrow:hover {
-            background: #f1f5f9 !important;
-            border-color: #94a3b8 !important;
-            color: #0f172a !important;
-        }
-
+        .btn-cal-arrow:hover { background: #f8fafc !important; }
         .cal-compact-weekdays {
             display: grid !important;
             grid-template-columns: repeat(7, 1fr) !important;
             text-align: center !important;
-            font-size: 0.62rem !important;
+            font-size: 0.56rem !important;
             font-weight: 700 !important;
             color: #94a3b8 !important;
-            margin: 4px 0 2px 0 !important;
+            margin: 1px 0 !important;
+            flex-shrink: 0 !important;
         }
-
         .ttc-cal-grid-compact {
+            flex: 1 !important;
+            min-height: 0 !important;
             display: grid !important;
             grid-template-columns: repeat(7, 1fr) !important;
-            gap: 3px !important;
-            margin: 2px 0 !important;
+            grid-template-rows: repeat(5, 1fr) !important;
+            gap: 2px !important;
+            margin: 1px 0 !important;
+            align-items: stretch !important;
+            overflow: hidden !important;
         }
-
         .ttc-cal-day {
-            aspect-ratio: 1 !important;
             display: flex !important;
             align-items: center !important;
             justify-content: center !important;
-            font-size: 0.72rem !important;
+            font-size: 0.66rem !important;
             font-weight: 600 !important;
-            border-radius: 6px !important;
+            border-radius: 5px !important;
             color: #334155 !important;
-            background: #f8fafc !important;
+            background: #ffffff !important;
+            border: 1px solid #f1f5f9 !important;
             position: relative !important;
-            cursor: pointer !important;
-            transition: background 0.12s ease !important;
+            box-sizing: border-box !important;
+            transition: all 0.1s ease !important;
+            min-width: 0 !important;
+            min-height: 0 !important;
         }
-
-        .ttc-cal-day:hover {
-            filter: brightness(0.95) !important;
-        }
-
         .ttc-cal-day.is-other-month {
             color: #cbd5e1 !important;
             background: transparent !important;
-            cursor: default !important;
+            border-color: transparent !important;
         }
-
         .ttc-cal-day.is-period {
             background: #ffe4e6 !important;
             color: #be123c !important;
             font-weight: 700 !important;
+            border-color: #fecdd3 !important;
         }
-
         .ttc-cal-day.is-fertile {
             background: #d1fae5 !important;
             color: #065f46 !important;
             font-weight: 700 !important;
+            border-color: #a7f3d0 !important;
         }
-
         .ttc-cal-day.is-ovulation {
-            background: #ede9fe !important;
+            border: 2px solid #8b5cf6 !important;
+            border-radius: 50% !important;
             color: #6b21a8 !important;
             font-weight: 800 !important;
         }
-
         .ttc-cal-day.is-today {
             outline: 2px solid #059669 !important;
-            outline-offset: -2px !important;
-            font-weight: 800 !important;
+            outline-offset: -1px !important;
             background: #ecfdf5 !important;
             color: #065f46 !important;
+            font-weight: 800 !important;
         }
-
-        .ov-star-badge {
-            color: #8b5cf6 !important;
-            font-size: 0.6rem !important;
+        .ttc-cal-day.is-today .ov-star-badge {
+            display: inline-block !important;
+            color: #059669 !important;
+            font-size: 0.5rem !important;
             position: absolute !important;
             top: 1px !important;
             right: 2px !important;
         }
-
         .cal-compact-legend {
             display: flex !important;
             align-items: center !important;
-            justify-content: space-between !important;
-            font-size: 0.62rem !important;
+            justify-content: center !important;
+            gap: 14px !important;
+            font-size: 0.58rem !important;
             color: #64748b !important;
-            margin-top: 4px !important;
-            padding-top: 4px !important;
-            border-top: 1px solid #f1f5f9 !important;
+            padding-top: 3px !important;
+            border-top: 1px solid #f8fafc !important;
+            flex-shrink: 0 !important;
         }
-
-        .cal-compact-legend .dot-period { color: #f43f5e !important; }
-        .cal-compact-legend .dot-fertile { color: #10b981 !important; }
-        .cal-compact-legend .star-ov { color: #8b5cf6 !important; }
-        .cal-compact-legend .box-today { color: #059669 !important; font-weight: bold !important; }
-
-        /* Card 2: Fertility Signals */
-        .ttc-signals-card {
-            flex: 1 !important;
-            display: flex !important;
-            flex-direction: column !important;
-            justify-content: space-between !important;
+        .leg-sq {
+            display: inline-block !important;
+            width: 7px !important;
+            height: 7px !important;
+            border-radius: 2px !important;
+            margin-right: 3px !important;
+            vertical-align: middle !important;
         }
+        .sq-period { background: #f43f5e !important; }
+        .sq-fertile { background: #10b981 !important; }
+        .star-ov-symbol { color: #8b5cf6 !important; font-size: 0.68rem !important; margin-right: 3px !important; vertical-align: middle !important; }
 
-        .signals-rows-v2 {
-            display: flex !important;
-            flex-direction: column !important;
-            gap: 6px !important;
-            margin: 4px 0 8px 0 !important;
-        }
-
-        .sig-row-item {
-            display: flex !important;
-            align-items: center !important;
-            justify-content: space-between !important;
-            padding: 6px 10px !important;
-            background: #f8fafc !important;
-            border: 1px solid #f1f5f9 !important;
-            border-radius: 8px !important;
-        }
-
-        .sig-left {
-            display: flex !important;
-            align-items: center !important;
-            gap: 6px !important;
-        }
-
-        .sig-icon {
-            font-size: 0.85rem !important;
-        }
-
-        .sig-label {
-            font-size: 0.74rem !important;
-            font-weight: 600 !important;
-            color: #1e293b !important;
-            white-space: nowrap !important;
-        }
-
-        .sig-pill {
-            font-size: 0.68rem !important;
-            font-weight: 700 !important;
-            padding: 2px 7px !important;
-            border-radius: 12px !important;
-            white-space: nowrap !important;
-        }
-
-        .sig-pill.pill-soft-green {
-            background: #d1fae5 !important;
-            color: #065f46 !important;
-            border: 1px solid #a7f3d0 !important;
-        }
-
-        .sig-pill.pill-soft-pink {
-            background: #ffe4e6 !important;
-            color: #9f1239 !important;
-            border: 1px solid #fecdd3 !important;
-        }
-
-        .sig-pill.pill-soft-blue {
-            background: #e0f2fe !important;
-            color: #0369a1 !important;
-            border: 1px solid #bae6fd !important;
-        }
-
-        /* Col 3: Right Column */
+        /* Col 3: Right Column (Today's Log + AI Fertility Insight) */
         .ttc-right-col {
-            display: flex !important;
-            flex-direction: column !important;
-            gap: 12px !important;
+            height: 100% !important;
+            min-height: 0 !important;
+            min-width: 0 !important;
+            display: grid !important;
+            grid-template-rows: 1fr auto !important;
+            gap: 10px !important;
+            overflow: hidden !important;
         }
-
         .ttc-today-log-card {
+            min-height: 0 !important;
+            min-width: 0 !important;
             display: flex !important;
             flex-direction: column !important;
-            gap: 6px !important;
+            overflow: hidden !important;
         }
-
         .log-date-label {
-            font-size: 0.7rem !important;
+            font-size: 0.62rem !important;
             font-weight: 600 !important;
             color: #64748b !important;
             background: #f1f5f9 !important;
-            padding: 2px 7px !important;
-            border-radius: 10px !important;
+            padding: 1px 6px !important;
+            border-radius: 8px !important;
+            white-space: nowrap !important;
         }
-
         .today-log-rows {
             display: flex !important;
             flex-direction: column !important;
             gap: 5px !important;
-            margin: 2px 0 !important;
+            margin: 6px 0 !important;
+            flex: 1 !important;
+            justify-content: space-around !important;
         }
-
         .tlog-row {
             display: flex !important;
             align-items: center !important;
@@ -980,229 +1172,221 @@
             padding: 5px 8px !important;
             background: #f8fafc !important;
             border-radius: 6px !important;
-            font-size: 0.74rem !important;
+            font-size: 0.7rem !important;
+            box-sizing: border-box !important;
         }
-
         .tlog-left {
             display: flex !important;
             align-items: center !important;
             gap: 6px !important;
+            min-width: 0 !important;
         }
-
         .tlog-icon {
-            font-size: 0.85rem !important;
+            font-size: 0.78rem !important;
+            flex-shrink: 0 !important;
         }
-
         .tlog-label {
             font-weight: 600 !important;
             color: #334155 !important;
+            white-space: nowrap !important;
+            overflow: hidden !important;
+            text-overflow: ellipsis !important;
         }
-
         .tlog-right {
             display: flex !important;
             align-items: center !important;
-            gap: 5px !important;
+            gap: 4px !important;
+            flex-shrink: 0 !important;
         }
-
         .tlog-right strong {
-            font-size: 0.74rem !important;
+            font-size: 0.7rem !important;
             color: #0f172a !important;
+            white-space: nowrap !important;
         }
-
         .check-green {
             color: #059669 !important;
             font-weight: 800 !important;
-            font-size: 0.75rem !important;
+            font-size: 0.74rem !important;
         }
-
         .dot-red {
-            font-size: 0.65rem !important;
+            font-size: 0.55rem !important;
         }
-
         .today-log-actions {
             display: flex !important;
-            align-items: center !important;
-            justify-content: space-between !important;
-            margin-top: 6px !important;
-            gap: 8px !important;
-            flex-wrap: wrap !important;
+            flex-direction: column !important;
+            gap: 2px !important;
+            margin-top: auto !important;
+            flex-shrink: 0 !important;
         }
-
         .btn-add-more-logs {
             background: #059669 !important;
             color: #ffffff !important;
             border: none !important;
-            padding: 5px 12px !important;
+            padding: 4px 8px !important;
             border-radius: 6px !important;
-            font-size: 0.72rem !important;
+            font-size: 0.68rem !important;
             font-weight: 700 !important;
             cursor: pointer !important;
-            white-space: nowrap !important;
-            transition: background 0.12s ease !important;
+            width: 100% !important;
+            text-align: center !important;
+            height: 25px !important;
+            box-sizing: border-box !important;
+            transition: all 0.12s ease !important;
         }
-
         .btn-add-more-logs:hover {
             background: #047857 !important;
         }
-
         .view-all-logs-link {
-            font-size: 0.72rem !important;
+            font-size: 0.62rem !important;
             font-weight: 600 !important;
             color: #64748b !important;
             text-decoration: underline !important;
             cursor: pointer !important;
-            white-space: nowrap !important;
-        }
-
-        .view-all-logs-link:hover {
-            color: #059669 !important;
-        }
-
-        /* AI Insight Card */
-        .card-ai-insight {
-            background: linear-gradient(135deg, #ffffff 0%, #faf5ff 100%) !important;
-            border-color: #e9d5ff !important;
-            display: flex !important;
-            flex-direction: column !important;
-            gap: 6px !important;
-        }
-
-        .ai-generated-label {
-            font-size: 0.65rem !important;
-            font-weight: 700 !important;
-            color: #7c3aed !important;
-            background: #f3e8ff !important;
-            padding: 2px 6px !important;
-            border-radius: 10px !important;
-        }
-
-        .ai-insight-content {
-            display: flex !important;
-            flex-direction: column !important;
-            gap: 3px !important;
-        }
-
-        .ai-insight-headline {
-            font-size: 0.78rem !important;
-            font-weight: 700 !important;
-            color: #581c87 !important;
-            line-height: 1.2 !important;
-        }
-
-        .ai-insight-text {
-            font-size: 0.72rem !important;
-            color: #4b5563 !important;
-            line-height: 1.35 !important;
-            margin: 0 !important;
-        }
-
-        .ai-recommended-checklist {
-            background: rgba(255, 255, 255, 0.8) !important;
-            border: 1px solid #f3e8ff !important;
-            border-radius: 6px !important;
-            padding: 5px 8px !important;
-            margin-top: 2px !important;
-        }
-
-        .checklist-title {
-            font-size: 0.68rem !important;
-            font-weight: 700 !important;
-            color: #6b21a8 !important;
+            text-align: left !important;
             display: block !important;
-            margin-bottom: 2px !important;
         }
 
-        .checklist-items {
-            list-style: none !important;
-            padding: 0 !important;
-            margin: 0 !important;
-        }
-
-        .checklist-items li {
-            font-size: 0.68rem !important;
-            color: #374151 !important;
-            line-height: 1.3 !important;
-        }
-
-        .btn-ask-ai {
-            background: linear-gradient(135deg, #7c3aed, #9333ea) !important;
-            color: #ffffff !important;
-            border: none !important;
-            padding: 5px 10px !important;
-            border-radius: 6px !important;
-            font-size: 0.72rem !important;
-            font-weight: 700 !important;
-            cursor: pointer !important;
-            transition: opacity 0.15s ease !important;
-            margin-top: 4px !important;
-        }
-
-        .btn-ask-ai:hover {
-            opacity: 0.92 !important;
-        }
-
-        /* Helpful Tip Card */
-        .card-helpful-tip {
-            background: #fffbeb !important;
-            border-color: #fde68a !important;
+        /* AI Insight Card with 85% Circular Gauge - Compact, Snug, No excessive white space */
+        .card-ai-insight {
+            min-height: 0 !important;
+            min-width: 0 !important;
+            background: #ffffff !important;
+            border: 1px solid #e9d5ff !important;
+            border-radius: 12px !important;
+            padding: 7px 11px !important;
             display: flex !important;
             flex-direction: column !important;
             gap: 4px !important;
+            overflow: hidden !important;
         }
-
-        .helpful-tip-text {
+        .ai-generated-label {
+            font-size: 0.58rem !important;
+            font-weight: 700 !important;
+            color: #7c3aed !important;
+            background: #f3e8ff !important;
+            padding: 1px 6px !important;
+            border-radius: 8px !important;
+            white-space: nowrap !important;
+        }
+        .ai-insight-body-split {
+            display: flex !important;
+            align-items: center !important;
+            justify-content: space-between !important;
+            gap: 8px !important;
+            min-height: 0 !important;
+        }
+        .ai-insight-text-wrap {
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 2px !important;
+            min-width: 0 !important;
+            flex: 1 !important;
+        }
+        .ai-insight-headline {
             font-size: 0.72rem !important;
-            color: #92400e !important;
-            line-height: 1.35 !important;
+            font-weight: 700 !important;
+            color: #581c87 !important;
+            line-height: 1.15 !important;
+            white-space: nowrap !important;
+            overflow: hidden !important;
+            text-overflow: ellipsis !important;
+        }
+        .ai-insight-text {
+            font-size: 0.62rem !important;
+            color: #4b5563 !important;
+            line-height: 1.2 !important;
             margin: 0 !important;
         }
-
-        .btn-ask-vera {
-            background: linear-gradient(135deg, #f59e0b, #d97706) !important;
-            color: #ffffff !important;
+        .ai-circular-gauge {
+            position: relative !important;
+            width: 42px !important;
+            height: 42px !important;
+            flex-shrink: 0 !important;
+        }
+        .ai-gauge-svg {
+            width: 42px !important;
+            height: 42px !important;
+            transform: rotate(-90deg) !important;
+        }
+        .ai-gauge-pct {
+            position: absolute !important;
+            inset: 0 !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            font-size: 0.7rem !important;
+            font-weight: 800 !important;
+            color: #064e3b !important;
         }
 
-        /* Floating Vera AI Widget: anchored bottom-right */
+        /* ==========================================================================
+           7. BOTTOM 4 FEATURE CARDS (Insight Strip)
+           ========================================================================== */
+        .ttc-bottom-features-grid {
+            flex-shrink: 0 !important;
+            display: grid !important;
+            grid-template-columns: repeat(4, 1fr) !important;
+            gap: clamp(6px, 0.75vw, 10px) !important;
+        }
+        .ttc-feature-card {
+            background: #ffffff !important;
+            border: 1px solid #f1f5f9 !important;
+            border-radius: 12px !important;
+            padding: 4px 9px !important;
+            display: flex !important;
+            align-items: center !important;
+            gap: 8px !important;
+            box-shadow: 0 1px 2px rgba(15, 23, 42, 0.02) !important;
+            height: 40px !important;
+            box-sizing: border-box !important;
+            min-width: 0 !important;
+            overflow: hidden !important;
+        }
+        .feat-icon-box {
+            width: 26px !important;
+            height: 26px !important;
+            border-radius: 6px !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            font-size: 0.88rem !important;
+            flex-shrink: 0 !important;
+        }
+        .box-purple { background: #f3e8ff !important; color: #7c3aed !important; }
+        .box-blue { background: #e0f2fe !important; color: #0284c7 !important; }
+        .box-green { background: #d1fae5 !important; color: #059669 !important; }
+        .box-pink { background: #ffe4e6 !important; color: #e11d48 !important; }
+
+        .feat-text {
+            min-width: 0 !important;
+            overflow: hidden !important;
+        }
+        .feat-text h4 {
+            font-size: 0.68rem !important;
+            font-weight: 700 !important;
+            color: #0f172a !important;
+            margin: 0 !important;
+            line-height: 1.15 !important;
+            white-space: nowrap !important;
+            overflow: hidden !important;
+            text-overflow: ellipsis !important;
+        }
+        .feat-text p {
+            font-size: 0.56rem !important;
+            color: #64748b !important;
+            margin: 0 !important;
+            line-height: 1.15 !important;
+            white-space: nowrap !important;
+            overflow: hidden !important;
+            text-overflow: ellipsis !important;
+        }
+
+        /* Floating Vera AI Widget: anchored bottom-right inside viewport */
         #vera-float-widget {
             position: fixed !important;
-            bottom: 22px !important;
-            right: 22px !important;
+            bottom: 8px !important;
+            right: 10px !important;
             z-index: 9999 !important;
-        }
-
-        /* Responsive Breakpoints */
-        @media (max-width: 1200px) {
-            .ttc-overview-6grid {
-                grid-template-columns: repeat(3, 1fr) !important;
-            }
-            .ttc-analytics-3col {
-                grid-template-columns: 1.4fr 1fr !important;
-            }
-            .ttc-right-col {
-                grid-column: span 2 !important;
-                flex-direction: row !important;
-                flex-wrap: wrap !important;
-            }
-            .ttc-right-col .ttc-sidebar-card {
-                flex: 1 1 240px !important;
-            }
-        }
-
-        @media (max-width: 800px) {
-            .ttc-overview-6grid {
-                grid-template-columns: repeat(2, 1fr) !important;
-            }
-            .ttc-analytics-3col {
-                grid-template-columns: 1fr !important;
-            }
-            .ttc-right-col {
-                grid-column: span 1 !important;
-                flex-direction: column !important;
-            }
-            .ttc-hero-card {
-                flex-direction: column !important;
-                align-items: flex-start !important;
-            }
         }
     </style>
 </head>
@@ -1212,6 +1396,7 @@
     <div class="app-layout">
 
         <!-- Fixed Left Sidebar -->
+        <!-- Fixed Left Sidebar (Clean & Minimal) -->
         <aside class="app-sidebar">
             <div class="sidebar-brand">
                 <div class="brand-logo-icon">🌸</div>
@@ -1220,66 +1405,89 @@
                     <span class="brand-tagline">Empowered. Every day.</span>
                 </div>
             </div>
+            <div class="sidebar-divider"></div>
 
+            <!-- Navigation: Outline SVG Icons, subtle active state -->
             <nav class="sidebar-nav" id="main-nav">
                 <button class="nav-btn" data-view="dashboard" onclick="navigate('dashboard')">
-                    <span class="nav-icon">📊</span> Dashboard
+                    <svg class="nav-svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                    <span>Dashboard</span>
                 </button>
                 <button class="nav-btn" data-view="tracker" onclick="navigate('tracker')">
-                    <span class="nav-icon">📅</span> Tracker
+                    <svg class="nav-svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                    <span>Tracker</span>
                 </button>
                 <button class="nav-btn" data-view="wellness" onclick="navigate('wellness')">
-                    <span class="nav-icon">💖</span> Wellness
+                    <svg class="nav-svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+                    <span>Wellness</span>
                 </button>
                 <button class="nav-btn" data-view="fitness" onclick="navigate('fitness')">
-                    <span class="nav-icon">🧘‍♀️</span> Fitness
+                    <svg class="nav-svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 5v14M18 5v14M2 9v6M22 9v6M6 12h12"></path></svg>
+                    <span>Fitness</span>
                 </button>
                 <button class="nav-btn" data-view="ttc-dashboard" onclick="switchTrackingMode('ttc')">
-                    <span class="nav-icon">🌱</span> Trying to Conceive (TTC)
+                    <svg class="nav-svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 20h10M12 20v-8M12 12a5 5 0 0 1 5-5c0 4-3 5-5 5zm0 0a5 5 0 0 0-5-5c0 4 3 5 5 5z"></path></svg>
+                    <span>Trying to Conceive (TTC)</span>
                 </button>
                 <button class="nav-btn" data-view="library" onclick="navigate('library')">
-                    <span class="nav-icon">📚</span> Library
+                    <svg class="nav-svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+                    <span>Library</span>
                 </button>
                 <button class="nav-btn" data-view="community" onclick="navigate('community')">
-                    <span class="nav-icon">💬</span> Community
+                    <svg class="nav-svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+                    <span>Community</span>
                 </button>
                 <button class="nav-btn" data-view="ai-companion" onclick="toggleVeraFloat()">
-                    <span class="nav-icon">✨</span> AI Companion
+                    <svg class="nav-svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2.4 7.2L22 12l-7.6 2.8L12 22l-2.4-7.2L2 12l7.6-2.8L12 2z"></path></svg>
+                    <span>AI Companion</span>
                 </button>
             </nav>
+            <div class="sidebar-divider"></div>
 
-            <!-- Daily Tip Sidebar Card -->
-            <div class="sidebar-tip-card">
-                <div class="tip-header-row">
-                    <span class="tip-header-icon">💡</span>
-                    <h4>Daily Tip</h4>
+            <!-- Sidebar Lower Section: Compact Tip + Progress + Action Button -->
+            <div class="sidebar-lower-wrap">
+                <!-- Daily Tip Sidebar Card -->
+                <div class="sidebar-tip-card">
+                    <div class="tip-header-row">
+                        <span class="tip-header-icon">💡</span>
+                        <h4>Daily Tip</h4>
+                    </div>
+                    <p class="tip-content">Consistency is key! Logging your daily data helps improve your fertile window accuracy.</p>
+                    <div class="sidebar-tip-illustration">
+                        <svg viewBox="0 0 200 65" xmlns="http://www.w3.org/2000/svg" class="tip-meditate-svg">
+                            <path d="M96 60 L104 60 L102 38 L98 38 Z" fill="#94A3B8" />
+                            <path d="M100 38 Q82 20 72 12 Q90 16 100 38 Z" fill="#86EFAC" />
+                            <path d="M100 38 Q118 16 128 8 Q110 20 100 38 Z" fill="#4ADE80" />
+                            <circle cx="72" cy="12" r="3.5" fill="#F43F5E" />
+                            <circle cx="128" cy="8" r="3.5" fill="#F43F5E" />
+                        </svg>
+                    </div>
                 </div>
-                <p class="tip-content">Consistency is key! Logging your daily data helps improve your fertile window accuracy.</p>
-                <div class="sidebar-tip-illustration">
-                    <svg viewBox="0 0 200 80" xmlns="http://www.w3.org/2000/svg" class="tip-meditate-svg">
-                        <!-- Sprout plant illustration -->
-                        <path d="M95 70 L105 70 L102 45 L98 45 Z" fill="#94A3B8" />
-                        <path d="M100 45 Q80 25 70 15 Q90 20 100 45 Z" fill="#86EFAC" />
-                        <path d="M100 45 Q120 20 130 10 Q110 25 100 45 Z" fill="#4ADE80" />
-                        <circle cx="70" cy="15" r="4" fill="#F43F5E" />
-                        <circle cx="130" cy="10" r="4" fill="#F43F5E" />
-                    </svg>
-                </div>
-            </div>
 
-            <!-- Cycle Progress Sidebar Card -->
-            <div class="sidebar-cycle-progress-card">
-                <div class="progress-title-row">
-                    <span class="progress-title">Cycle Progress</span>
+                <!-- Cycle Progress Sidebar Card -->
+                <div class="sidebar-cycle-progress-card">
+                    <div class="progress-title-row">
+                        <span class="progress-title">Cycle Progress</span>
+                    </div>
+                    <div class="progress-stats-row">
+                        <span class="progress-days">Day <span id="sidebar-day-val">15</span> / <span id="sidebar-total-val">28</span></span>
+                        <span class="progress-pct" id="sidebar-pct-val">54%</span>
+                    </div>
+                    <div class="sidebar-progress-bar-track">
+                        <div class="sidebar-progress-bar-fill" id="sidebar-progress-fill" style="width: 54%;"></div>
+                    </div>
+                    <div class="sidebar-cycle-breakdown">
+                        <div class="sc-item"><span class="sc-dot dot-fertile">●</span> <span class="sc-label">Fertile Window</span> <span class="sc-val">Day 1 – 6</span></div>
+                        <div class="sc-item"><span class="sc-dot dot-ovulation">●</span> <span class="sc-label">Ovulation</span> <span class="sc-val">Day 15</span></div>
+                        <div class="sc-item"><span class="sc-dot dot-luteal">●</span> <span class="sc-label">Luteal Phase</span> <span class="sc-val">Day 16 – 28</span></div>
+                    </div>
                 </div>
-                <div class="progress-stats-row">
-                    <span class="progress-days">Day <span id="sidebar-day-val">15</span> / <span id="sidebar-total-val">28</span></span>
-                    <span class="progress-pct" id="sidebar-pct-val">53%</span>
-                </div>
-                <div class="sidebar-progress-bar-track">
-                    <div class="sidebar-progress-bar-fill" id="sidebar-progress-fill" style="width: 53%;"></div>
-                </div>
-                <span class="progress-phase-tag" id="sidebar-phase-tag">Follicular Phase</span>
+
+                <!-- Compact Log Your Data Action Button -->
+                <button class="sidebar-log-btn" onclick="openLogModal(getTodayString())">
+                    <span>Log Your Data</span>
+                    <span class="sidebar-plus-circle">+</span>
+                </button>
             </div>
         </aside>
 
@@ -1768,7 +1976,7 @@
                 <section id="view-ttc-dashboard" class="app-view hidden">
                     <div class="ttc-layout-wrapper">
 
-                        <!-- 1. Hero Banner Card (Full Width) -->
+                        <!-- 1. Hero Banner Card -->
                         <div class="ttc-hero-card">
                             <div class="ttc-hero-left">
                                 <div class="ttc-sprout-circle">🌱</div>
@@ -1785,10 +1993,10 @@
                             </div>
                         </div>
 
-                        <!-- 2. Fertility Overview Card (Full Width 6 Metrics Grid with Strong Hierarchy) -->
-                        <div class="ttc-card ttc-overview-card-v2">
-                            <div class="ttc-card-header-v2">
-                                <div class="header-title-info">
+                        <!-- 2. Fertility Overview (Header + 6 Cards) -->
+                        <div class="ttc-overview-section">
+                            <div class="ttc-overview-header-row">
+                                <div class="ttc-ov-title-wrap">
                                     <span class="card-header-icon">🌱</span>
                                     <h3>Fertility Overview</h3>
                                     <span class="info-circle-icon" title="Calculated from your historical cycles and biological fertility signals">ⓘ</span>
@@ -1797,50 +2005,59 @@
                             </div>
 
                             <div class="ttc-overview-6grid">
-                                <!-- Primary 1: Fertile Window (Green) -->
-                                <div class="ttc-mcard mcard-primary mcard-green">
+                                <!-- Card 1: Estimated Fertile Window -->
+                                <div class="ttc-mcard mcard-green">
                                     <div class="mcard-top-row">
                                         <span class="mcard-label">ESTIMATED FERTILE WINDOW</span>
                                         <span class="mcard-tag-est tag-green">Estimated</span>
                                     </div>
-                                    <div class="mcard-val text-green" id="ttc-metric-fertile-window">Aug 29 – Sep 04</div>
+                                    <div class="mcard-val-row">
+                                        <span class="mcard-val-icon">🗓️</span>
+                                        <div class="mcard-val text-green" id="ttc-metric-fertile-window">Aug 30 – Sep 05</div>
+                                    </div>
                                     <div class="mcard-sub-green" id="ttc-metric-fertile-sub">High conception probability</div>
                                 </div>
 
-                                <!-- Primary 2: Ovulation (Purple) -->
-                                <div class="ttc-mcard mcard-primary mcard-purple">
+                                <!-- Card 2: Estimated Ovulation -->
+                                <div class="ttc-mcard mcard-purple">
                                     <div class="mcard-top-row">
                                         <span class="mcard-label">ESTIMATED OVULATION</span>
                                         <span class="mcard-tag-est tag-purple">Estimated</span>
                                     </div>
-                                    <div class="mcard-val text-purple" id="ttc-metric-ovulation">Sep 02</div>
+                                    <div class="mcard-val-row">
+                                        <span class="mcard-val-icon">🟣</span>
+                                        <div class="mcard-val text-purple" id="ttc-metric-ovulation">Sep 03</div>
+                                    </div>
                                     <div class="mcard-sub-purple">Peak LH & egg release window</div>
                                 </div>
 
-                                <!-- Primary 3: Days to Fertile Window (Green) -->
-                                <div class="ttc-mcard mcard-primary mcard-green">
+                                <!-- Card 3: Days to Fertile Window -->
+                                <div class="ttc-mcard mcard-green">
                                     <div class="mcard-top-row">
                                         <span class="mcard-label">DAYS TO FERTILE WINDOW</span>
                                         <span class="mcard-tag-est tag-green">Active</span>
                                     </div>
-                                    <div class="mcard-val text-green" id="ttc-metric-days-until-fw">0 <span class="val-unit">days</span></div>
+                                    <div class="mcard-val-row">
+                                        <span class="mcard-val-icon">🌱</span>
+                                        <div class="mcard-val text-green" id="ttc-metric-days-until-fw">0 <span class="val-unit">days</span></div>
+                                    </div>
                                     <div class="mcard-sub-green" id="ttc-metric-days-sub">Peak begins today!</div>
                                 </div>
 
-                                <!-- Secondary 1: Cycle Day (Navy/Slate) -->
-                                <div class="ttc-mcard mcard-secondary">
+                                <!-- Card 4: Cycle Day -->
+                                <div class="ttc-mcard">
                                     <div class="mcard-top-row">
                                         <span class="mcard-label">CYCLE DAY</span>
-                                        <span class="mcard-sub-phase" id="ttc-metric-phase">Follicular Phase</span>
+                                        <span class="mcard-tag-est tag-blue" id="ttc-metric-phase" style="background:#e0f2fe; color:#0284c7;">Ovulatory</span>
                                     </div>
                                     <div class="mcard-val" id="ttc-metric-day">15</div>
                                     <div class="mcard-progress-track">
-                                        <div class="mcard-progress-fill" id="ttc-metric-progress" style="width: 53%;"></div>
+                                        <div class="mcard-progress-fill" id="ttc-metric-progress" style="width: 54%;"></div>
                                     </div>
                                 </div>
 
-                                <!-- Secondary 2: Cycle Length (Navy/Slate) -->
-                                <div class="ttc-mcard mcard-secondary">
+                                <!-- Card 5: Cycle Length -->
+                                <div class="ttc-mcard">
                                     <div class="mcard-top-row">
                                         <span class="mcard-label">CYCLE LENGTH</span>
                                     </div>
@@ -1848,21 +2065,21 @@
                                     <div class="mcard-sub-muted">Average baseline</div>
                                 </div>
 
-                                <!-- Secondary 3: Days Since Period Start (Pink/Period) -->
-                                <div class="ttc-mcard mcard-secondary mcard-pink-subtle">
+                                <!-- Card 6: Days Since Period Start -->
+                                <div class="ttc-mcard">
                                     <div class="mcard-top-row">
                                         <span class="mcard-label">DAYS SINCE PERIOD START</span>
                                     </div>
-                                    <div class="mcard-val text-pink" id="ttc-metric-days-since-period">14 <span class="val-unit">days</span></div>
+                                    <div class="mcard-val text-pink" id="ttc-metric-days-since-period"><span style="color:#e11d48">14</span> <span class="val-unit">days</span></div>
                                     <div class="mcard-sub-muted">Since last period onset</div>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- 3. Main 3-Column Content Layout (BBT Chart ~48% | Center ~28% | Right ~24%) -->
+                        <!-- 3. Main 3-Column Content Layout (BBT Chart 45% | Calendar 32% | Right Panel 23%) -->
                         <div class="ttc-analytics-3col">
 
-                            <!-- COLUMN 1: BBT Chart (Dominant, ~48% width) -->
+                            <!-- COLUMN 1: BBT Chart (Dominant, 45%) -->
                             <div class="ttc-card ttc-col-bbt">
                                 <div class="ttc-card-header-v2">
                                     <div class="header-title-info">
@@ -1881,25 +2098,21 @@
                                 </div>
 
                                 <div class="bbt-chart-canvas-wrap">
-                                    <canvas id="bbtChartCanvas" height="190"></canvas>
+                                    <canvas id="bbtChartCanvas"></canvas>
                                     <div class="bbt-annotation-pill" id="bbt-pattern-annotation">Possible Ovulation: Cycle Day 14–15</div>
                                 </div>
 
                                 <div class="bbt-chart-footer">
                                     <div class="bbt-chart-legend">
-                                        <span class="bbt-leg-item"><span class="leg-line purple-line"></span> BBT Curve</span>
-                                        <span class="bbt-leg-item"><span class="leg-line dashed-line"></span> Coverline (36.45°C)</span>
-                                        <span class="bbt-leg-item"><span class="leg-box green-box"></span> Fertile Window</span>
-                                        <span class="bbt-leg-item"><span class="leg-star">★</span> Est. Ovulation</span>
+                                        <span class="bbt-leg-item"><span class="leg-dot purple-dot"></span> BBT (°C)</span>
+                                        <span class="bbt-leg-item"><span class="leg-line dashed-line"></span> Baseline</span>
+                                        <span class="bbt-leg-item"><span class="leg-dot purple-dot"></span> Ovulation</span>
                                     </div>
-                                    <button class="btn-outline-pink-pill" onclick="openLogModal(getTodayString())">View Full Chart & Log →</button>
                                 </div>
                             </div>
 
-                            <!-- COLUMN 2: Center Column (Calendar + Fertility Signals) -->
+                            <!-- COLUMN 2: Center Column (Fertility Calendar 32%) -->
                             <div class="ttc-center-col">
-
-                                <!-- Card 1: Calendar -->
                                 <div class="ttc-card ttc-cal-card">
                                     <div class="ttc-card-header-v2">
                                         <div class="header-title-info">
@@ -1922,112 +2135,63 @@
                                     </div>
 
                                     <div class="cal-compact-legend">
-                                        <span><span class="dot dot-period">●</span> Period</span>
-                                        <span><span class="dot dot-fertile">●</span> Fertile</span>
-                                        <span><span class="star-ov">★</span> Ovulation</span>
-                                        <span><span class="box-today">□</span> Today</span>
+                                        <span><span class="leg-sq sq-period"></span> Period</span>
+                                        <span><span class="leg-sq sq-fertile"></span> Fertile Window</span>
+                                        <span><span class="star-ov-symbol">★</span> Ovulation</span>
                                     </div>
                                 </div>
-
-                                <!-- Card 2: Fertility Signals -->
-                                <div class="ttc-card ttc-signals-card">
-                                    <div class="ttc-card-header-v2">
-                                        <div class="header-title-info">
-                                            <span class="card-header-icon">⚡</span>
-                                            <h3>Fertility Signals</h3>
-                                            <span class="info-circle-icon" title="Combined biological biomarkers for ovulation timing">ⓘ</span>
-                                        </div>
-                                    </div>
-
-                                    <div class="signals-rows-v2">
-                                        <div class="sig-row-item">
-                                            <div class="sig-left">
-                                                <span class="sig-icon">📈</span>
-                                                <span class="sig-label">BBT Temperature</span>
-                                            </div>
-                                            <span class="sig-pill pill-soft-green" id="sig-bbt-status">✓ Logged (↗ Rising)</span>
-                                        </div>
-
-                                        <div class="sig-row-item">
-                                            <div class="sig-left">
-                                                <span class="sig-icon">🔥</span>
-                                                <span class="sig-label">LH Test</span>
-                                            </div>
-                                            <span class="sig-pill pill-soft-pink" id="sig-lh-status">🔴 Surge</span>
-                                        </div>
-
-                                        <div class="sig-row-item">
-                                            <div class="sig-left">
-                                                <span class="sig-icon">💧</span>
-                                                <span class="sig-label">Cervical Mucus</span>
-                                            </div>
-                                            <span class="sig-pill pill-soft-blue" id="sig-cm-status">💧 Watery</span>
-                                        </div>
-
-                                        <div class="sig-row-item">
-                                            <div class="sig-left">
-                                                <span class="sig-icon">🌱</span>
-                                                <span class="sig-label">Fertility Status</span>
-                                            </div>
-                                            <span class="sig-pill pill-soft-green" id="sig-fw-status">🌱 Peak</span>
-                                        </div>
-                                    </div>
-
-                                    <button class="btn-outline-pink-pill" onclick="openLogModal(getTodayString())">View Timeline</button>
-                                </div>
-
                             </div>
 
-                            <!-- COLUMN 3: Right Column (Today's Log + AI Insight + Helpful Tip) -->
+                            <!-- COLUMN 3: Right Column (Today's Log + AI Insight 23%) -->
                             <div class="ttc-right-col">
 
                                 <!-- Card 1: Today's Log -->
-                                <div class="ttc-card ttc-sidebar-card ttc-today-log-card">
+                                <div class="ttc-card ttc-today-log-card">
                                     <div class="ttc-card-header-v2">
                                         <div class="header-title-info">
                                             <span class="card-header-icon">📋</span>
                                             <h3>Today's Log</h3>
                                         </div>
-                                        <span class="log-date-label" id="today-log-date">Sep 02, 2026</span>
+                                        <span class="log-date-label" id="today-log-date">Sep 3, 2026</span>
                                     </div>
 
                                     <div class="today-log-rows">
                                         <div class="tlog-row" title="Basal Body Temperature">
                                             <div class="tlog-left">
-                                                <span class="tlog-icon" aria-hidden="true">🌡️</span>
+                                                <span class="tlog-icon">🌡️</span>
                                                 <span class="tlog-label">BBT Temperature</span>
                                             </div>
                                             <div class="tlog-right">
                                                 <strong id="today-bbt-val">36.52 °C</strong>
-                                                <span class="check-green" title="Logged">✓</span>
+                                                <span class="check-green">✓</span>
                                             </div>
                                         </div>
 
                                         <div class="tlog-row" title="Luteinizing Hormone Test">
                                             <div class="tlog-left">
-                                                <span class="tlog-icon" aria-hidden="true">🧪</span>
+                                                <span class="tlog-icon">🧪</span>
                                                 <span class="tlog-label">LH Test</span>
                                             </div>
                                             <div class="tlog-right">
-                                                <strong id="today-lh-val">Surge</strong>
-                                                <span class="dot-red" title="LH Surge detected">🔴</span>
+                                                <strong id="today-lh-val">—</strong>
+                                                <span class="dot-red">🔴</span>
                                             </div>
                                         </div>
 
                                         <div class="tlog-row" title="Cervical Mucus observation">
                                             <div class="tlog-left">
-                                                <span class="tlog-icon" aria-hidden="true">💧</span>
+                                                <span class="tlog-icon">💧</span>
                                                 <span class="tlog-label">Cervical Mucus</span>
                                             </div>
                                             <div class="tlog-right">
-                                                <strong id="today-cm-val">Watery</strong>
-                                                <span class="check-green" title="Logged">✓</span>
+                                                <strong id="today-cm-val">EW</strong>
+                                                <span class="check-green">✓</span>
                                             </div>
                                         </div>
 
                                         <div class="tlog-row" title="Intercourse logged">
                                             <div class="tlog-left">
-                                                <span class="tlog-icon" aria-hidden="true">💖</span>
+                                                <span class="tlog-icon">❤️</span>
                                                 <span class="tlog-label">Intercourse</span>
                                             </div>
                                             <div class="tlog-right">
@@ -2043,8 +2207,8 @@
                                     </div>
                                 </div>
 
-                                <!-- Card 2: AI Insight -->
-                                <div class="ttc-card ttc-sidebar-card card-ai-insight">
+                                <!-- Card 2: AI Fertility Insight with 85% Circular Gauge -->
+                                <div class="ttc-card card-ai-insight">
                                     <div class="ttc-card-header-v2">
                                         <div class="header-title-info">
                                             <span class="card-header-icon">✨</span>
@@ -2053,42 +2217,58 @@
                                         <span class="ai-generated-label">✨ Vera AI</span>
                                     </div>
 
-                                    <div class="ai-insight-content">
-                                        <strong class="ai-insight-headline">High fertility likelihood today</strong>
-                                        <p class="ai-insight-text" id="ttc-ai-insight-body">
-                                            Your LH result and cervical mucus pattern suggest you may be near ovulation.
-                                        </p>
-                                        <div class="ai-recommended-checklist">
-                                            <span class="checklist-title">Recommended:</span>
-                                            <ul class="checklist-items">
-                                                <li>• Log today's BBT</li>
-                                                <li>• Stay hydrated</li>
-                                                <li>• Consider intercourse today/tomorrow</li>
-                                            </ul>
+                                    <div class="ai-insight-body-split">
+                                        <div class="ai-insight-text-wrap">
+                                            <strong class="ai-insight-headline">High fertility likelihood</strong>
+                                            <p class="ai-insight-text" id="ttc-ai-insight-body">
+                                                Optimal time to conceive in the next 2-3 days.
+                                            </p>
+                                        </div>
+
+                                        <div class="ai-circular-gauge">
+                                            <svg viewBox="0 0 36 36" class="ai-gauge-svg">
+                                                <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#e2e8f0" stroke-width="3.5" />
+                                                <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#059669" stroke-width="3.5" stroke-dasharray="85, 100" stroke-linecap="round" />
+                                            </svg>
+                                            <span class="ai-gauge-pct">85%</span>
                                         </div>
                                     </div>
-
-                                    <button class="btn-ask-ai" onclick="toggleVeraFloat()">✨ Ask AI Companion</button>
-                                </div>
-
-                                <!-- Card 3: Helpful Tip -->
-                                <div class="ttc-card ttc-sidebar-card card-helpful-tip">
-                                    <div class="ttc-card-header-v2">
-                                        <div class="header-title-info">
-                                            <span class="card-header-icon">💡</span>
-                                            <h3>Helpful Tip</h3>
-                                        </div>
-                                    </div>
-
-                                    <p class="helpful-tip-text">
-                                        <strong>Optimal Timing:</strong> Having intercourse during the 2 days before ovulation and the day of ovulation provides the highest conception probability.
-                                    </p>
-
-                                    <button class="btn-ask-ai btn-ask-vera" onclick="toggleVeraFloat()">Ask Vera 🌿</button>
                                 </div>
 
                             </div>
 
+                        </div>
+
+                        <!-- 4. Bottom 4 Feature Cards -->
+                        <div class="ttc-bottom-features-grid">
+                            <div class="ttc-feature-card">
+                                <div class="feat-icon-box box-purple">📈</div>
+                                <div class="feat-text">
+                                    <h4>Understand Your Body</h4>
+                                    <p>Science-backed tracking for better insights.</p>
+                                </div>
+                            </div>
+                            <div class="ttc-feature-card">
+                                <div class="feat-icon-box box-blue">🎯</div>
+                                <div class="feat-text">
+                                    <h4>Increase Your Chances</h4>
+                                    <p>Track fertile window & ovulation accurately.</p>
+                                </div>
+                            </div>
+                            <div class="ttc-feature-card">
+                                <div class="feat-icon-box box-green">👤</div>
+                                <div class="feat-text">
+                                    <h4>Personalized Guidance</h4>
+                                    <p>AI insights tailored to your unique cycle.</p>
+                                </div>
+                            </div>
+                            <div class="ttc-feature-card">
+                                <div class="feat-icon-box box-pink">📅</div>
+                                <div class="feat-text">
+                                    <h4>Stay Consistent</h4>
+                                    <p>Small daily steps lead to big milestones.</p>
+                                </div>
+                            </div>
                         </div>
 
                     </div>
@@ -3658,6 +3838,6 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
     <!-- JS Application Script -->
-    <script src="/js/app.js?v=103"></script>
+    <script src="/js/app.js?v=109"></script>
 </body>
 </html>
