@@ -38,7 +38,19 @@ async function initApp() {
             const user = await apiCall('/auth/me');
             state.user = user;
             updateUserUI();
-            navigate('dashboard');
+            const hash = window.location.hash.substring(1);
+            const savedMode = localStorage.getItem('herwellness_tracking_mode') || (state.user && state.user.tracking_mode) || 'regular';
+            if (hash === 'ttc-dashboard') {
+                switchTrackingMode('ttc');
+            } else if (hash === 'dashboard') {
+                switchTrackingMode('regular');
+            } else if (hash) {
+                navigate(hash);
+            } else if (savedMode === 'ttc') {
+                switchTrackingMode('ttc');
+            } else {
+                switchTrackingMode('regular');
+            }
         } catch (e) {
             console.warn('Auth token invalid or demo fallback:', e);
             enableDemoMode();
@@ -183,12 +195,10 @@ function navigate(viewId, pushState = true) {
 
     // View specific initializations
     if (viewId === 'dashboard') {
-        if (state.user && state.user.tracking_mode === 'ttc') {
-            navigate('ttc-dashboard', false);
-            return;
-        }
+        updateAllModeToggles('regular');
         loadDashboardData();
     } else if (viewId === 'ttc-dashboard') {
+        updateAllModeToggles('ttc');
         loadTTCData();
     } else if (viewId === 'tracker') {
         loadTrackerData();
@@ -289,10 +299,22 @@ async function handleSignupSubmit(e) {
 
 function enableDemoMode() {
     state.token = 'demo-token';
-    state.user = { email: 'priya@gmail.com', id: 1 };
+    const savedMode = localStorage.getItem('herwellness_tracking_mode') || 'regular';
+    state.user = { email: 'priya@gmail.com', id: 1, tracking_mode: savedMode };
     localStorage.setItem('herwellness_token', 'demo-token');
     updateUserUI();
-    navigate('dashboard');
+    const hash = window.location.hash.substring(1);
+    if (hash === 'ttc-dashboard') {
+        switchTrackingMode('ttc');
+    } else if (hash === 'dashboard') {
+        switchTrackingMode('regular');
+    } else if (hash) {
+        navigate(hash);
+    } else if (savedMode === 'ttc') {
+        switchTrackingMode('ttc');
+    } else {
+        switchTrackingMode('regular');
+    }
 }
 
 function toggleProfileDropdown(event) {
@@ -3488,15 +3510,23 @@ state.bbtUnit = '°C';
 state.bbtChart = null;
 
 async function switchTrackingMode(mode) {
-    if (state.user) {
-        state.user.tracking_mode = mode;
-        try {
-            await apiCall('/auth/profile', 'PUT', { tracking_mode: mode });
-        } catch (err) {
-            console.error('Error updating tracking mode:', err);
-        }
+    if (!state.user) {
+        state.user = { email: 'priya@gmail.com', id: 1 };
     }
-    updateHeaderModePills(mode);
+    state.user.tracking_mode = mode;
+    state.trackingMode = mode;
+    localStorage.setItem('herwellness_tracking_mode', mode);
+
+    updateAllModeToggles(mode);
+
+    try {
+        if (state.token && state.token !== 'demo-token') {
+            await apiCall('/auth/profile', 'PUT', { tracking_mode: mode });
+        }
+    } catch (err) {
+        console.error('Error updating tracking mode:', err);
+    }
+
     if (mode === 'ttc') {
         navigate('ttc-dashboard');
     } else {
@@ -3504,7 +3534,14 @@ async function switchTrackingMode(mode) {
     }
 }
 
-function updateHeaderModePills(mode) {
+function updateAllModeToggles(mode) {
+    state.trackingMode = mode;
+    if (state.user) {
+        state.user.tracking_mode = mode;
+    }
+    localStorage.setItem('herwellness_tracking_mode', mode);
+
+    // 1. Header mode pills
     const cycleBtn = document.getElementById('pill-mode-cycle');
     const ttcBtn = document.getElementById('pill-mode-ttc');
     if (cycleBtn && ttcBtn) {
@@ -3516,6 +3553,47 @@ function updateHeaderModePills(mode) {
             ttcBtn.classList.remove('active');
         }
     }
+
+    // 2. TTC Hero Banner mode pills
+    const heroBtnCycle = document.getElementById('ttc-hero-btn-cycle');
+    const heroBtnTtc = document.getElementById('ttc-hero-btn-ttc');
+    if (heroBtnCycle && heroBtnTtc) {
+        if (mode === 'ttc') {
+            heroBtnCycle.classList.remove('active');
+            heroBtnTtc.classList.add('active');
+        } else {
+            heroBtnCycle.classList.add('active');
+            heroBtnTtc.classList.remove('active');
+        }
+    }
+
+    // 3. User profile dropdown badge
+    const profileModeBadge = document.getElementById('profile-current-mode-badge');
+    if (profileModeBadge) {
+        if (mode === 'ttc') {
+            profileModeBadge.textContent = '🌱 TTC Mode Active';
+            profileModeBadge.style.background = '#d1fae5';
+            profileModeBadge.style.color = '#065f46';
+        } else {
+            profileModeBadge.textContent = '🌸 Cycle Tracking Active';
+            profileModeBadge.style.background = '#ffe4e6';
+            profileModeBadge.style.color = '#be123c';
+        }
+    }
+
+    // 4. Sidebar Priya badge
+    const sbBadge = document.querySelector('.sidebar-profile-badge');
+    if (sbBadge) {
+        sbBadge.textContent = (mode === 'ttc') ? 'TTC Journey' : 'Cycle Tracking';
+    }
+
+    // 5. Body class for mode-specific styling
+    document.body.classList.toggle('is-ttc-active', mode === 'ttc');
+    document.body.classList.toggle('is-cycle-active', mode !== 'ttc');
+}
+
+function updateHeaderModePills(mode) {
+    updateAllModeToggles(mode);
 }
 
 function setBBTUnit(unit) {
@@ -3630,8 +3708,8 @@ function renderTTCOverview(overview) {
     if (badgeEl) badgeEl.textContent = '🟢 Peak fertile window';
     if (phaseEl) {
         phaseEl.textContent = 'Ovulatory';
-        phaseEl.style.background = '#e0f2fe';
-        phaseEl.style.color = '#0284c7';
+        phaseEl.style.background = '#fff1f2';
+        phaseEl.style.color = '#e11d48';
     }
     if (progressEl) progressEl.style.width = `${pct}%`;
 
@@ -3745,9 +3823,9 @@ function renderBBTChart(logs) {
     }
 
     const ctx = canvas.getContext('2d');
-    const purpleGradient = ctx.createLinearGradient(0, 0, 0, 160);
-    purpleGradient.addColorStop(0, 'rgba(168, 85, 247, 0.25)');
-    purpleGradient.addColorStop(1, 'rgba(168, 85, 247, 0.0)');
+    const greenGradient = ctx.createLinearGradient(0, 0, 0, 160);
+    greenGradient.addColorStop(0, 'rgba(16, 185, 129, 0.22)');
+    greenGradient.addColorStop(1, 'rgba(16, 185, 129, 0.0)');
 
     state.bbtChart = new Chart(ctx, {
         type: 'line',
@@ -3757,20 +3835,20 @@ function renderBBTChart(logs) {
                 {
                     label: `BBT (${state.bbtUnit || '°C'})`,
                     data: dataVals,
-                    borderColor: '#9333ea',
-                    backgroundColor: purpleGradient,
-                    borderWidth: 2,
+                    borderColor: '#10b981',
+                    backgroundColor: greenGradient,
+                    borderWidth: 2.2,
                     tension: 0.3,
                     fill: true,
                     pointBackgroundColor: function(context) {
-                        return (context.dataIndex === 14) ? '#7c3aed' : '#9333ea';
+                        return (context.dataIndex === 14) ? '#f43f5e' : '#10b981';
                     },
                     pointBorderColor: '#ffffff',
                     pointBorderWidth: 1.5,
                     pointRadius: function(context) {
-                        return (context.dataIndex === 14) ? 5.5 : 3.5;
+                        return (context.dataIndex === 14) ? 6 : 3.5;
                     },
-                    pointHoverRadius: 6
+                    pointHoverRadius: 6.5
                 },
                 {
                     label: `Coverline (${coverlineVal} ${state.bbtUnit || '°C'})`,

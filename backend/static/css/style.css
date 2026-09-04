@@ -2223,8 +2223,8 @@ a:hover {
 }
 
 .app-sidebar {
-    width: 250px;
-    background: #ffffff;
+    width: 256px;
+    background: #fbfafd;
     border-right: 1px solid var(--glass-border);
     position: fixed;
     top: 0;
@@ -2238,7 +2238,7 @@ a:hover {
 
 .app-main-wrapper {
     flex: 1;
-    margin-left: 250px; /* Offset sidebar */
+    margin-left: 256px; /* Offset sidebar */
     display: flex;
     flex-direction: column;
     height: 100vh;
@@ -10352,7 +10352,7 @@ body:has(#view-community:not(.hidden)) #vera-float-widget {
 }
 
 .ttc-metric-val.text-pink { color: #e11d48; }
-.ttc-metric-val.text-purple { color: #7c3aed; }
+.ttc-metric-val.text-purple { color: #be123c; }
 
 .ttc-tag-est {
     display: inline-block;
@@ -10678,7 +10678,7 @@ body:has(#view-community:not(.hidden)) #vera-float-widget {
 
 .ttc-cal-day.is-period { background: #ffe4e6; border-color: #fca5a5; }
 .ttc-cal-day.is-fertile { background: #ecfdf5; border-color: #6ee7b7; }
-.ttc-cal-day.is-ovulation { background: #f3e8ff; border-color: #c084fc; }
+.ttc-cal-day.is-ovulation { background: #fff1f2; border-color: #f43f5e; color: #be123c; }
 
 .ttc-cal-icons {
     display: flex;
@@ -10843,9 +10843,11 @@ body:has(#view-community:not(.hidden)) #vera-float-widget {
 
 /* Nav Button Active for TTC */
 .sidebar-nav .nav-btn[data-view="ttc-dashboard"].active {
-    background: #e6f4ea !important;
-    color: #059669 !important;
-    border-left: 4px solid #059669 !important;
+    background: #ecfdf5 !important;
+    color: #047857 !important;
+    font-weight: 600 !important;
+    border-color: rgba(5, 150, 105, 0.12) !important;
+    border-left: none !important;
 }
 
 /* TTC View Layout Wrapper (Vertical Stack of Sections) */
